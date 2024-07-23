@@ -1,0 +1,37 @@
+
+.note-container {
+    background-color: #333;
+    z-index: 9999;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    border-radius: 5px;
+    width: 30%;
+    height: 40%;
+}
+.note-title {
+    display: flex;
+    justify-content: space-between;
+    background-color: yellow;
+    color: black;
+    padding: 10px;
+    cursor: move; /* Ensures it's visually clear that this area is draggable */
+}
+.add-btn {
+    background: transparent;
+}
+.textarea {
+    color: white;
+    outline: none;
+    padding: 10px;
+    border: none;
+    width: 97%;
+    height: 97%;
+    overflow: auto;
+}
+    .close-btn{
+    background : transparent ; 
+    color : black;  
+    }

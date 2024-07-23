@@ -10,12 +10,23 @@
   "permissions": ["activeTab", "storage", "tabs"],
   "content_scripts": [
     {
-      "js": ["scripts/content.js"],
+      "js": [
+        "scripts/content_script.js",
+        "scripts/draggable.js",
+        "scripts/content_popup.js",
+        "scripts/content_eventHandling.js"
+      ],
       "matches": ["<all_urls>"]
     }
   ],
   "background": {
     "service_worker": "background.js",
     "type": "module"
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["assets/*", "lib/*", "styles/*"],
+      "matches": ["*://*/*"]
+    }
+  ]
 }
