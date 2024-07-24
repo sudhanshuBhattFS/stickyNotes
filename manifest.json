@@ -7,7 +7,7 @@
     "default_popup": "stickyNotes/stickyNotes.html",
     "default_icon": "images/hello_extensions.png"
   },
-  "permissions": ["activeTab", "storage", "tabs"],
+  "permissions": ["activeTab", "storage", "tabs", "scripting"],
   "content_scripts": [
     {
       "js": [

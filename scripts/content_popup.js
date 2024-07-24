@@ -1,9 +1,12 @@
+
+let noteCounter = 1
 class SimpleShadowDOM {
-    static getHtmlTemplate() {
+    static getHtmlTemplate(title) {
         return `
         <div class="note-container">
             <div class="note-title">
                 <button class="add-btn">+</button>
+                <span contenteditable="true">${title}</span>
                 <button class="close-btn">X</button>
             </div>
             <div class='textarea' contenteditable="true">Write Something..</div>
@@ -12,13 +15,12 @@ class SimpleShadowDOM {
     }
 
     static createPopup() {
-
+        const title = `Sticky Note`
         const container = document.createElement('div');
         const shadowRoot = container.attachShadow({ mode: 'open' });
 
         container.className = 'model-notes';
-        shadowRoot.innerHTML = SimpleShadowDOM.getHtmlTemplate();
-
+        shadowRoot.innerHTML = SimpleShadowDOM.getHtmlTemplate(title);
         document.body.appendChild(container);
 
         // stlesheet
@@ -29,7 +31,16 @@ class SimpleShadowDOM {
 
         // handling all the event for the note 
         eventListenerForNote(shadowRoot, container)
+
+        // resizable
+        makeResizable(shadowRoot.querySelector('.note-container'));
+
     }
+}
+
+const makeResizable = (element) => {
+    element.style.resize = 'both';
+    element.style.overflow = 'auto';
 }
 
 const addStyleSheetlink = (shadowRoot) => {
@@ -41,5 +52,6 @@ const addStyleSheetlink = (shadowRoot) => {
 }
 
 const createCard = () => {
-    SimpleShadowDOM.createPopup()
+    console.log('createCard is working !')
+    SimpleShadowDOM.createPopup(noteCounter)
 }

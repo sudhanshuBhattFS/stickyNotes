@@ -32,4 +32,30 @@ body {
   #add-note{
     background-color: rgb(255, 255, 109);
   }
+
+  /* popup.css */
+.note-card {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background: yellow;
+}
+
+.note-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.note-content {
+  width: 100%;
+  height: 100px;
+  color : white 
+}
+
+#allNotesList{
+  margin-top: 5px ;
+}
+
   
