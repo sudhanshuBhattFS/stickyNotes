@@ -2,7 +2,7 @@
 .note-container {
     background-color: #333;
     z-index: 9999;
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -27,8 +27,8 @@
     outline: none;
     padding: 10px;
     border: none;
-    width: 97%;
-    height: 97%;
+    height: 80%;
+    width: 90%;
     overflow: auto;
 }
     .close-btn{

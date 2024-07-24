@@ -1,6 +1,10 @@
-const eventListenerForNote = (shadowRoot, container) => {
+const eventListenerForNote = (shadowRoot, container,) => {
     // add btn 
-    shadowRoot.querySelector('.add-btn').addEventListener('click', SimpleShadowDOM.createPopup);
+    shadowRoot.querySelector('.add-btn').addEventListener('click', () => {
+        SimpleShadowDOM.createPopup()
+        chrome.runtime.sendMessage({ action: "test" });
+
+    });
 
     // clove btn 
     const closeBtn = shadowRoot.querySelector('.close-btn');
