@@ -1,7 +1,5 @@
 
 let noteArr = []
-
-
 document.addEventListener('DOMContentLoaded', function () {
 
     const saveButton = document.getElementById('save');
