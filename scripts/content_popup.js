@@ -1,7 +1,6 @@
 
-let noteCounter = 1
 class SimpleShadowDOM {
-    static getHtmlTemplate(title) {
+    static getHtmlTemplate(title, id, content) {
         return `
         <div class="note-container">
             <div class="note-title">
@@ -9,18 +8,20 @@ class SimpleShadowDOM {
                 <span contenteditable="true">${title}</span>
                 <button class="close-btn">X</button>
             </div>
-            <div class='textarea' contenteditable="true">Write Something..</div>
+            <div id="${id}" class='textarea' contenteditable="true">${content}</div>
         </div>
         `;
     }
 
-    static createPopup() {
+    static createPopup(id, innerContent) {
+
         const title = `Sticky Note`
         const container = document.createElement('div');
         const shadowRoot = container.attachShadow({ mode: 'open' });
 
-        container.className = 'model-notes';
-        shadowRoot.innerHTML = SimpleShadowDOM.getHtmlTemplate(title);
+        container.className = 'model-notes'
+        shadowRoot.innerHTML = SimpleShadowDOM.getHtmlTemplate(title, id, innerContent);
+
         document.body.appendChild(container);
 
         // stlesheet
@@ -51,7 +52,44 @@ const addStyleSheetlink = (shadowRoot) => {
     shadowRoot.appendChild(linkElement);
 }
 
-const createCard = () => {
-    console.log('createCard is working !')
-    SimpleShadowDOM.createPopup(noteCounter)
+// const createCard = (id, innerHtml) => {
+//     console.log(innerHtml, 'check ')
+//     const existingElement = document.getElementById('app.profitops.ai-7-24-2024-4-54-01-PM');
+//     console.log(existingElement, 'check')
+//     if (existingElement) {
+//         existingElement.innerHTML = innerHtml;
+//     } else {
+//         SimpleShadowDOM.createPopup(id, innerHtml);
+//     }
+// }
+
+const createCard = (id, innerHtml) => {
+    const containers = document.querySelectorAll('.model-notes');
+    let elementExists = false;
+
+    console.log(containers, 'model');
+    containers.forEach((container) => {
+        const shadowRoot = container.shadowRoot;
+        console.log(shadowRoot, 'shadow root');
+        const existingElement = shadowRoot.getElementById(id);
+        if (existingElement) {
+            elementExists = true;
+            existingElement.innerHTML = innerHtml;
+            return;
+        }
+    });
+
+    if (!elementExists) {
+        SimpleShadowDOM.createPopup(id, innerHtml);
+    }
+}
+
+
+
+
+const injectCards = (noteData) => {
+    const content = noteData.content
+    debugger
+    const id = `${noteData.hostName}-${noteData.date.replace(/\//g, '-')}-${noteData.time.replace(/:/g, '-').replace(' PM', '-PM').replace(' AM', '-AM')}`;
+    createCard(id, noteData.content)
 }
