@@ -1,16 +1,47 @@
+const retriveData = async () => {
+    return new Promise((resolve, reject) => {
+        chrome.storage.local.get('notes', function (result) {
+            if (result.notes) {
+                resolve(result.notes);
+            } else {
+                resolve([]);
+            }
+        });
+    });
+}
+
 
 // one way communication between background and content script
 chrome.runtime.onMessage.addListener(
-    function (request, sender, sendResponse) {
+    async function (request, sender, sendResponse) {
         console.log({ request, sender, sendResponse })
         console.log(sender.tab ?
             "from a content script:" + sender.tab.url :
             "from the extension");
         if (request.greeting === "hello") {
             sendResponse({ farewell: "goodbye" });
+        } else if (request.action == "storeNoteData") {
+            const url = request.data
+
+            // get date and time 
+            const now = new Date();
+            const dateStr = now.toLocaleDateString();
+            const timeStr = now.toLocaleTimeString();
+            const hostName = new URL(url).hostname
+
+            const noteData = { date: dateStr, time: timeStr, hostName: hostName, url: url, content: '' }
+            const id = `${noteData.hostName}-${noteData.date.replace(/\//g, '-')}-${noteData.time.replace(/:/g, '-').replace(' PM', '-PM').replace(' AM', '-AM')}`;
+
+            sendResponse({ id: id });
+            const noteArr = await retriveData()
+            noteArr.push(noteData)
+            // set local storage 
+            chrome.storage.local.set({ notes: noteArr });
         }
     }
 );
+
+
 
 // auto refresh
 chrome.runtime.onInstalled.addListener(function (details) {
@@ -30,25 +61,6 @@ chrome.runtime.onInstalled.addListener(function (details) {
 });
 
 
-// chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-//     console.log({ message })
-//     if (message.action === "createStickyNote") {
-//         chrome.windows.create({
-//             url: chrome.runtime.getURL("note/note.html"),
-//             type: "popup",
-//             width: 300,
-//             height: 300
-//         });
-//     }
-// });
-
-// a listner should be in background.js if not result in error
-// chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-//     if (request.action === 'my_action') {
-//         console.log(request.data); // prints "hello"
-//     }
-
-// });
 
 
 

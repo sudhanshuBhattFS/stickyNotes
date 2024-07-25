@@ -15,6 +15,28 @@ document.addEventListener('DOMContentLoaded', function () {
     let isCardCreated = false
     let isNoteCreated = false
 
+    // first get the tab url
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        hostName = new URL(tabs[0].url).hostname;
+        url = tabs[0].url;
+        console.log(url, 'url ')
+    });
+
+    function injectPopUps(note) {
+        console.log(note, hostName, "hostName and Note")
+        chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+            var activeTab = tabs[0];
+
+            if (note.hostName == hostName) {
+                chrome.tabs.sendMessage(activeTab.id, { "message": "injectPopUps", "noteData": note, }, function (response) {
+                    if (response && response.status === "success") {
+                        console.log('popUps injected successfully')
+                    }
+                });
+            }
+        });
+    }
+
     // funtions
     const retriveData = () => {
         chrome.storage.local.get('notes', function (result) {
@@ -24,7 +46,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 noteArr.forEach(element => {
                     // inject card into the extension popup
                     injectCards(element);
-
+                    // inject the note into the html if there is already stored value 
+                    injectPopUps(element)
                 });
             }
         });
@@ -59,6 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const dateStr = note.date
         const timeStr = note.time
         const url = note.url
+        const content = note.content
 
         card.innerHTML = `
                 <div data-url="${url}" class="note-header url">
@@ -66,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <span> ${dateStr}</span>
                     <span> ${timeStr}</span>
                 </div>
-                <div contenteditable="false class="note-content" placeholder="Enter your note here..."></div>
+                <div contenteditable="false" style="overflow : hidden" >${content}</div>
             `;
 
         allListContainer.prepend(card);
@@ -85,20 +109,17 @@ document.addEventListener('DOMContentLoaded', function () {
     // retrive data 
     retriveData()
 
-    // first get the tab url
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        hostName = new URL(tabs[0].url).hostname;
-        url = tabs[0].url;
-        console.log(url, 'url ')
-    });
-
 
     // allow the user to create multiple text areas
     addBtn.addEventListener('click', () => {
         chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
             var activeTab = tabs[0];
-            createCard()
-            chrome.tabs.sendMessage(activeTab.id, { "message": "start" });
+            const dateAndTime = getDateAndTime()
+            chrome.tabs.sendMessage(activeTab.id, { "message": "start", "noteData": dateAndTime }, function (response) {
+                if (response && response.status === "success") {
+                    createCard();
+                }
+            });
         });
     });
 
@@ -110,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     chrome.runtime.onMessage.addListener((request) => {
         console.log(request);
-        if (request.action === "test") {
+        if (request.action === "") {
             console.log('message is received')
             createCard()
         }

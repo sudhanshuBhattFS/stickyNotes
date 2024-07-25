@@ -22,6 +22,9 @@
 .add-btn {
     background: transparent;
 }
+.note-content{
+    overflow: hidden;
+}
 .textarea {
     color: white;
     outline: none;
