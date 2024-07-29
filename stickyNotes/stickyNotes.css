@@ -25,7 +25,7 @@ body {
     width: 100%;
   }
 
-  #title{
+  .title{
     color: white;
   }
 
@@ -46,6 +46,7 @@ body {
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
+  align-items: center ;
 }
 
 .note-content {
@@ -58,4 +59,25 @@ body {
   margin-top: 5px ;
 }
 
+.note-heading{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
   
+.allNoteBtn{
+  color: white;
+  background: transparent;
+  width: 5rem;
+  height: auto;
+  border: none ;
+  outline: none ;
+
+}
+.delete-btn{
+  border: 1px solid black;
+  padding: 5px ; 
+
+
+}
+
