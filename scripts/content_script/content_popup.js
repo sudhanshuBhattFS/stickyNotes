@@ -89,7 +89,6 @@ const createCard = (id, innerHtml) => {
 
 const injectCards = (noteData) => {
     const content = noteData.content
-    debugger
-    const id = `${noteData.hostName}-${noteData.date.replace(/\//g, '-')}-${noteData.time.replace(/:/g, '-').replace(' PM', '-PM').replace(' AM', '-AM')}`;
+    const id = noteData.id
     createCard(id, noteData.content)
 }

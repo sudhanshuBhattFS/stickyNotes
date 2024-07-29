@@ -4,7 +4,7 @@ const UpdateData = (textareaId, noteContent) => {
         if (result.notes) {
             const notes = result.notes
             notes.forEach(element => {
-                const id = `${element.hostName}-${element.date.replace(/\//g, '-')}-${element.time.replace(/:/g, '-').replace(' PM', '-PM').replace(' AM', '-AM')}`
+                const id = element.id
                 if (textareaId == id) {
                     element.content = noteContent
                     chrome.storage.local.set({ notes: notes }) // Update the local storage
@@ -19,9 +19,9 @@ const eventListenerForNote = (shadowRoot, container,) => {
     // add btn 
     shadowRoot.querySelector('.add-btn').addEventListener('click', async () => {
         // created a code for id and inner html 
-        const data = window.location.href
-        console.log(data, 'data')
-        chrome.runtime.sendMessage({ action: "storeNoteData", data: data }, (response) => {
+        const url = window.location.href
+
+        chrome.runtime.sendMessage({ action: "storeNoteData", url: url }, (response) => {
             console.log(response, 'response for id ')
             const id = response.id
             if (id) {

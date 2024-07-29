@@ -2,18 +2,14 @@
 let noteArr = []
 document.addEventListener('DOMContentLoaded', function () {
 
-    const saveButton = document.getElementById('save');
-    const noteContainer = document.getElementById('notesContainer')
     const addBtn = document.getElementById('add-note')
-    const removeAllBtn = document.getElementById('removeAll')
     const allListContainer = document.getElementById('allNotesList')
     const removeAll = document.getElementById('remove-all')
 
 
     let url = ''
     let hostName = ''
-    let isCardCreated = false
-    let isNoteCreated = false
+
 
     // query
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -44,38 +40,44 @@ document.addEventListener('DOMContentLoaded', function () {
             if (result.notes) {
                 noteArr = result.notes;
                 console.log(noteArr, 'note array ');
-                noteArr.forEach(element => {
-                    console.log(element, 'element')
-                    if (element.hostName === hostName) {
+                if (noteArr.length > 0) {
 
-                        // inject card into the extension popup
-                        injectCards(element);
-                        // inject the note into the html if there is already stored value 
-                        injectPopUps(element)
-                    }
-                });
+                    noteArr.forEach(element => {
+                        console.log(element, 'element')
+                        if (element.hostName === hostName) {
+
+                            // inject card into the extension popup
+                            injectCards(element);
+                            // inject the note into the html if there is already stored value 
+                            injectPopUps(element)
+                        }
+                    });
+                }
             }
         });
     }
 
-    // createCard 
-    const createCard = () => {
-        //  store the details into localstorage 
-        const noteHeading = getDateAndTime()
-        noteArr.push(noteHeading)
-        chrome.storage.local.set({ notes: noteArr });
-        injectCards(noteHeading)
-
-    }
 
     // get data time 
     function getDateAndTime() {
         const now = new Date();
         const dateStr = now.toLocaleDateString();
         const timeStr = now.toLocaleTimeString();
+        const timestamp = now.getTime(); // High-resolution timestamp
+        const randomComponent = Math.random().toString(36).substring(2, 15); // Random string
+        const uniqueId = `${timestamp}-${randomComponent}`; // Combine timestamp and random string
 
-        return { date: dateStr, time: timeStr, hostName: hostName, url: url, content: '' }
+        return {
+            id: uniqueId,
+            date: dateStr,
+            time: timeStr,
+            hostName: hostName,
+            url: url,
+            content: ''
+        };
     }
+
+
 
 
     // inject cards for the user 
@@ -88,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const content = note.content
         const url = note.url
         const timeStr = note.time
-        const id = `${note.hostName}-${note.date.replace(/\//g, '-')}-${note.time.replace(/:/g, '-').replace(' PM', '-PM').replace(' AM', '-AM')}`;
+        const id = note.id
 
         card.innerHTML = `
         <div>
@@ -124,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.log(deleteBtn.id, 'id')
                 if (noteArr.length > 0) {
                     noteArr.forEach((note) => {
-                        const id = `${note.hostName}-${note.date.replace(/\//g, '-')}-${note.time.replace(/:/g, '-').replace(' PM', '-PM').replace(' AM', '-AM')}`;
+                        const id = note.id
                         console.log(id, 'id2')
                         if (deleteBtn.id == id) {
                             console.log(note, 'inside conidtion check ')
@@ -154,10 +156,14 @@ document.addEventListener('DOMContentLoaded', function () {
     addBtn.addEventListener('click', () => {
         chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
             var activeTab = tabs[0];
-            const dateAndTime = getDateAndTime()
-            chrome.tabs.sendMessage(activeTab.id, { "message": "start", "noteData": dateAndTime }, function (response) {
+            const noteData = getDateAndTime()
+            chrome.tabs.sendMessage(activeTab.id, { "message": "start", "noteData": noteData }, function (response) {
                 if (response && response.status === "success") {
-                    createCard();
+                    // update the data in loaclstorage
+                    noteArr.push(noteData)
+                    chrome.storage.local.set({ notes: noteArr });
+                    // inject a add in the extension with the id data 
+                    injectCards(noteData)
                 }
             });
         });
