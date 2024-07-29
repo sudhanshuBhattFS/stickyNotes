@@ -11,11 +11,12 @@
   "content_scripts": [
     {
       "js": [
-        "scripts/content_script.js",
-        "scripts/draggable.js",
-        "scripts/content_popup.js",
-        "scripts/content_eventHandling.js"
+        "scripts/content_script/content_script.js",
+        "scripts/content_script/draggable.js",
+        "scripts/content_script/content_popup.js",
+        "scripts/content_script/content_eventHandling.js"
       ],
+      "css": ["styles/bootstrap-lib/css/bootstrap.css"],
       "matches": ["<all_urls>"]
     }
   ],
@@ -25,7 +26,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["assets/*", "lib/*", "styles/*"],
+      "resources": ["assets/*", "lib/*", "stickyNote_html_page/*", "styles/*"],
       "matches": ["*://*/*"]
     }
   ]

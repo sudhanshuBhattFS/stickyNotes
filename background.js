@@ -1,3 +1,5 @@
+
+
 const retriveData = async () => {
     return new Promise((resolve, reject) => {
         chrome.storage.local.get('notes', function (result) {
@@ -14,10 +16,6 @@ const retriveData = async () => {
 // one way communication between background and content script
 chrome.runtime.onMessage.addListener(
     async function (request, sender, sendResponse) {
-        console.log({ request, sender, sendResponse })
-        console.log(sender.tab ?
-            "from a content script:" + sender.tab.url :
-            "from the extension");
         if (request.greeting === "hello") {
             sendResponse({ farewell: "goodbye" });
         } else if (request.action == "storeNoteData") {
@@ -35,8 +33,9 @@ chrome.runtime.onMessage.addListener(
             sendResponse({ id: id });
             const noteArr = await retriveData()
             noteArr.push(noteData)
-            // set local storage 
             chrome.storage.local.set({ notes: noteArr });
+        } else if (request.action === 'createTabAndInject') {
+            chrome.tabs.create({ url: chrome.runtime.getURL('./stickyNote_html_page/index.html') });
         }
     }
 );
@@ -59,6 +58,8 @@ chrome.runtime.onInstalled.addListener(function (details) {
         refreshAllTabs();
     }
 });
+
+
 
 
 

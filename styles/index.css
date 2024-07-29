@@ -1,0 +1,21 @@
+.stickyNoteSideBar {
+    background-color: #202124; /* Light gray background for sidebar */
+    padding: 1rem;
+    color : white; 
+  }
+  .contentContainer {
+    padding: 1rem;
+    background-color: #202124;
+    color : white ; 
+  }
+  .heading {
+    background-color: #202124; /* Dark background for heading */
+    color: rgb(255, 255, 255);
+    padding: 1rem;
+    font-size: 1.5rem;
+  }
+
+  .bg-custom{
+    background-color: #202124;
+  }
+
