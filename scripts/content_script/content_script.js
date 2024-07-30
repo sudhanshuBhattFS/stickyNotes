@@ -18,7 +18,7 @@ chrome.runtime.onMessage.addListener(
 
             const noteData = request.noteData
             const content = 'Write Something ...'
-            const id = `${noteData.hostName}-${noteData.date.replace(/\//g, '-')}-${noteData.time.replace(/:/g, '-').replace(' PM', '-PM').replace(' AM', '-AM')}`;
+            const id = noteData.id
             createCard(id, content);
             sendResponse({ status: "success" });
 
