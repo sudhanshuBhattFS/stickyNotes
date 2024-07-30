@@ -36,7 +36,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // retriveData 
     const retriveData = () => {
+
         chrome.storage.local.get('notes', function (result) {
+            console.log(result.notes)
             if (result.notes) {
                 noteArr = result.notes;
 

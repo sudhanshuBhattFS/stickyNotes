@@ -24,7 +24,7 @@ chrome.runtime.onMessage.addListener(
 
         }
         if (request.message === "injectPopUps") {
-
+            console.log(request.noteData)
             injectCards(request.noteData)
             sendResponse({ status: "success" });
         }

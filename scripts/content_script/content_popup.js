@@ -55,6 +55,7 @@ const addStyleSheetlink = (shadowRoot) => {
 
 
 const createCard = (id, innerHtml) => {
+    console.log('check inner html', innerHtml);
     const containers = document.querySelectorAll('.model-notes');
     let elementExists = false;
 
@@ -63,15 +64,21 @@ const createCard = (id, innerHtml) => {
         const existingElement = shadowRoot.getElementById(id);
         if (existingElement) {
             elementExists = true;
-            existingElement.innerHTML = innerHtml;
+            existingElement.innerHTML = ''; // Clear existing content
+            const preElement = document.createElement('pre');
+            preElement.textContent = innerHtml; // Set text content
+            existingElement.appendChild(preElement);
             return;
         }
     });
 
     if (!elementExists) {
-        SimpleShadowDOM.createPopup(id, innerHtml);
+        const preElement = document.createElement('pre');
+        preElement.textContent = innerHtml; // Set text content
+        SimpleShadowDOM.createPopup(id, preElement.outerHTML);
     }
-}
+};
+
 
 
 
