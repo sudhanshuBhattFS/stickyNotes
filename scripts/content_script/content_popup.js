@@ -52,25 +52,14 @@ const addStyleSheetlink = (shadowRoot) => {
     shadowRoot.appendChild(linkElement);
 }
 
-// const createCard = (id, innerHtml) => {
-//     console.log(innerHtml, 'check ')
-//     const existingElement = document.getElementById('app.profitops.ai-7-24-2024-4-54-01-PM');
-//     console.log(existingElement, 'check')
-//     if (existingElement) {
-//         existingElement.innerHTML = innerHtml;
-//     } else {
-//         SimpleShadowDOM.createPopup(id, innerHtml);
-//     }
-// }
+
 
 const createCard = (id, innerHtml) => {
     const containers = document.querySelectorAll('.model-notes');
     let elementExists = false;
 
-    console.log(containers, 'model');
     containers.forEach((container) => {
         const shadowRoot = container.shadowRoot;
-        console.log(shadowRoot, 'shadow root');
         const existingElement = shadowRoot.getElementById(id);
         if (existingElement) {
             elementExists = true;
