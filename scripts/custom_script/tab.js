@@ -75,7 +75,7 @@ const insertContentInMain = (note) => {
 const handleCardData = async () => {
     // Get all the note data 
     const notesData = await getNotesDataInSideBar();
-    console.log(notesData, 'noteData check');
+
 
     if (notesData) {
 

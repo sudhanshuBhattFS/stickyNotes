@@ -3,7 +3,7 @@ class UserLocalStorage {
     static retriveNoteData() {
         return new Promise((resolve, reject) => {
             chrome.storage.local.get('notes', (result) => {
-                console.log(result)
+
                 if (result.notes) {  // Corrected 'notes' to 'note'
                     resolve(result.notes);
                 } else {

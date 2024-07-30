@@ -15,19 +15,19 @@ document.addEventListener('DOMContentLoaded', function () {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         hostName = new URL(tabs[0].url).hostname;
         url = tabs[0].url;
-        console.log(url, 'url ')
+
     });
 
     // inject function
     function injectPopUps(note) {
-        console.log(note, hostName, "hostName and Note")
+
         chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
             var activeTab = tabs[0];
 
             if (note.hostName == hostName) {
                 chrome.tabs.sendMessage(activeTab.id, { "message": "injectPopUps", "noteData": note, }, function (response) {
                     if (response && response.status === "success") {
-                        console.log('popUps injected successfully')
+
                     }
                 });
             }
@@ -39,11 +39,11 @@ document.addEventListener('DOMContentLoaded', function () {
         chrome.storage.local.get('notes', function (result) {
             if (result.notes) {
                 noteArr = result.notes;
-                console.log(noteArr, 'note array ');
+
                 if (noteArr.length > 0) {
 
                     noteArr.forEach(element => {
-                        console.log(element, 'element')
+
                         if (element.hostName === hostName) {
 
                             // inject card into the extension popup
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const urlSpan = card.querySelector('.url');
         urlSpan.addEventListener('click', (event) => {
             chrome.tabs.create({ url: urlSpan.dataset.url }, (tab) => {
-                console.log(tab, 'check if this code works');
+
             });
         });
 
@@ -122,8 +122,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 card.remove();
 
                 const noteArr = await UserLocalStorage.retriveNoteData()
-                console.log(noteArr)
-                console.log(deleteBtn.id, 'id')
+
                 if (noteArr.length > 0) {
                     noteArr.forEach((note) => {
                         const id = note.id
@@ -138,10 +137,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
                     })
                 }
-
-                console.log("Note removed");
             } else {
-                console.log("Note not removed");
+                console.warn("Note not removed");
             }
         });
 
@@ -171,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     removeAll.addEventListener('click', () => {
         chrome.storage.local.clear(() => {
-            console.log('All notes removed from storage');
+
         });
     });
 

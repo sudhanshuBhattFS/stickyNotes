@@ -22,7 +22,7 @@ const eventListenerForNote = (shadowRoot, container,) => {
         const url = window.location.href
 
         chrome.runtime.sendMessage({ action: "storeNoteData", url: url }, (response) => {
-            console.log(response, 'response for id ')
+
             const id = response.id
             if (id) {
                 SimpleShadowDOM.createPopup(id, 'Write something ...');
