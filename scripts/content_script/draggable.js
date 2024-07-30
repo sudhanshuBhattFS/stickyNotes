@@ -1,5 +1,5 @@
 const makeDraggable = (element, handle) => {
-    console.log({ element })
+
 
     let isDragging = false;
     let startX, startY, initialMouseX, initialMouseY;

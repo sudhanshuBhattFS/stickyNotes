@@ -1,6 +1,6 @@
 
 (async () => {
-    console.log('content scrupt is running !')
+
     const response = await chrome.runtime.sendMessage({ greeting: "hello" });
     // do something with response here, not outside the function
 
@@ -13,7 +13,7 @@
 
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
-        console.log({ request }, 'add note request');
+
         if (request.message === "start") {
 
             const noteData = request.noteData
@@ -24,7 +24,7 @@ chrome.runtime.onMessage.addListener(
 
         }
         if (request.message === "injectPopUps") {
-            console.log(request.noteData, 'noteData check')
+
             injectCards(request.noteData)
             sendResponse({ status: "success" });
         }
