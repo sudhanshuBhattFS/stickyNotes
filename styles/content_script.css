@@ -1,4 +1,6 @@
-
+pre {
+    margin:  0px !important;
+}
 .note-container {
     background-color: #333;
     z-index: 9999;
