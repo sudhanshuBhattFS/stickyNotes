@@ -53,7 +53,20 @@ chrome.runtime.onMessage.addListener(
 
         } else if (request.action === 'createTabAndInject') {
             chrome.tabs.create({ url: chrome.runtime.getURL('./stickyNote_html_page/index.html') });
+        } else if (request.action === 'filterLocalStorage') {
+            const id = request.id;
+            const StoredNotes = await retriveData();
+
+            // Filter out the note with the matching ID
+            const newArray = StoredNotes.filter((note) => note.id !== id);
+
+            // Save the updated array back to local storage
+            chrome.storage.local.set({ notes: newArray });
+
+            // Optionally, send a response back if needed
+            sendResponse({ success: true });
         }
+
     }
 );
 
