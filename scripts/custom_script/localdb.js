@@ -22,3 +22,4 @@ class UserLocalStorage {
         chrome.storage.local.set({ notes: noteArr });
     }
 }
+

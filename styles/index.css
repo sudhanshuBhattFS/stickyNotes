@@ -6,7 +6,9 @@
   .contentContainer {
     padding: 1rem;
     background-color: #202124;
-    color : white ; 
+    color : white ;
+    height: 90vh;
+    overflow: auto; 
   }
   .heading {
     background-color: #202124; /* Dark background for heading */
@@ -22,3 +24,14 @@
   .custom-margin-10{
     margin-left: 10px ;
   }
+
+  .list_notes{
+    height: 90vh;
+    overflow: auto;
+  }
+
+  .curser-pointer{
+    cursor: pointer !important;
+  }
+
+

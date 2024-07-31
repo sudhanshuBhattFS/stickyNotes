@@ -28,6 +28,10 @@ chrome.runtime.onMessage.addListener(
             injectCards(request.noteData)
             sendResponse({ status: "success" });
         }
+        if (request.message === "removeElementFromDom") {
+            const id = request.id
+            removeStyNote(id)
+        }
         // Return true to indicate you want to send a response asynchronously
         return true;
     }

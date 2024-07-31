@@ -136,6 +136,9 @@ document.addEventListener('DOMContentLoaded', function () {
                             console.log(newArr, 'new array ')
                             UserLocalStorage.setStorage(newArr)
 
+                            // remove the element from the dom 
+                            // chrome.tabs.sendMessage({ "message": "removeElementFromDom", id: id });
+
                         }
                     })
                 }
