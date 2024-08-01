@@ -1,4 +1,4 @@
-
+let index = 1
 class SimpleShadowDOM {
     static getHtmlTemplate(title, id, content) {
         return `
@@ -15,7 +15,8 @@ class SimpleShadowDOM {
 
     static createPopup(id, innerContent) {
 
-        const title = `Sticky Note`
+        const title = `Sticky Note-${index}`
+        index++
         const container = document.createElement('div');
         const shadowRoot = container.attachShadow({ mode: 'open' });
 
@@ -37,7 +38,33 @@ class SimpleShadowDOM {
         makeResizable(shadowRoot.querySelector('.note-container'));
 
     }
+
+    static removeElementFromDom(id) {
+        const containers = document.querySelectorAll('.model-notes');
+        containers.forEach((container) => {
+            const shadowRoot = container.shadowRoot;
+            const existingElement = shadowRoot.getElementById(id);
+            if (existingElement) {
+                existingElement.parentElement.remove()
+            }
+        });
+    }
+
+    static hideAllElementsFromDom() {
+        document.querySelectorAll('.model-notes').forEach(element => {
+            element.dataset.originalDisplay = element.style.display; // Store original display value
+            element.style.display = 'none';
+        });
+    }
+
+    static showAllElementsFromDom() {
+        document.querySelectorAll('.model-notes').forEach(element => {
+            element.style.display = element.dataset.originalDisplay || 'block'; // Restore original display value or default to 'block'
+        });
+    }
 }
+
+
 
 const makeResizable = (element) => {
     element.style.resize = 'both';
@@ -55,7 +82,7 @@ const addStyleSheetlink = (shadowRoot) => {
 
 
 const createCard = (id, innerHtml) => {
-    console.log('check inner html', innerHtml);
+
     const containers = document.querySelectorAll('.model-notes');
     let elementExists = false;
 
@@ -83,8 +110,10 @@ const createCard = (id, innerHtml) => {
 
 
 
-const injectCards = (noteData) => {
+
+const injectCards = (noteData, i) => {
     const content = noteData.content
     const id = noteData.id
+    index = i
     createCard(id, noteData.content)
 }

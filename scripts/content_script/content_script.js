@@ -13,7 +13,7 @@
 
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
-
+        console.log(request, 'request')
         if (request.message === "start") {
 
             const noteData = request.noteData
@@ -24,16 +24,25 @@ chrome.runtime.onMessage.addListener(
 
         }
         if (request.message === "injectPopUps") {
-            console.log(request.noteData)
-            injectCards(request.noteData)
+            const index = request.index
+            injectCards(request.noteData, index)
             sendResponse({ status: "success" });
         }
-        if (request.message === "removeElementFromDom") {
+
+        if (request.action === "removeElementFromDom") {
             const id = request.id
-            removeStyNote(id)
+            SimpleShadowDOM.removeElementFromDom(id)
         }
-        // Return true to indicate you want to send a response asynchronously
-        return true;
+
+        if (request.message === "hideStickyNotes") {
+            const isHidden = request.isHidden
+            if (isHidden === true) {
+                SimpleShadowDOM.hideAllElementsFromDom()
+            } else {
+                SimpleShadowDOM.showAllElementsFromDom()
+            }
+        }
+
     }
 );
 

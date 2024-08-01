@@ -53,6 +53,21 @@ chrome.runtime.onMessage.addListener(
 
             // Optionally, send a response back if needed
             sendResponse({ success: true });
+        } else if (request.action === 'updateNoteContent') {
+            const id = request.id
+            const updateContent = request.content
+
+            if (id && updateContent) {
+                const noteArr = await UserLocalStorage.retriveNoteData()
+                const updatedNoteArr = noteArr.map((note) => {
+                    if (note.id == id) {
+                        return { ...note, content: updateContent }
+                    }
+                })
+                UserLocalStorage.setStorage(updatedNoteArr)
+            }
+
+
         }
 
     }

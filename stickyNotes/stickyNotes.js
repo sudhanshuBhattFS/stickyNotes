@@ -1,10 +1,15 @@
 
 let noteArr = []
+let isHidden = false
+
+
+
+
 document.addEventListener('DOMContentLoaded', function () {
 
     const addBtn = document.getElementById('add-note')
     const allListContainer = document.getElementById('allNotesList')
-    const removeAll = document.getElementById('remove-all')
+    const hideAllBtn = document.getElementById('remove-all')
 
 
     let url = ''
@@ -19,13 +24,13 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // inject function
-    function injectPopUps(note) {
+    function injectPopUps(note, index) {
 
         chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
             var activeTab = tabs[0];
 
             if (note.hostName == hostName) {
-                chrome.tabs.sendMessage(activeTab.id, { "message": "injectPopUps", "noteData": note, }, function (response) {
+                chrome.tabs.sendMessage(activeTab.id, { "message": "injectPopUps", "noteData": note, "index": index }, function (response) {
                     if (response && response.status === "success") {
 
                     }
@@ -35,30 +40,33 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // retriveData 
-    const retriveData = () => {
+    const retriveData = async () => {
+
+        isHidden = await UserLocalStorage.getIsHidden()
+        isHidden ? hideAllBtn.innerText = 'Show All Notes' : hideAllBtn.innerText = 'Hide All Notes'
 
         chrome.storage.local.get('notes', function (result) {
-            console.log(result.notes)
             if (result.notes) {
                 noteArr = result.notes;
 
                 if (noteArr.length > 0) {
 
-                    noteArr.forEach(element => {
+                    noteArr.forEach((element, index) => {
 
                         if (element.hostName === hostName) {
-
                             // inject card into the extension popup
-                            injectCards(element);
+                            injectCards(element)
                             // inject the note into the html if there is already stored value 
-                            injectPopUps(element)
+
+                            injectPopUps(element, index)
+
                         }
                     });
                 }
             }
         });
     }
-
+    retriveData()
 
     // get data time 
     function getDateAndTime() {
@@ -121,23 +129,27 @@ document.addEventListener('DOMContentLoaded', function () {
         deleteBtn.addEventListener('click', async () => {
             if (confirm("Are you sure you want to Remove this Note")) {
 
-                card.remove();
+
 
                 const noteArr = await UserLocalStorage.retriveNoteData()
 
                 if (noteArr.length > 0) {
                     noteArr.forEach((note) => {
                         const id = note.id
-                        console.log(id, 'id2')
+
                         if (deleteBtn.id == id) {
-                            console.log(note, 'inside conidtion check ')
+
                             // Remove the note from the array
                             const newArr = noteArr.filter((n) => n !== note);
-                            console.log(newArr, 'new array ')
+
                             UserLocalStorage.setStorage(newArr)
 
+                            card.remove();
                             // remove the element from the dom 
-                            // chrome.tabs.sendMessage({ "message": "removeElementFromDom", id: id });
+                            chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+                                var activeTab = tabs[0];
+                                chrome.tabs.sendMessage(activeTab.id, { "action": "removeElementFromDom", "id": id });
+                            });
 
                         }
                     })
@@ -150,8 +162,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
-    // retrive data 
-    retriveData()
+
 
 
     // allow the user to create multiple text areas
@@ -171,16 +182,27 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    removeAll.addEventListener('click', () => {
-        chrome.storage.local.clear(() => {
+    hideAllBtn.addEventListener('click', () => {
 
+        isHidden = !isHidden
+        UserLocalStorage.setIsHidden(isHidden)
+        if (isHidden === true) {
+            hideAllBtn.innerText = 'Show All Notes'
+        } else {
+            hideAllBtn.innerText = 'Hide All Notes'
+        }
+        chrome.tabs.query({ currentWindow: true, active: true }, async (tabs) => {
+            const activeTab = tabs[0];
+            // const noteArr = await UserLocalStorage.retriveData()
+            chrome.tabs.sendMessage(activeTab.id, { "message": 'hideStickyNotes', 'isHidden': isHidden, "noteData": noteArr }, {
+            });
         });
     });
 
 
     document.getElementById('openTabButton').addEventListener('click', () => {
         chrome.runtime.sendMessage({ action: 'createTabAndInject' });
-
+        // UserLocalStorage.deleteNoteData()
     });
 
 });
