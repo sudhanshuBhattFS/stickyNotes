@@ -7,7 +7,7 @@ class UserLocalStorage {
                 if (result.notes) {  // Corrected 'notes' to 'note'
                     resolve(result.notes);
                 } else {
-                    reject(null);
+                    reject([]);
                 }
             });
         });
@@ -20,6 +20,23 @@ class UserLocalStorage {
     // update note data 
     static setStorage(noteArr) {
         chrome.storage.local.set({ notes: noteArr });
+    }
+
+    static setIsHidden(isHidden) {
+        chrome.storage.local.set({ isHidden: isHidden });
+    }
+
+    static getIsHidden() {
+        return new Promise((resolve, reject) => {
+            chrome.storage.local.get('isHidden', (result) => {
+                console.log(result.isHidden)
+                if (result.isHidden) {
+                    resolve(result.isHidden)
+                } else {
+                    resolve(false)
+                }
+            })
+        })
     }
 }
 
