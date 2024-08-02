@@ -1,6 +1,8 @@
 
 let noteArr = []
 let isHidden = false
+const notesPerPage = 3; // Number of notes per page
+let currentPage = 1; // Current page
 
 
 
@@ -23,6 +25,75 @@ document.addEventListener('DOMContentLoaded', function () {
 
     });
 
+    const getTotalPages = async () => {
+        const allNotes = await UserLocalStorage.retriveNoteData()
+        return new Promise((resolve, reject) => {
+            const result = Math.ceil(allNotes.length / notesPerPage);
+            resolve(result)
+        })
+    }
+
+    const renderPagination = async () => {
+        const paginationContainer = document.querySelector('.pagination');
+        paginationContainer.innerHTML = '';
+
+        const totalPages = await getTotalPages();
+        console.log(totalPages, 'total pages')
+
+        const prevButton = document.createElement('a');
+        prevButton.href = '#';
+        prevButton.innerHTML = '&laquo;';
+        prevButton.addEventListener('click', () => changePage(currentPage - 1));
+        paginationContainer.appendChild(prevButton);
+
+        for (let i = 1; i <= totalPages; i++) {
+            const pageButton = document.createElement('a');
+            pageButton.href = '#';
+            pageButton.innerText = i;
+            if (i === currentPage) {
+                pageButton.classList.add('active');
+            }
+            pageButton.addEventListener('click', () => changePage(i));
+            paginationContainer.appendChild(pageButton);
+        }
+
+        const nextButton = document.createElement('a');
+        nextButton.href = '#';
+        nextButton.innerHTML = '&raquo;';
+        nextButton.addEventListener('click', () => changePage(currentPage + 1));
+        paginationContainer.appendChild(nextButton);
+    }
+
+    const renderNotes = async () => {
+        const allListContainer = document.getElementById('allNotesList');
+        allListContainer.innerHTML = ''; // Clear the current notes
+
+        // the start and end index display the no of cards should be display from what start to end 
+        const startIndex = (currentPage - 1) * notesPerPage;
+        let endIndex = startIndex + notesPerPage;
+
+        noteArr = await UserLocalStorage.retriveNoteData()
+        const notesToShow = noteArr.slice(startIndex, endIndex);
+
+        notesToShow.forEach(note => {
+            injectCards(note);
+        });
+    }
+
+
+    function changePage(page) {
+        const totalPages = getTotalPages();
+
+        if (page < 1) page = 1;
+        if (page > totalPages) page = totalPages;
+
+        currentPage = page;
+        renderNotes();
+        renderPagination();
+    }
+
+
+
     // inject function
     function injectPopUps(note, index) {
 
@@ -40,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // retriveData 
-    const retriveData = async () => {
+    (retriveData = async () => {
 
         isHidden = await UserLocalStorage.getIsHidden()
         isHidden ? hideAllBtn.innerText = 'Show All Notes' : hideAllBtn.innerText = 'Hide All Notes'
@@ -56,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         if (element.hostName === hostName) {
                             // inject card into the extension popup
-                            injectCards(element)
+                            // injectCards(element)
 
                             // inject the note into the html if there is already stored value 
                             injectPopUps(element, index)
@@ -66,8 +137,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
         });
-    }
-    retriveData()
+
+    })().then(() => {
+        renderNotes();
+        renderPagination();
+    });
 
     // get data time 
     function getDateAndTime() {
@@ -176,7 +250,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     noteArr.push(noteData)
                     chrome.storage.local.set({ notes: noteArr });
                     // inject a add in the extension with the id data 
-                    injectCards(noteData)
+                    // injectCards(noteData)
                 }
             });
         });
