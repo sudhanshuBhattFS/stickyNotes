@@ -1,27 +1,29 @@
 let index = 1
 class SimpleShadowDOM {
-    static getHtmlTemplate(title, id, content) {
+    static getHtmlTemplate(heading, id, content, title) {
         return `
-        <div class="note-container">
+        <div uniqueId="${id}" class="note-container">
             <div class="note-title">
                 <button class="add-btn">+</button>
-                <span contenteditable="true">${title}</span>
+                <span contenteditable="true">${heading}</span>
                 <button class="close-btn">X</button>
             </div>
+            <pre class="title" contenteditable="true" >${title}</pre>
             <div id="${id}" class='textarea' contenteditable="true">${content}</div>
         </div>
         `;
     }
 
-    static createPopup(id, innerContent) {
+    static createPopup(id, innerContent, title) {
 
-        const title = `Sticky Note-${index}`
+        const heading = `Sticky Note-${index}`
         index++
         const container = document.createElement('div');
         const shadowRoot = container.attachShadow({ mode: 'open' });
 
         container.className = 'model-notes'
-        shadowRoot.innerHTML = SimpleShadowDOM.getHtmlTemplate(title, id, innerContent);
+
+        shadowRoot.innerHTML = SimpleShadowDOM.getHtmlTemplate(heading, id, innerContent, title);
 
         document.body.appendChild(container);
 
@@ -81,7 +83,7 @@ const addStyleSheetlink = (shadowRoot) => {
 
 
 
-const createCard = (id, innerHtml) => {
+const createCard = (id, innerHtml, title) => {
 
     const containers = document.querySelectorAll('.model-notes');
     let elementExists = false;
@@ -102,18 +104,17 @@ const createCard = (id, innerHtml) => {
     if (!elementExists) {
         const preElement = document.createElement('pre');
         preElement.textContent = innerHtml; // Set text content
-        SimpleShadowDOM.createPopup(id, preElement.outerHTML);
+        SimpleShadowDOM.createPopup(id, preElement.outerHTML, title);
     }
 };
 
 
-
-
-
-
+// no need of this method change this code ---
 const injectCards = (noteData, i) => {
     const content = noteData.content
     const id = noteData.id
     index = i
-    createCard(id, noteData.content)
+    const title = noteData.title
+    debugger
+    createCard(id, noteData.content, title)
 }

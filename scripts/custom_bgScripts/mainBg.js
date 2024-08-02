@@ -9,6 +9,7 @@ const getNoteData = (url) => {
     const timestamp = now.getTime(); // High-resolution timestamp
     const randomComponent = Math.random().toString(36).substring(2, 15); // Random string
     const uniqueId = `${timestamp}-${randomComponent}`; // Combine timestamp and random string
+    const title = 'Title'
 
     return {
         id: uniqueId,
@@ -16,7 +17,8 @@ const getNoteData = (url) => {
         time: timeStr,
         hostName: hostName,
         url: url,
-        content: ''
+        content: '',
+        title: title
     };
 }
 
@@ -32,7 +34,7 @@ chrome.runtime.onMessage.addListener(
             const noteData = getNoteData(request.url)
 
             // send request 
-            sendResponse({ id: noteData.id });
+            sendResponse({ noteData: noteData });
 
             // update data 
             const noteArr = await UserLocalStorage.retriveNoteData()
@@ -58,14 +60,16 @@ chrome.runtime.onMessage.addListener(
             const updateContent = request.content
 
             if (id && updateContent) {
-                const noteArr = await UserLocalStorage.retriveNoteData()
+                const noteArr = await UserLocalStorage.retriveNoteData();
                 const updatedNoteArr = noteArr.map((note) => {
                     if (note.id == id) {
-                        return { ...note, content: updateContent }
+                        return { ...note, content: updateContent };
                     }
-                })
-                UserLocalStorage.setStorage(updatedNoteArr)
+                    return note; // Ensure that notes that don't match the id are returned unchanged
+                });
+                UserLocalStorage.setStorage(updatedNoteArr);
             }
+
 
 
         }

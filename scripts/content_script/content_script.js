@@ -19,7 +19,8 @@ chrome.runtime.onMessage.addListener(
             const noteData = request.noteData
             const content = 'Write Something ...'
             const id = noteData.id
-            createCard(id, content);
+            const title = noteData.title
+            createCard(id, content, title);
             sendResponse({ status: "success" });
 
         }
