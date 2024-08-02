@@ -50,14 +50,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 noteArr = result.notes;
 
                 if (noteArr.length > 0) {
+                    console.log(noteArr, 'noreArray')
 
                     noteArr.forEach((element, index) => {
 
                         if (element.hostName === hostName) {
                             // inject card into the extension popup
                             injectCards(element)
-                            // inject the note into the html if there is already stored value 
 
+                            // inject the note into the html if there is already stored value 
                             injectPopUps(element, index)
 
                         }
@@ -83,7 +84,8 @@ document.addEventListener('DOMContentLoaded', function () {
             time: timeStr,
             hostName: hostName,
             url: url,
-            content: ''
+            content: '',
+            title: 'Title'
         };
     }
 
@@ -128,8 +130,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const deleteBtn = card.querySelector('.delete-btn');
         deleteBtn.addEventListener('click', async () => {
             if (confirm("Are you sure you want to Remove this Note")) {
-
-
 
                 const noteArr = await UserLocalStorage.retriveNoteData()
 

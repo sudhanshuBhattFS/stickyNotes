@@ -32,7 +32,7 @@ pre {
     outline: none;
     padding: 10px;
     border: none;
-    height: 80%;
+    height: 70%;
     width: 90%;
     overflow: auto;
 }
@@ -40,3 +40,12 @@ pre {
     background : transparent ; 
     color : black;  
     }
+
+
+ .title{
+    margin: 4px !important;
+    padding: 8px;
+    background: transparent;
+    color: white;
+    width: 94%;
+ }

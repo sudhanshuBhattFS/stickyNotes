@@ -19,7 +19,7 @@ const createCardsForNote = (note) => {
             </div>
         </div>
         <div data-url="${note.url}" class="note-header url px-3 py-3 d-flex justify-content-between">
-            <div class="curser-pointer " >${note.hostName}</div>
+            <div class="curser-pointer " >${note.title}</div>
              <svg  data-url="${note.url}" class="note-host" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16">
               <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/>
               <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/>
@@ -39,14 +39,10 @@ const TextAreaForNotesHtml = (note) => {
         <div class="w-100 bg-light text-dark px-3 py-2">
             <div class="w-100 .bg-light.bg-gradient d-flex justify-content-between">
                 <div>
-                    <span>${note.hostName}</span><span class="px-2">${note.date}</span><span class="px-2">${note.time}</span>
+                    <span>${note.title}</span><span class="px-2">${note.date}</span><span class="px-2">${note.time}</span>
                 </div>
                 <div>
                     <button type="button" unique-id='${id}' class=" btn btn-primary editBtn mx-2">Edit</button>
-           <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-  Add Label
-</button>
-
                 </div>
             </div>
         </div>
