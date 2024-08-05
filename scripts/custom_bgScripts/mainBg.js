@@ -26,9 +26,14 @@ const getNoteData = (url) => {
 // one way communication between background and content script
 chrome.runtime.onMessage.addListener(
     async function (request, sender, sendResponse) {
+
+        console.log(request, 'bg request')
         if (request.greeting === "hello") {
             sendResponse({ farewell: "goodbye" });
-        } else if (request.action == "storeNoteData") {
+        }
+
+        // the first response created 
+        if (request.action == "storeNoteData") {
 
             // get id 
             const noteData = getNoteData(request.url)
@@ -41,21 +46,42 @@ chrome.runtime.onMessage.addListener(
             noteArr.push(noteData)
             chrome.storage.local.set({ notes: noteArr });
 
-        } else if (request.action === 'createTabAndInject') {
+        }
+
+
+        if (request.action === 'createTabAndInject') {
             chrome.tabs.create({ url: chrome.runtime.getURL('./stickyNote_html_page/index.html') });
-        } else if (request.action === 'filterLocalStorage') {
+        }
+
+
+        if (request.action === 'filterLocalStorage') {
             const id = request.id;
-            const StoredNotes = await UserLocalStorage.retriveNoteData()
+            const StoredNotes = await UserLocalStorage.retriveNoteData();
 
             // Filter out the note with the matching ID
             const newArray = StoredNotes.filter((note) => note.id !== id);
 
-            // Save the updated array back to local storage
-            chrome.storage.local.set({ notes: newArray });
+            const noteToFind = StoredNotes.find(note => note.id === id);
 
-            // Optionally, send a response back if needed
-            sendResponse({ success: true });
-        } else if (request.action === 'updateNoteContent') {
+            // Save the updated array back to local storage
+            chrome.storage.local.set({ notes: newArray }, () => {
+
+                // Query all tabs to find the one you want to send the message to
+                chrome.tabs.query({}, function (tabs) {
+                    tabs.forEach(tab => {
+                        if (tab.url === noteToFind.url) {
+                            chrome.tabs.sendMessage(tab.id, { action: 'removeElementFromDom', id: noteToFind.id });
+                        }
+                    });
+                });
+
+                // Send a response back if needed
+                sendResponse({ success: true });
+            });
+        }
+
+
+        if (request.action === 'updateNoteContent') {
             const id = request.id
             const updateContent = request.content
 
@@ -67,12 +93,59 @@ chrome.runtime.onMessage.addListener(
                     }
                     return note; // Ensure that notes that don't match the id are returned unchanged
                 });
+
+                const noteToFind = updatedNoteArr.find(note => note.id === id);
+                // updating it into the tab 
+                chrome.tabs.query({}, function (tabs) {
+
+                    tabs.forEach(tab => {
+                        if (tab.url === noteToFind.url) {
+                            chrome.tabs.sendMessage(tab.id, { action: 'updateContentInCard', note: noteToFind });
+                        }
+                    });
+                });
+
+                // upadte in local bg 
                 UserLocalStorage.setStorage(updatedNoteArr);
             }
 
 
-
         }
+
+        if (request.action == "removeUsingHostName") {
+            const hostName = request.hostName
+            const StoredNotes = await UserLocalStorage.retriveNoteData();
+
+            // Filter out the note with the matching ID
+            const newArray = StoredNotes.filter((note) => note.hostName === hostName);
+            const updateArray = StoredNotes.filter((note) => note.hostName !== hostName);
+            await UserLocalStorage.setStorage(updateArray)
+
+            newArray.forEach((note) => {
+                chrome.tabs.query({}, function (tabs) {
+                    tabs.forEach(tab => {
+                        if (tab.url === note.url) {
+                            chrome.tabs.sendMessage(tab.id, { action: 'removeElementFromDom', id: note.id });
+                        }
+                    });
+                });
+            })
+        }
+
+        if (request.action === "removeTab") {
+            const titleToRemove = request.title;
+
+            chrome.tabs.query({}, (tabs) => {
+                tabs.forEach((tab) => {
+                    console.log(tabs, 'tabs')
+                    if (tab.title === titleToRemove) {
+                        chrome.tabs.remove(tab.id);
+                    }
+                });
+            });
+        }
+
+        return true
 
     }
 );

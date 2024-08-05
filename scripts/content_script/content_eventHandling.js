@@ -14,20 +14,7 @@ const UpdateData = (textareaId, noteContent) => {
     })
 }
 
-const UpdateTitle = (textareaId, title) => {
-    chrome.storage.local.get('notes', function (result) {
-        if (result.notes) {
-            const notes = result.notes
-            notes.forEach(element => {
-                const id = element.id
-                if (textareaId == id) {
-                    element.title = title
-                    chrome.storage.local.set({ notes: notes }) // Update the local storage
-                }
-            });
-        }
-    })
-}
+
 
 
 const eventListenerForNote = (shadowRoot, container,) => {
@@ -37,7 +24,6 @@ const eventListenerForNote = (shadowRoot, container,) => {
         const url = window.location.href
 
         chrome.runtime.sendMessage({ action: "storeNoteData", url: url }, (response) => {
-
             const id = response.noteData.id
             if (id) {
                 const title = response.noteData.title
@@ -52,11 +38,6 @@ const eventListenerForNote = (shadowRoot, container,) => {
     const closeBtn = shadowRoot.querySelector('.close-btn');
     const title = shadowRoot.querySelector('.title')
 
-    title.addEventListener('input', () => {
-        const innertxt = title.innerText
-        const id = title.parentElement.getAttribute("uniqueId");
-        UpdateTitle(id, innertxt)
-    })
 
     closeBtn.addEventListener('click', () => {
         container.remove();
@@ -76,5 +57,6 @@ const eventListenerForNote = (shadowRoot, container,) => {
     textArea.addEventListener('input', () => {
         const noteContent = textArea.innerText;
         const contentElement = UpdateData(textArea.id, noteContent)
+        chrome.runtime.sendMessage({ action: "removeTab", title: "StickyNotes" });
     });
 }

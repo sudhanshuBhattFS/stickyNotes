@@ -38,5 +38,15 @@
     resize: both;
   }
 
+  .textarea {
+    white-space: pre-wrap; /* CSS property to preserve white spaces and line breaks */
+    word-wrap: break-word; /* Ensures long words break into the next line */
+}
+
+.textAreaForNotes {
+  white-space: pre-wrap; /* Preserve white spaces and line breaks */
+  word-wrap: break-word; /* Ensure long words break into the next line */
+  overflow: hidden; /* Prevent scroll bars */
+}
 
 

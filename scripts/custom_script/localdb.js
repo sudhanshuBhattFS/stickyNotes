@@ -29,7 +29,6 @@ class UserLocalStorage {
     static getIsHidden() {
         return new Promise((resolve, reject) => {
             chrome.storage.local.get('isHidden', (result) => {
-                console.log(result.isHidden)
                 if (result.isHidden) {
                     resolve(result.isHidden)
                 } else {
@@ -37,6 +36,6 @@ class UserLocalStorage {
                 }
             })
         })
-    }
+    } t
 }
 

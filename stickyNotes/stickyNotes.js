@@ -5,15 +5,11 @@ const notesPerPage = 3; // Number of notes per page
 let currentPage = 1; // Current page
 
 
-
-
 document.addEventListener('DOMContentLoaded', function () {
 
     const addBtn = document.getElementById('add-note')
     const allListContainer = document.getElementById('allNotesList')
     const hideAllBtn = document.getElementById('remove-all')
-
-
     let url = ''
     let hostName = ''
 
@@ -25,6 +21,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     });
 
+    // handle displaying and inserting card and creating pagination  //
+
+    /*                          START                      */
+    // get totoal no of page 
     const getTotalPages = async () => {
         const allNotes = await UserLocalStorage.retriveNoteData()
         return new Promise((resolve, reject) => {
@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
     }
 
+    // create pagination  pannel -chat gpt code - read it one time 
     const renderPagination = async () => {
         const paginationContainer = document.querySelector('.pagination');
         paginationContainer.innerHTML = '';
@@ -64,6 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
         paginationContainer.appendChild(nextButton);
     }
 
+    // render notes 
     const renderNotes = async () => {
         const allListContainer = document.getElementById('allNotesList');
         allListContainer.innerHTML = ''; // Clear the current notes
@@ -73,14 +75,17 @@ document.addEventListener('DOMContentLoaded', function () {
         let endIndex = startIndex + notesPerPage;
 
         noteArr = await UserLocalStorage.retriveNoteData()
+
+        // based of the start and end value get noteToShow 
         const notesToShow = noteArr.slice(startIndex, endIndex);
 
+        // created a new array and iserted the note 
         notesToShow.forEach(note => {
             injectCards(note);
         });
     }
 
-
+    // change pages
     function changePage(page) {
         const totalPages = getTotalPages();
 
@@ -92,8 +97,6 @@ document.addEventListener('DOMContentLoaded', function () {
         renderPagination();
     }
 
-
-
     // inject function
     function injectPopUps(note, index) {
 
@@ -101,11 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
             var activeTab = tabs[0];
 
             if (note.hostName == hostName) {
-                chrome.tabs.sendMessage(activeTab.id, { "message": "injectPopUps", "noteData": note, "index": index }, function (response) {
-                    if (response && response.status === "success") {
-
-                    }
-                });
+                chrome.tabs.sendMessage(activeTab.id, { "message": "injectPopUps", "noteData": note, "index": index });
             }
         });
     }
@@ -143,6 +142,8 @@ document.addEventListener('DOMContentLoaded', function () {
         renderPagination();
     });
 
+    /*                          END                      */
+
     // get data time 
     function getDateAndTime() {
         const now = new Date();
@@ -159,12 +160,8 @@ document.addEventListener('DOMContentLoaded', function () {
             hostName: hostName,
             url: url,
             content: '',
-            title: 'Title'
         };
     }
-
-
-
 
     // inject cards for the user 
     const injectCards = (note) => {
@@ -181,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function () {
         card.innerHTML = `
         <div>
                 <div class="note-header ">
-                    <span class="url" data-url="${url}">${hostName}</span>
+                    <span class="url curserPointer" data-url="${url}">${hostName}</span>
                     <span> ${dateStr}</span>
                     <span id="${id}" class='delete-btn'> Delete </span>
                 </div>
@@ -204,9 +201,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const deleteBtn = card.querySelector('.delete-btn');
         deleteBtn.addEventListener('click', async () => {
             if (confirm("Are you sure you want to Remove this Note")) {
-
                 const noteArr = await UserLocalStorage.retriveNoteData()
-
                 if (noteArr.length > 0) {
                     noteArr.forEach((note) => {
                         const id = note.id
@@ -218,7 +213,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
                             UserLocalStorage.setStorage(newArr)
 
+
                             card.remove();
+
+                            // Send a message to the background script to remove the tab
+                            chrome.runtime.sendMessage({ action: "removeTab", title: "StickyNotes" });
+
                             // remove the element from the dom 
                             chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
                                 var activeTab = tabs[0];
@@ -236,9 +236,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
-
-
-
+    /*                         EVENT LISTNER START                      */
     // allow the user to create multiple text areas
     addBtn.addEventListener('click', () => {
         chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
@@ -256,6 +254,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // hide btn -currently not to use 
     hideAllBtn.addEventListener('click', () => {
 
         isHidden = !isHidden
@@ -273,12 +272,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-
     document.getElementById('openTabButton').addEventListener('click', () => {
         chrome.runtime.sendMessage({ action: 'createTabAndInject' });
         // UserLocalStorage.deleteNoteData()
     });
-
+    /*                         EVENT LISTNER ENDa                    */
 });
 
 
