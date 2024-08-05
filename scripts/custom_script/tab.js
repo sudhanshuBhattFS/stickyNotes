@@ -149,6 +149,44 @@ const toggleNoteContainerSelection = () => {
     });
 }
 
+const filterNotes = async (query) => {
+    const notesData = await getNotesDataInSideBar();
+
+    // Clear current notes
+    const sidebarContainer = document.querySelector('.list_notes');
+    sidebarContainer.innerHTML = '';
+
+    const mainContainer = document.querySelector('.contentContainer');
+    mainContainer.innerHTML = '';
+
+    // Filter notes based on query
+    const filteredNotes = notesData.filter(note =>
+        note.hostName.toLowerCase().includes(query.toLowerCase()) ||
+        note.content.toLowerCase().includes(query.toLowerCase())
+    );
+
+    // Display filtered notes in sidebar and main container
+    const uniqueSet = new Set();
+    const noteArr = filteredNotes.filter(note => {
+        if (uniqueSet.has(note.hostName)) {
+            return false;
+        } else {
+            uniqueSet.add(note.hostName);
+            return true;
+        }
+    });
+
+    noteArr.forEach(note => {
+        insertContentInSideBar(note);
+    });
+
+    filteredNotes.forEach(note => {
+        insertContentInMain(note);
+    });
+
+    toggleNoteContainerSelection();
+};
+
 const handleCardData = async () => {
     // Get all the note data 
     const notesData = await getNotesDataInSideBar();
@@ -202,6 +240,8 @@ const handleCardData = async () => {
                 }
             });
         });
+
+
         document.addEventListener('click', (event) => {
             if (event.target.classList.contains('editBtn')) {
                 const targetElement = event.target;
@@ -230,6 +270,11 @@ const handleCardData = async () => {
         });
 
     }
+
+    document.getElementById('searchBox').addEventListener('input', (event) => {
+        const query = event.target.value;
+        filterNotes(query);
+    });
 };
 
 // IIFE
