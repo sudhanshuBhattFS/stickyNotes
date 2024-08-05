@@ -8,21 +8,12 @@ const getNotesDataInSideBar = async () => {
 // html 
 const createCardsForNote = (note) => {
     return `
-    <div  id="${note.id}" class="d-flex flex-column border border-light noteContainer">
-      <div class="px-3 pt-2 curser-pointer  d-flex justify-content-between"  >
-        <span >Date & Time : ${note.date} <span >${note.time}</span></span>
-          <div >
-            <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi delete-note bi-trash custom-margin-10" viewBox="0 0 16 16">
+    <div  id="${note.id}" hostName="${note.hostName}" class="d-flex flex-column border border-light noteContainer">
+        <div data-url="${note.url}" class="note-header url px-3 py-3 d-flex justify-content-between align-items-center">
+                    <div class="curser-pointer " >${note.hostName}</div>
+             <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi delete-note bi-trash custom-margin-10" viewBox="0 0 16 16">
                 <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
                 <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
-            </svg>
-            </div>
-        </div>
-        <div data-url="${note.url}" class="note-header url px-3 py-3 d-flex justify-content-between">
-            <div class="curser-pointer " >${note.title}</div>
-             <svg  data-url="${note.url}" class="note-host" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16">
-              <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/>
-              <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/>
             </svg>
         </div>
      </div>   
@@ -30,26 +21,26 @@ const createCardsForNote = (note) => {
 };
 
 const TextAreaForNotesHtml = (note) => {
-
-    let innerText
-    note.content == '' ? innerText = 'Write Something ' : innerText = note.content
-    const id = note.id
+    let innerText;
+    note.content == '' ? innerText = 'Write Something' : innerText = note.content.replace(/\n/g, '<br>');
+    const id = note.id;
     return `
-    <div class="${id} w-50 mx-auto my-2">
+    <div class="${id}  w-50 mx-auto my-2">
         <div class="w-100 bg-light text-dark px-3 py-2">
             <div class="w-100 .bg-light.bg-gradient d-flex justify-content-between">
                 <div>
-                    <span>${note.title}</span><span class="px-2">${note.date}</span><span class="px-2">${note.time}</span>
+                  <span class="px-2">${note.date}</span><span class="px-2">${note.time}</span>
                 </div>
                 <div>
-                    <button type="button" unique-id='${id}' class=" btn btn-primary editBtn mx-2">Edit</button>
+                    <button type="button" unique-id='${id}' class="btn btn-primary editBtn mx-2">Edit</button>
                 </div>
             </div>
         </div>
-        <pre  contenteditable="false" class="textAreaForNotes resize border border-light w-100 bg-transparent text-light p-2">${innerText}</pre>
+        <div contenteditable="false" class="textAreaForNotes resize border border-light w-100 bg-transparent text-light p-2">${innerText}</div>
     </div>
     `;
-}
+};
+
 
 // logic 
 const insertContentInSideBar = (note) => {
@@ -84,6 +75,80 @@ const insertContentInMain = (note) => {
 
 }
 
+
+
+const toggleNoteContainerSelection = () => {
+    let selectedNoteContainer = null;
+    const noteContainers = document.querySelectorAll('.noteContainer');
+
+    if (noteContainers.length > 0) {
+        // Select the first note container by default
+        selectedNoteContainer = noteContainers[0];
+        selectedNoteContainer.style.backgroundColor = 'white';
+        selectedNoteContainer.style.color = 'black';
+
+        const hostName = selectedNoteContainer.getAttribute('hostName');
+
+        // Get the data from local storage
+        UserLocalStorage.retriveNoteData().then(storeArr => {
+            // Filter based on hostName
+            const updateArr = storeArr.filter(note => note.hostName === hostName);
+
+            // Remove everything from the container
+            const contentContainer = document.querySelector('.contentContainer');
+            contentContainer.innerHTML = '';
+
+            // Inject content in main
+            updateArr.forEach(note => {
+                insertContentInMain(note);
+            });
+        });
+    }
+
+
+    noteContainers.forEach(noteContainer => {
+        noteContainer.addEventListener('click', async () => {
+            if (selectedNoteContainer === noteContainer) {
+                // Deselect if the same container is clicked again
+                noteContainer.style.backgroundColor = '';
+                noteContainer.style.color = '';
+                selectedNoteContainer = null;
+
+                // Clear main content container
+                document.querySelector('.contentContainer').innerHTML = '';
+            } else {
+                // If a different container is selected
+                if (selectedNoteContainer) {
+                    selectedNoteContainer.style.backgroundColor = '';
+                    selectedNoteContainer.style.color = '';
+                }
+
+                // When user clicks value will be selected
+                noteContainer.style.backgroundColor = 'white';
+                noteContainer.style.color = 'black';
+                selectedNoteContainer = noteContainer;
+
+                const hostName = noteContainer.getAttribute('hostName');
+
+
+                // Get the data from local storage 
+                const storeArr = await UserLocalStorage.retriveNoteData();
+                // Filter based on hostName 
+                const updateArr = storeArr.filter(note => note.hostName === hostName);
+
+                // Remove everything from the container 
+                const contentContainer = document.querySelector('.contentContainer');
+                contentContainer.innerHTML = '';
+
+                // Inject content in main 
+                updateArr.forEach(note => {
+                    insertContentInMain(note);
+                });
+            }
+        });
+    });
+}
+
 const handleCardData = async () => {
     // Get all the note data 
     const notesData = await getNotesDataInSideBar();
@@ -91,27 +156,38 @@ const handleCardData = async () => {
 
     if (notesData) {
 
+        const uniqueSet = new Set()
 
-        notesData.forEach(note => {
+        const noteArr = notesData.filter(note => {
+            if (uniqueSet.has(note.hostName)) {
+                return false
+            } else {
+                uniqueSet.add(note.hostName);
+                return true;
+            }
+        })
+
+        noteArr.forEach(note => {
             //    for side bar 
             insertContentInSideBar(note)
-            insertContentInMain(note)
-
         });
+
+        toggleNoteContainerSelection()
 
         // creating a logic for the delete btn 
         document.querySelectorAll('.delete-note').forEach(deleteButton => {
-            deleteButton.addEventListener('click', () => {
+            deleteButton.addEventListener('click', (event) => {
                 if (confirm('Are you sure you want to delete this note?')) {
+                    event.stopPropagation();
+                    (deleteButton, 'deletebtn remove')
                     deleteButton.closest('.noteContainer').remove();
+                    const hostName = deleteButton.closest('.noteContainer').getAttribute('hostName')
                     const id = deleteButton.closest('.noteContainer').id
 
-                    const textAreaElements = document.getElementsByClassName(id);
-                    if (textAreaElements.length > 0) {
-                        textAreaElements[0].remove();
-                    }
-
-                    chrome.runtime.sendMessage({ action: "filterLocalStorage", id: id },);
+                    // remove logic for main container 
+                    const contentContainer = document.querySelector('.contentContainer');
+                    contentContainer.innerHTML = '';
+                    chrome.runtime.sendMessage({ action: "removeUsingHostName", hostName: hostName },);
 
                 }
             });
@@ -126,29 +202,23 @@ const handleCardData = async () => {
                 }
             });
         });
-
-        // for edit btn 
-        document.querySelectorAll('.editBtn').forEach(editElement => {
-            editElement.addEventListener('click', (event) => {
+        document.addEventListener('click', (event) => {
+            if (event.target.classList.contains('editBtn')) {
                 const targetElement = event.target;
                 const id = targetElement.getAttribute('unique-id');
-                const parentElement = document.getElementsByClassName(id);
-                const preElement = parentElement[0].querySelector('pre');
+                const parentElement = document.getElementsByClassName(id)[0];
+                const textArea = parentElement.querySelector('.textAreaForNotes');
 
-                if (preElement) {
-                    // Toggle contenteditable attribute
-                    const isEditable = preElement.getAttribute('contenteditable') === 'true';
-                    preElement.setAttribute('contenteditable', !isEditable);
+                if (textArea) {
+                    const isEditable = textArea.getAttribute('contenteditable') === 'true';
+                    textArea.setAttribute('contenteditable', !isEditable);
 
                     if (!isEditable) {
-                        preElement.focus();
+                        textArea.focus();
                         targetElement.innerText = 'Save';
                     } else {
                         targetElement.innerText = 'Edit';
-
-                        // Perform your save action here
-                        const updatedContent = preElement.innerText;
-                        // Example: save the updated content to local storage or send to server
+                        const updatedContent = textArea.innerText;
                         chrome.runtime.sendMessage({
                             action: 'updateNoteContent',
                             id: id,
@@ -156,10 +226,8 @@ const handleCardData = async () => {
                         });
                     }
                 }
-            });
+            }
         });
-
-
 
     }
 };

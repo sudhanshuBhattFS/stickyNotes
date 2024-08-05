@@ -1,6 +1,7 @@
 let index = 1
+
 class SimpleShadowDOM {
-    static getHtmlTemplate(heading, id, content, title) {
+    static getHtmlTemplate(heading, id, content, hostName) {
         return `
         <div uniqueId="${id}" class="note-container">
             <div class="note-title">
@@ -8,37 +9,34 @@ class SimpleShadowDOM {
                 <span contenteditable="true">${heading}</span>
                 <button class="close-btn">X</button>
             </div>
-            <pre class="title" contenteditable="true" >${title}</pre>
             <div id="${id}" class='textarea' contenteditable="true">${content}</div>
         </div>
         `;
     }
 
-    static createPopup(id, innerContent, title) {
-
-        const heading = `Sticky Note-${index}`
-        index++
+    static createPopup(id, innerContent, hostName) {
+        const heading = `Sticky Note-${index}`;
+        index++;
         const container = document.createElement('div');
         const shadowRoot = container.attachShadow({ mode: 'open' });
 
-        container.className = 'model-notes'
+        container.className = 'model-notes';
 
-        shadowRoot.innerHTML = SimpleShadowDOM.getHtmlTemplate(heading, id, innerContent, title);
+        shadowRoot.innerHTML = SimpleShadowDOM.getHtmlTemplate(heading, id, innerContent, hostName);
 
         document.body.appendChild(container);
 
-        // stlesheet
-        addStyleSheetlink(shadowRoot)
+        // stylesheet
+        addStyleSheetlink(shadowRoot);
 
         // draggable
         makeDraggable(shadowRoot.querySelector('.note-container'), shadowRoot.querySelector('.note-title'));
 
-        // handling all the event for the note 
-        eventListenerForNote(shadowRoot, container)
+        // handling all the events for the note 
+        eventListenerForNote(shadowRoot, container);
 
         // resizable
         makeResizable(shadowRoot.querySelector('.note-container'));
-
     }
 
     static removeElementFromDom(id) {
@@ -47,7 +45,7 @@ class SimpleShadowDOM {
             const shadowRoot = container.shadowRoot;
             const existingElement = shadowRoot.getElementById(id);
             if (existingElement) {
-                existingElement.parentElement.remove()
+                existingElement.parentElement.remove();
             }
         });
     }
@@ -66,8 +64,6 @@ class SimpleShadowDOM {
     }
 }
 
-
-
 const makeResizable = (element) => {
     element.style.resize = 'both';
     element.style.overflow = 'auto';
@@ -81,9 +77,10 @@ const addStyleSheetlink = (shadowRoot) => {
     shadowRoot.appendChild(linkElement);
 }
 
-
-
-const createCard = (id, innerHtml, title) => {
+const createCardAndUpdate = (note) => {
+    const id = note.id;
+    const innerHtml = note.content.replace(/\n/g, '<br>'); // Replace line breaks with <br> tags
+    const hostName = note.hostName;
 
     const containers = document.querySelectorAll('.model-notes');
     let elementExists = false;
@@ -93,28 +90,18 @@ const createCard = (id, innerHtml, title) => {
         const existingElement = shadowRoot.getElementById(id);
         if (existingElement) {
             elementExists = true;
-            existingElement.innerHTML = ''; // Clear existing content
-            const preElement = document.createElement('pre');
-            preElement.textContent = innerHtml; // Set text content
-            existingElement.appendChild(preElement);
+            existingElement.innerHTML = innerHtml; // Insert content with <br> tags
             return;
         }
     });
 
     if (!elementExists) {
-        const preElement = document.createElement('pre');
-        preElement.textContent = innerHtml; // Set text content
-        SimpleShadowDOM.createPopup(id, preElement.outerHTML, title);
+        SimpleShadowDOM.createPopup(id, innerHtml, hostName);
     }
 };
 
-
-// no need of this method change this code ---
+// No need for this method, change this code ---
 const injectCards = (noteData, i) => {
-    const content = noteData.content
-    const id = noteData.id
-    index = i
-    const title = noteData.title
-    debugger
-    createCard(id, noteData.content, title)
+    index = i;
+    createCardAndUpdate(noteData);
 }

@@ -7,7 +7,7 @@
     // inserting a div by creating a shadow dom
     // $x('//div[contains(@class, "shadowDom")]') use this in console to find if the div exist or not  
 
-    // createCard()
+    // createCardAndUpdate()
 
 })();
 
@@ -15,15 +15,13 @@ chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
         console.log(request, 'request')
         if (request.message === "start") {
-
             const noteData = request.noteData
-            const content = 'Write Something ...'
-            const id = noteData.id
-            const title = noteData.title
-            createCard(id, content, title);
+            createCardAndUpdate(noteData);
             sendResponse({ status: "success" });
 
         }
+
+        // rename -- note 
         if (request.message === "injectPopUps") {
             const index = request.index
             injectCards(request.noteData, index)
@@ -44,6 +42,10 @@ chrome.runtime.onMessage.addListener(
             }
         }
 
+        if (request.action === "updateContentInCard") {
+            const noteData = request.note
+            createCardAndUpdate(noteData)
+        }
     }
 );
 
