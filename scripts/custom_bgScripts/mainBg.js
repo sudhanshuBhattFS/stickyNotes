@@ -27,7 +27,6 @@ const getNoteData = (url) => {
 chrome.runtime.onMessage.addListener(
     async function (request, sender, sendResponse) {
 
-        console.log(request, 'bg request')
         if (request.greeting === "hello") {
             sendResponse({ farewell: "goodbye" });
         }
@@ -137,7 +136,6 @@ chrome.runtime.onMessage.addListener(
 
             chrome.tabs.query({}, (tabs) => {
                 tabs.forEach((tab) => {
-                    console.log(tabs, 'tabs')
                     if (tab.title === titleToRemove) {
                         chrome.tabs.remove(tab.id);
                     }
@@ -147,7 +145,7 @@ chrome.runtime.onMessage.addListener(
 
         if (request.action === 'hide') {
             const isHidden = request.isHidden
-            console.log(isHidden, 'isHidden check')
+
             //  isHidden logic start
             chrome.tabs.query({}, async (tabs) => {
                 for (let tab of tabs) {
