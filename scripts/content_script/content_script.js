@@ -13,7 +13,7 @@
 
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
-        console.log(request, 'request')
+
         if (request.message === "start") {
             const noteData = request.noteData
             createCardAndUpdate(noteData);
@@ -36,7 +36,6 @@ chrome.runtime.onMessage.addListener(
         if (request.message === "hideStickyNotes") {
             const isHidden = request.isHidden
 
-            console.log('finial is hidden check ', isHidden)
             if (isHidden === true) {
                 SimpleShadowDOM.hideAllElementsFromDom()
             } else {

@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
         paginationContainer.innerHTML = '';
 
         const totalPages = await getTotalPages();
-        console.log(totalPages, 'total pages')
+
 
         const prevButton = document.createElement('a');
         prevButton.href = '#';
@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 noteArr = result.notes;
 
                 if (noteArr.length > 0) {
-                    console.log(noteArr, 'noreArray')
+
 
                     noteArr.forEach((element, index) => {
 
@@ -281,7 +281,6 @@ document.addEventListener('DOMContentLoaded', function () {
             hideAllBtn.innerText = 'Hide All Notes'
         }
 
-        console.log(isHidden, 'check')
         chrome.runtime.sendMessage({ action: 'hide', isHidden: isHidden });
     });
 
