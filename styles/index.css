@@ -6,9 +6,9 @@
   .contentContainer {
     padding: 1rem;
     background-color: #202124;
-    color : white ;
-    /* height: 90vh;
-    overflow: auto;  */
+    color: white;
+    height: 90vh;
+    overflow: auto;
   }
   .heading {
     background-color: #202124; /* Dark background for heading */
@@ -52,4 +52,15 @@
 .marginL-auto{
   margin-left: auto ; 
 }
-
+.gridView {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  padding: 16px;
+  box-sizing: border-box;
+  justify-items: center;
+  height: fit-content;
+}
+.card-size{
+  height: fit-content !important;
+}

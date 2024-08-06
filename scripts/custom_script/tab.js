@@ -1,10 +1,37 @@
 // get note data which has been inserted
 
+let isViewGrid = false
+const grid = document.getElementsByClassName('grid')
+const containerEle = document.querySelector('.contentContainer');
+
 const getNotesDataInSideBar = async () => {
     const notesData = await UserLocalStorage.retriveNoteData();
     return notesData;
 };
 
+const setView = (cards) => {
+    if (isViewGrid) {
+        containerEle.classList.remove('flex-column', 'align-items-center', 'd-flex');
+        containerEle.classList.add('gridView');
+        cards.forEach((card, index) => {
+            if (card) {
+                card.classList.remove('w-50');
+            } else {
+                console.log(`card at index ${index} is undefined`);
+            }
+        });
+    } else {
+        containerEle.classList.remove('gridView');
+        cards.forEach((card, index) => {
+            if (card) {
+                card.classList.add('w-50');
+            } else {
+                console.log(`card at index ${index} is undefined`);
+            }
+        });
+        containerEle.classList.add('flex-column', 'align-items-center', 'd-flex');
+    }
+}
 // html 
 const createCardsForNote = (note) => {
     return `
@@ -25,7 +52,7 @@ const TextAreaForNotesHtml = (note) => {
     note.content == '' ? innerText = 'Write Something' : innerText = note.content.replace(/\n/g, '<br>');
     const id = note.id;
     return `
-    <div class="${id}  w-50 mx-auto my-2">
+    <div  class="${id} card-size w-50 mx-2 my-2 ">
         <div class="w-100 bg-light text-dark px-3 py-2">
             <div class="w-100 .bg-light.bg-gradient d-flex justify-content-between">
                 <div>
@@ -90,7 +117,7 @@ const toggleNoteContainerSelection = () => {
         const hostName = selectedNoteContainer.getAttribute('hostName');
 
         // Get the data from local storage
-        UserLocalStorage.retriveNoteData().then(storeArr => {
+        UserLocalStorage.retriveNoteData().then(async (storeArr) => {
             // Filter based on hostName
             const updateArr = storeArr.filter(note => note.hostName === hostName);
 
@@ -102,6 +129,11 @@ const toggleNoteContainerSelection = () => {
             updateArr.forEach(note => {
                 insertContentInMain(note);
             });
+
+            isViewGrid = await UserLocalStorage.getIsViewGrid()
+            const cards = document.querySelectorAll('.card-size')
+            setView(cards)
+            UserLocalStorage.setIsViewGrid(isViewGrid)
         });
     }
 
@@ -280,10 +312,21 @@ const handleCardData = async () => {
 
     }
 
+    // event handling 
+
+    grid[0].addEventListener('click', (event) => {
+        isViewGrid = !isViewGrid;
+        const cards = document.querySelectorAll('.card-size')
+        setView(cards)
+        UserLocalStorage.setIsViewGrid(isViewGrid)
+    });
+
     document.getElementById('searchBox').addEventListener('input', (event) => {
         const query = event.target.value;
         filterNotes(query);
     });
+
+
 };
 
 // IIFE
