@@ -16,6 +16,8 @@ const setView = (cards) => {
         cards.forEach((card, index) => {
             if (card) {
                 card.classList.remove('w-50');
+                card.classList.add('w-100')
+
             } else {
                 console.log(`card at index ${index} is undefined`);
             }
@@ -25,6 +27,7 @@ const setView = (cards) => {
         cards.forEach((card, index) => {
             if (card) {
                 card.classList.add('w-50');
+                card.classList.remove('w-100');
             } else {
                 console.log(`card at index ${index} is undefined`);
             }
@@ -35,24 +38,33 @@ const setView = (cards) => {
 // html 
 const createCardsForNote = (note) => {
     return `
-    <div id="${note.id}" hostName="${note.hostName}" class="d-flex flex-column border border-light noteContainer">
+    <div id="${note.id}"  hostName="${note.hostName}" class="d-flex flex-column border border-light noteContainer">
         <div data-url="${note.url}" class="note-header url px-3 py-3 d-flex justify-content-between align-items-center">
-            <div data-url="${note.url}" class="cursor-pointer hostName">${note.hostName}</div>
+            <div  class="cursor-pointer hostName">${note.hostName}</div>
+           <div>
+           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up-right-square" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm5.854 8.803a.5.5 0 1 1-.708-.707L9.243 6H6.475a.5.5 0 1 1 0-1h3.975a.5.5 0 0 1 .5.5v3.975a.5.5 0 1 1-1 0V6.707z"/>
+</svg>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi delete-note bi-trash custom-margin-10" viewBox="0 0 16 16">
                 <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
                 <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
             </svg>
+           </div>
         </div>
     </div>
     `;
 };
 
 const TextAreaForNotesHtml = (note) => {
+
+
     let innerText;
     note.content == '' ? innerText = 'Write Something' : innerText = note.content.replace(/\n/g, '<br>');
     const id = note.id;
-    return `
-    <div  class="${id} card-size w-50 mx-2 my-2 ">
+
+    if (isViewGrid) {
+        return `
+    <div  id="Cards" class="${id} card-size w-100 mx-2 my-2 ">
         <div class="w-100 bg-light text-dark px-3 py-2">
             <div class="w-100 .bg-light.bg-gradient d-flex justify-content-between">
                 <div>
@@ -66,6 +78,22 @@ const TextAreaForNotesHtml = (note) => {
         <div contenteditable="false" class="textAreaForNotes resize border border-light w-100 bg-transparent text-light p-2">${innerText}</div>
     </div>
     `;
+    } else {
+        return `
+         <div  id="Cards" class="${id} card-size w-50 mx-2 my-2 ">
+        <div class="w-100 bg-light text-dark px-3 py-2">
+            <div class="w-100 .bg-light.bg-gradient d-flex justify-content-between">
+                <div>
+                  <span class="px-2">${note.date}</span><span class="px-2">${note.time}</span>
+                </div>
+                <div>
+                    <button type="button" unique-id='${id}' class="btn btn-primary editBtn mx-2">Edit</button>
+                </div>
+            </div>
+        </div>
+        <div contenteditable="false" class="textAreaForNotes resize border border-light w-100 bg-transparent text-light p-2">${innerText}</div>
+    </div>`
+    }
 };
 
 
@@ -131,7 +159,7 @@ const toggleNoteContainerSelection = () => {
             });
 
             isViewGrid = await UserLocalStorage.getIsViewGrid()
-            const cards = document.querySelectorAll('.card-size')
+            const cards = document.querySelectorAll('#Cards')
             setView(cards)
             UserLocalStorage.setIsViewGrid(isViewGrid)
         });
@@ -245,7 +273,7 @@ const handleCardData = async () => {
         toggleNoteContainerSelection()
 
         document.addEventListener('click', (event) => {
-            if (event.target.classList.contains('hostName')) {
+            if (event.target.classList.contains('navigate')) {
                 const url = event.target.getAttribute('data-url');
                 if (url) {
                     window.open(url, '_blank');
@@ -316,7 +344,7 @@ const handleCardData = async () => {
 
     grid[0].addEventListener('click', (event) => {
         isViewGrid = !isViewGrid;
-        const cards = document.querySelectorAll('.card-size')
+        const cards = document.querySelectorAll('#Cards')
         setView(cards)
         UserLocalStorage.setIsViewGrid(isViewGrid)
     });
