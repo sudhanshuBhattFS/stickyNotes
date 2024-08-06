@@ -1,4 +1,4 @@
-//import additional files required for background
+
 try {
     importScripts(
         "scripts/custom_script/localdb.js",

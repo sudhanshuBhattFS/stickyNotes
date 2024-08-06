@@ -36,6 +36,18 @@ class UserLocalStorage {
                 }
             })
         })
-    } t
+    }
+    static removeIsHidden() {
+        return new Promise((resolve, reject) => {
+            chrome.storage.local.remove('isHidden', () => {
+                if (chrome.runtime.lastError) {
+                    reject(chrome.runtime.lastError);
+                } else {
+                    resolve();
+                }
+            });
+        });
+    }
+
 }
 

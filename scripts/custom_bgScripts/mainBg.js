@@ -145,6 +145,20 @@ chrome.runtime.onMessage.addListener(
             });
         }
 
+        if (request.action === 'hide') {
+            const isHidden = request.isHidden
+            console.log(isHidden, 'isHidden check')
+            //  isHidden logic start
+            chrome.tabs.query({}, async (tabs) => {
+                for (let tab of tabs) {
+                    if (tab.url && !tab.url.startsWith('chrome://')) {
+                        chrome.tabs.sendMessage(tab.id, { message: 'hideStickyNotes', isHidden: isHidden });
+                    }
+                }
+            });
+
+        }
+
         return true
 
     }

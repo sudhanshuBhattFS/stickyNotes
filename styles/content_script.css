@@ -32,9 +32,15 @@ pre {
     outline: none;
     padding: 10px;
     border: none;
-    height: 70%;
-    width: 90%;
-    overflow: auto;
+    /* height: 80%;
+    width: 94%; */
+    height: auto;
+    width: auto;
+    overflow: hidden;
+    white-space: pre-wrap; /* Preserve white spaces and line breaks */
+    word-wrap: break-word; /* Ensure long words break into the next line */
+    overflow: hidden; /* Prevent scroll bars */
+
 }
     .close-btn{
     background : transparent ; 
