@@ -49,5 +49,22 @@ class UserLocalStorage {
         });
     }
 
+    static setIsViewGrid(isViewGrid) {
+        chrome.storage.local.set({ isViewGrid: isViewGrid });
+    }
+
+    static getIsViewGrid() {
+        return new Promise((resolve, reject) => {
+            chrome.storage.local.get('isViewGrid', (result) => {
+                if (result.isViewGrid) {
+                    resolve(result.isViewGrid)
+                } else {
+                    resolve(false)
+                }
+            })
+        })
+    }
+
+
 }
 
