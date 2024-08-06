@@ -35,6 +35,8 @@ chrome.runtime.onMessage.addListener(
 
         if (request.message === "hideStickyNotes") {
             const isHidden = request.isHidden
+
+            console.log('finial is hidden check ', isHidden)
             if (isHidden === true) {
                 SimpleShadowDOM.hideAllElementsFromDom()
             } else {

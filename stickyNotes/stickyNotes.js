@@ -115,6 +115,8 @@ document.addEventListener('DOMContentLoaded', function () {
         isHidden = await UserLocalStorage.getIsHidden()
         isHidden ? hideAllBtn.innerText = 'Show All Notes' : hideAllBtn.innerText = 'Hide All Notes'
 
+
+
         chrome.storage.local.get('notes', function (result) {
             if (result.notes) {
                 noteArr = result.notes;
@@ -133,14 +135,28 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         }
                     });
+
                 }
             }
         });
 
+
+
     })().then(() => {
         renderNotes();
         renderPagination();
+        sendHideMessage()
+
     });
+
+    const sendHideMessage = () => {
+        try {
+            chrome.runtime.sendMessage({ action: 'hide', isHidden: isHidden });
+        }
+        catch (e) {
+            console.log('error ', e)
+        }
+    }
 
     /*                          END                      */
 
@@ -255,7 +271,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // hide btn -currently not to use 
-    hideAllBtn.addEventListener('click', () => {
+    hideAllBtn.addEventListener('click', async () => {
 
         isHidden = !isHidden
         UserLocalStorage.setIsHidden(isHidden)
@@ -264,13 +280,14 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             hideAllBtn.innerText = 'Hide All Notes'
         }
-        chrome.tabs.query({ currentWindow: true, active: true }, async (tabs) => {
-            const activeTab = tabs[0];
-            // const noteArr = await UserLocalStorage.retriveData()
-            chrome.tabs.sendMessage(activeTab.id, { "message": 'hideStickyNotes', 'isHidden': isHidden, "noteData": noteArr }, {
-            });
-        });
+
+        console.log(isHidden, 'check')
+        chrome.runtime.sendMessage({ action: 'hide', isHidden: isHidden });
     });
+
+
+
+
 
     document.getElementById('openTabButton').addEventListener('click', () => {
         chrome.runtime.sendMessage({ action: 'createTabAndInject' });
