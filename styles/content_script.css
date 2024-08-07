@@ -2,7 +2,7 @@ pre {
     margin:  0px !important;
 }
 .note-container {
-    background-color: #333;
+    background-color: var(--background-color);
     z-index: 9999;
     position: fixed;
     top: 50%;
@@ -16,7 +16,7 @@ pre {
 .note-title {
     display: flex;
     justify-content: space-between;
-    background-color: yellow;
+    background-color: var(--note-heading);
     color: black;
     padding: 10px;
     cursor: move; /* Ensures it's visually clear that this area is draggable */
@@ -32,14 +32,12 @@ pre {
     outline: none;
     padding: 10px;
     border: none;
-    /* height: 80%;
-    width: 94%; */
-    height: auto;
     width: auto;
     overflow: hidden;
-    white-space: pre-wrap; /* Preserve white spaces and line breaks */
-    word-wrap: break-word; /* Ensure long words break into the next line */
-    overflow: hidden; /* Prevent scroll bars */
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow: hidden;
+    height: 75%;
 
 }
     .close-btn{
@@ -48,10 +46,4 @@ pre {
     }
 
 
- .title{
-    margin: 4px !important;
-    padding: 8px;
-    background: transparent;
-    color: white;
-    width: 94%;
- }
+

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>StickyNotes</title>
   </head>
+  <link rel="stylesheet" href="../styles/colorPalette.css" />
   <link rel="stylesheet" href="../styles/bootstrap-lib/css/bootstrap.css" />
   <link rel="stylesheet" href="../styles/index.css" />
   <body>
@@ -113,13 +114,30 @@
             aria-label="Search"
           />
 
-          <div class="list_notes mt-2">
+          <div class="list_notes mt-3">
             <div class="cards d-flex w-100"></div>
+          </div>
+        </div>
+        <div id="sideBar" class="sideBar">
+          <div class="open-position">
+            <svg
+              class="postion"
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-caret-right-fill"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"
+              />
+            </svg>
           </div>
         </div>
         <!-- text area container -->
         <div
-          class="contentContainer d-flex align-items-center flex-column w-75 border-top border-light"
+          class="contentContainer d-flex align-items-center flex-column w-100 border-top border-light"
         ></div>
       </div>
     </div>

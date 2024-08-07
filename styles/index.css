@@ -1,24 +1,23 @@
 .stickyNoteSideBar {
-    background-color: #202124; /* Light gray background for sidebar */
+    background-color: var(--background-color); /* Light gray background for sidebar */
     padding: 1rem;
-    color : white; 
+    color : var(--heading-color); 
   }
   .contentContainer {
     padding: 1rem;
-    background-color: #202124;
-    color: white;
+    background-color: var(--background-color);
+    color:var(--heading-color);
     height: 90vh;
     overflow: auto;
   }
   .heading {
-    background-color: #202124; /* Dark background for heading */
-    color: rgb(255, 255, 255);
+    background-color: var(--heading-color); /* Dark background for heading */
     padding: 1rem;
-    font-size: 1.5rem;
+
   }
 
   .bg-custom{
-    background-color: #202124;
+    background-color: var(--background-color);
   }
 
   .custom-margin-10{
@@ -65,4 +64,31 @@
   height: fit-content !important;
 }
 
+
+.sideBarOpen{
+  position: relative;
+  width: 1rem;
+  right: 9px ;
+}
+.sideBarClose{
+  position: relative;
+  width: 2px;
+  background-color: wheat;
+  /* left: 10%; */
+  left: 1rem;
+  margin-right: 2rem;
+}
+
+.open-position{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1.3rem;
+  position: absolute;
+  top: 4%;
+  color: black;
+  border-radius: 99rem;
+  height: 1.3rem;
+  background-color: white;
+}
 

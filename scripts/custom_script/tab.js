@@ -1,13 +1,40 @@
 // get note data which has been inserted
 
 let isViewGrid = false
+let isSideBarVisiable = true
 const grid = document.getElementsByClassName('grid')
 const containerEle = document.querySelector('.contentContainer');
+
+(async function checkIsView() {
+    isViewGrid = await UserLocalStorage.getIsViewGrid()
+})()
+
 
 const getNotesDataInSideBar = async () => {
     const notesData = await UserLocalStorage.retriveNoteData();
     return notesData;
 };
+
+const sideBar = document.querySelector('#sideBar')
+const stickyNoteSideBar = document.querySelector('.stickyNoteSideBar')
+const sideBarImg = document.querySelector('.open-position')
+
+sideBar.addEventListener('click', (event) => {
+    isSideBarVisiable = !isSideBarVisiable
+    console.log(stickyNoteSideBar, 'check')
+    if (isSideBarVisiable === false) {
+        stickyNoteSideBar.style.display = 'none'
+        sideBar.classList.remove('sideBarOpen')
+        sideBar.classList.add('sideBarClose')
+        sideBarImg.style.left = "-10px"
+
+    } else {
+        stickyNoteSideBar.style.display = 'block'
+        sideBar.classList.add('sideBarOpen')
+        sideBar.classList.remove('sideBarClose')
+        sideBarImg.style.left = "0px"
+    }
+})
 
 const setView = (cards) => {
     if (isViewGrid) {
@@ -56,8 +83,6 @@ const createCardsForNote = (note) => {
 };
 
 const TextAreaForNotesHtml = (note) => {
-
-
     let innerText;
     note.content == '' ? innerText = 'Write Something' : innerText = note.content.replace(/\n/g, '<br>');
     const id = note.id;
@@ -65,13 +90,16 @@ const TextAreaForNotesHtml = (note) => {
     if (isViewGrid) {
         return `
     <div  id="Cards" class="${id} card-size w-100 mx-2 my-2 ">
-        <div class="w-100 bg-light text-dark px-3 py-2">
-            <div class="w-100 .bg-light.bg-gradient d-flex justify-content-between">
+        <div class="w-100 heading text-dark px-3 py-2">
+            <div class="w-100  d-flex justify-content-between">
                 <div>
                   <span class="px-2">${note.date}</span><span class="px-2">${note.time}</span>
                 </div>
                 <div>
-                    <button type="button" unique-id='${id}' class="btn btn-primary editBtn mx-2">Edit</button>
+                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" unique-id='${id}' class="bi editBtn bi-pencil-square" viewBox="0 0 16 16">
+  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+</svg>
                 </div>
             </div>
         </div>
@@ -81,13 +109,16 @@ const TextAreaForNotesHtml = (note) => {
     } else {
         return `
          <div  id="Cards" class="${id} card-size w-50 mx-2 my-2 ">
-        <div class="w-100 bg-light text-dark px-3 py-2">
-            <div class="w-100 .bg-light.bg-gradient d-flex justify-content-between">
+        <div class="w-100 heading text-dark px-3 py-2">
+            <div class="w-100  d-flex justify-content-between">
                 <div>
                   <span class="px-2">${note.date}</span><span class="px-2">${note.time}</span>
                 </div>
                 <div>
-                    <button type="button" unique-id='${id}' class="btn btn-primary editBtn mx-2">Edit</button>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" unique-id='${id}' class="bi editBtn bi-pencil-square" viewBox="0 0 16 16">
+  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+</svg>
                 </div>
             </div>
         </div>
@@ -139,8 +170,7 @@ const toggleNoteContainerSelection = () => {
     if (noteContainers.length > 0) {
         // Select the first note container by default
         selectedNoteContainer = noteContainers[0];
-        selectedNoteContainer.style.backgroundColor = 'white';
-        selectedNoteContainer.style.color = 'black';
+        selectedNoteContainer.classList.add('select');
 
         const hostName = selectedNoteContainer.getAttribute('hostName');
 
@@ -158,20 +188,18 @@ const toggleNoteContainerSelection = () => {
                 insertContentInMain(note);
             });
 
-            isViewGrid = await UserLocalStorage.getIsViewGrid()
-            const cards = document.querySelectorAll('#Cards')
-            setView(cards)
-            UserLocalStorage.setIsViewGrid(isViewGrid)
+            const isViewGrid = await UserLocalStorage.getIsViewGrid();
+            const cards = document.querySelectorAll('#Cards');
+            setView(cards);
+            UserLocalStorage.setIsViewGrid(isViewGrid);
         });
     }
-
 
     noteContainers.forEach(noteContainer => {
         noteContainer.addEventListener('click', async () => {
             if (selectedNoteContainer === noteContainer) {
                 // Deselect if the same container is clicked again
-                noteContainer.style.backgroundColor = '';
-                noteContainer.style.color = '';
+                noteContainer.classList.remove('select');
                 selectedNoteContainer = null;
 
                 // Clear main content container
@@ -179,28 +207,25 @@ const toggleNoteContainerSelection = () => {
             } else {
                 // If a different container is selected
                 if (selectedNoteContainer) {
-                    selectedNoteContainer.style.backgroundColor = '';
-                    selectedNoteContainer.style.color = '';
+                    selectedNoteContainer.classList.remove('select');
                 }
 
-                // When user clicks value will be selected
-                noteContainer.style.backgroundColor = 'white';
-                noteContainer.style.color = 'black';
+                // When user clicks, value will be selected
+                noteContainer.classList.add('select');
                 selectedNoteContainer = noteContainer;
 
                 const hostName = noteContainer.getAttribute('hostName');
 
-
-                // Get the data from local storage 
+                // Get the data from local storage
                 const storeArr = await UserLocalStorage.retriveNoteData();
-                // Filter based on hostName 
+                // Filter based on hostName
                 const updateArr = storeArr.filter(note => note.hostName === hostName);
 
-                // Remove everything from the container 
+                // Remove everything from the container
                 const contentContainer = document.querySelector('.contentContainer');
                 contentContainer.innerHTML = '';
 
-                // Inject content in main 
+                // Inject content in main
                 updateArr.forEach(note => {
                     insertContentInMain(note);
                 });
@@ -208,6 +233,9 @@ const toggleNoteContainerSelection = () => {
         });
     });
 }
+
+
+
 
 const filterNotes = async (query) => {
     const notesData = await getNotesDataInSideBar();
@@ -325,9 +353,9 @@ const handleCardData = async () => {
 
                     if (!isEditable) {
                         textArea.focus();
-                        targetElement.innerText = 'Save';
+                        targetElement.classList.add('select')
                     } else {
-                        targetElement.innerText = 'Edit';
+                        targetElement.classList.remove('select')
                         const updatedContent = textArea.innerText;
                         chrome.runtime.sendMessage({
                             action: 'updateNoteContent',
