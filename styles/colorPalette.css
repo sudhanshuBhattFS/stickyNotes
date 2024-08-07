@@ -1,14 +1,14 @@
 :root {
-    --primary-color: #508C9B;
-    --secondary-color: #134B70; 
-    --background-color: #201E43;
-    --heading-color: #EEEEEE;
-    --font-color : #333
+    --font-color : #E2E2B6; 
+    --background-color: hsl(208, 90%, 8%);
+    --heading-color: #E2E2B6 ; 
+    --font-heading: black;
+    --note-heading : yellow  ;
     /* --primary-font: obviously-narrow, sans-serif;
     --secondary-font: halyard-display, sans-serif; */
 }
 
 .select {
     background-color: var(--heading-color);
-    color : var(--font-color)
+    color : black
 }

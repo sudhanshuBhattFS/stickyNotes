@@ -65,3 +65,30 @@
 }
 
 
+.sideBarOpen{
+  position: relative;
+  width: 1rem;
+  right: 9px ;
+}
+.sideBarClose{
+  position: relative;
+  width: 2px;
+  background-color: wheat;
+  /* left: 10%; */
+  left: 1rem;
+  margin-right: 2rem;
+}
+
+.open-position{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1.3rem;
+  position: absolute;
+  top: 4%;
+  color: black;
+  border-radius: 99rem;
+  height: 1.3rem;
+  background-color: white;
+}
+

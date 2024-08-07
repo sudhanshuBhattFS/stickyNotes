@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
     width: 300px;
     padding: 10px;
-    background: #333;
+    background: var(--background-color);
   }
   
   #notes-container {
@@ -30,7 +30,7 @@ body {
   }
 
   #add-note{
-    background-color: rgb(255, 255, 109);
+    background-color: var(--note-heading);
   }
 
   /* popup.css */
@@ -39,14 +39,24 @@ body {
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 5px;
-  background: yellow;
+  background-color: var(--background-color);
+  color: var(--font-color);
 }
 
 .note-header {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  align-items: center ;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    align-items: center;
+    background: var(--note-heading);
+    color: var(--font-heading);
+    padding: 10px;
+}
+
+.note-content-container {
+  overflow : hidden ; 
+   height: 1rem;
+   padding : 10px ; 
 }
 
 .note-content {

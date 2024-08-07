@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <span> ${dateStr}</span>
                     <span id="${id}" class='delete-btn'> Delete </span>
                 </div>
-                <div contenteditable="false" style="overflow : hidden ;  height: 1rem;" >${content}</div>
+                <div contenteditable="false" class="note-content-container" >${content}</div>
         </div>
             `;
 
