@@ -16,7 +16,10 @@
         "scripts/content_script/content_popup.js",
         "scripts/content_script/content_eventHandling.js"
       ],
-      "css": ["styles/bootstrap-lib/css/bootstrap.css"],
+      "css": [
+        "styles/bootstrap-lib/css/bootstrap.css",
+        "styles/colorPalette.css"
+      ],
       "matches": ["<all_urls>"]
     }
   ],

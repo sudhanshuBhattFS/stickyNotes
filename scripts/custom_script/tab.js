@@ -65,8 +65,8 @@ const TextAreaForNotesHtml = (note) => {
     if (isViewGrid) {
         return `
     <div  id="Cards" class="${id} card-size w-100 mx-2 my-2 ">
-        <div class="w-100 bg-light text-dark px-3 py-2">
-            <div class="w-100 .bg-light.bg-gradient d-flex justify-content-between">
+        <div class="w-100 heading text-dark px-3 py-2">
+            <div class="w-100  d-flex justify-content-between">
                 <div>
                   <span class="px-2">${note.date}</span><span class="px-2">${note.time}</span>
                 </div>
@@ -81,8 +81,8 @@ const TextAreaForNotesHtml = (note) => {
     } else {
         return `
          <div  id="Cards" class="${id} card-size w-50 mx-2 my-2 ">
-        <div class="w-100 bg-light text-dark px-3 py-2">
-            <div class="w-100 .bg-light.bg-gradient d-flex justify-content-between">
+        <div class="w-100 heading text-dark px-3 py-2">
+            <div class="w-100  d-flex justify-content-between">
                 <div>
                   <span class="px-2">${note.date}</span><span class="px-2">${note.time}</span>
                 </div>
@@ -139,8 +139,7 @@ const toggleNoteContainerSelection = () => {
     if (noteContainers.length > 0) {
         // Select the first note container by default
         selectedNoteContainer = noteContainers[0];
-        selectedNoteContainer.style.backgroundColor = 'white';
-        selectedNoteContainer.style.color = 'black';
+        selectedNoteContainer.classList.add('select');
 
         const hostName = selectedNoteContainer.getAttribute('hostName');
 
@@ -158,20 +157,18 @@ const toggleNoteContainerSelection = () => {
                 insertContentInMain(note);
             });
 
-            isViewGrid = await UserLocalStorage.getIsViewGrid()
-            const cards = document.querySelectorAll('#Cards')
-            setView(cards)
-            UserLocalStorage.setIsViewGrid(isViewGrid)
+            const isViewGrid = await UserLocalStorage.getIsViewGrid();
+            const cards = document.querySelectorAll('#Cards');
+            setView(cards);
+            UserLocalStorage.setIsViewGrid(isViewGrid);
         });
     }
-
 
     noteContainers.forEach(noteContainer => {
         noteContainer.addEventListener('click', async () => {
             if (selectedNoteContainer === noteContainer) {
                 // Deselect if the same container is clicked again
-                noteContainer.style.backgroundColor = '';
-                noteContainer.style.color = '';
+                noteContainer.classList.remove('select');
                 selectedNoteContainer = null;
 
                 // Clear main content container
@@ -179,28 +176,25 @@ const toggleNoteContainerSelection = () => {
             } else {
                 // If a different container is selected
                 if (selectedNoteContainer) {
-                    selectedNoteContainer.style.backgroundColor = '';
-                    selectedNoteContainer.style.color = '';
+                    selectedNoteContainer.classList.remove('select');
                 }
 
-                // When user clicks value will be selected
-                noteContainer.style.backgroundColor = 'white';
-                noteContainer.style.color = 'black';
+                // When user clicks, value will be selected
+                noteContainer.classList.add('select');
                 selectedNoteContainer = noteContainer;
 
                 const hostName = noteContainer.getAttribute('hostName');
 
-
-                // Get the data from local storage 
+                // Get the data from local storage
                 const storeArr = await UserLocalStorage.retriveNoteData();
-                // Filter based on hostName 
+                // Filter based on hostName
                 const updateArr = storeArr.filter(note => note.hostName === hostName);
 
-                // Remove everything from the container 
+                // Remove everything from the container
                 const contentContainer = document.querySelector('.contentContainer');
                 contentContainer.innerHTML = '';
 
-                // Inject content in main 
+                // Inject content in main
                 updateArr.forEach(note => {
                     insertContentInMain(note);
                 });
@@ -208,6 +202,9 @@ const toggleNoteContainerSelection = () => {
         });
     });
 }
+
+
+
 
 const filterNotes = async (query) => {
     const notesData = await getNotesDataInSideBar();
