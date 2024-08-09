@@ -16,13 +16,15 @@ pre {
 .note-title {
     display: flex;
     justify-content: space-between;
-    background-color: var(--note-heading);
+    align-items: center ;
+    background-color: var(--heading-color);
     color: black;
     padding: 10px;
     cursor: move; /* Ensures it's visually clear that this area is draggable */
 }
 .add-btn {
     background: transparent;
+    border: none ;
 }
 .note-content{
     overflow: hidden;
@@ -40,10 +42,23 @@ pre {
     height: 75%;
 
 }
-    .close-btn{
+.close-btn{
     background : transparent ; 
-    color : black;  
-    }
+    border:  none ;  
+}
 
+.bg-transparent{
+     background: transparent;
+}
+
+.pin{
+    border: none ;
+}
+
+
+.selected {
+    background-color: var(--heading-color);
+    filter: brightness(0.91); 
+}
 
 

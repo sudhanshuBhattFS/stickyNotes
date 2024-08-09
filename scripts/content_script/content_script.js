@@ -1,15 +1,5 @@
 
-(async () => {
 
-    const response = await chrome.runtime.sendMessage({ greeting: "hello" });
-    // do something with response here, not outside the function
-
-    // inserting a div by creating a shadow dom
-    // $x('//div[contains(@class, "shadowDom")]') use this in console to find if the div exist or not  
-
-    // createCardAndUpdate()
-
-})();
 
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
@@ -23,8 +13,7 @@ chrome.runtime.onMessage.addListener(
 
         // rename -- note 
         if (request.message === "injectPopUps") {
-            const index = request.index
-            injectCards(request.noteData, index)
+            injectCards(request.noteData)
             sendResponse({ status: "success" });
         }
 
@@ -46,6 +35,18 @@ chrome.runtime.onMessage.addListener(
         if (request.action === "updateContentInCard") {
             const noteData = request.note
             createCardAndUpdate(noteData)
+        }
+
+        if (request.message === 'updatePinInContentScript') {
+            const updatePin = request.isPinEnable
+            const noteId = request.id
+
+            chrome.runtime.sendMessage({ action: "enablePin", isPinEnable: updatePin, id: noteId });
+
+            SimpleShadowDOM.updatePin(noteId)
+            // we can get all the details from the localstroage but right now we can use id 
+
+
         }
     }
 );
