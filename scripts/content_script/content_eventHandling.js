@@ -36,12 +36,40 @@ const eventListenerForNote = (shadowRoot, container,) => {
 
     // clove btn 
     const closeBtn = shadowRoot.querySelector('.close-btn');
+    const pin = shadowRoot.querySelector('.pin');
     const title = shadowRoot.querySelector('.title')
+
+
+    pin.addEventListener('click', (event) => {
+
+        // event target
+        let enablePin = true
+
+        if (pin.classList.contains('selected')) {
+            pin.classList.remove('selected');
+            enablePin = false
+        } else {
+            pin.classList.add('selected');
+        }
+        const id = pin.getAttribute('pinId')
+        chrome.runtime.sendMessage({ action: "enablePin", isPinEnable: enablePin, id: id });
+    })
 
 
     closeBtn.addEventListener('click', () => {
         container.remove();
+
+        // Get the uniqueId attribute from the closeBtn button
+        const id = closeBtn.getAttribute('uniqueId');
+
+        // Send message to the background script
+        chrome.runtime.sendMessage({
+            action: 'updatePin',
+            isPinEnable: false, // or true, depending on what you want to set
+            id: id
+        });
     });
+
 
     closeBtn.addEventListener('mouseover', () => {
         closeBtn.style.background = '#ff5757';

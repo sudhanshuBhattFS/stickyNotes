@@ -10,6 +10,7 @@ const getNoteData = (url) => {
     const randomComponent = Math.random().toString(36).substring(2, 15); // Random string
     const uniqueId = `${timestamp}-${randomComponent}`; // Combine timestamp and random string
     const title = 'Title'
+    const enablePin = false
 
     return {
         id: uniqueId,
@@ -18,7 +19,8 @@ const getNoteData = (url) => {
         hostName: hostName,
         url: url,
         content: '',
-        title: title
+        title: title,
+        enablePin: enablePin
     };
 }
 
@@ -26,12 +28,7 @@ const getNoteData = (url) => {
 // one way communication between background and content script
 chrome.runtime.onMessage.addListener(
     async function (request, sender, sendResponse) {
-
-        if (request.greeting === "hello") {
-            sendResponse({ farewell: "goodbye" });
-        }
-
-        // the first response created 
+        console.log(request, 'request')
         if (request.action == "storeNoteData") {
 
             // get id 
@@ -154,6 +151,62 @@ chrome.runtime.onMessage.addListener(
                     }
                 }
             });
+
+        }
+
+        if (request.action === 'updatePin') {
+            const isPinEnable = request.isPinEnable
+            const noteId = request.id
+            // retrive data 
+            const notesArray = await UserLocalStorage.retriveNoteData()
+
+            // Filter and update pinEnable
+            const updatedNotesArray = notesArray.map(note => {
+                if (note.id === noteId) {
+                    return { ...note, enablePin: isPinEnable };
+                }
+                return note;
+            });
+            // Store updated value
+            UserLocalStorage.setStorage(updatedNotesArray)
+        }
+
+        if (request.action === 'enablePin') {
+            const isPinEnable = request.isPinEnable
+            const noteId = request.id
+
+            // retrive data 
+
+            const notesArray = await UserLocalStorage.retriveNoteData()
+
+            // Filter and update pinEnable
+            const updatedNotesArray = notesArray.map(note => {
+                if (note.id === noteId) {
+                    return { ...note, enablePin: isPinEnable };
+                }
+                return note;
+            });
+            // Store updated value
+            UserLocalStorage.setStorage(updatedNotesArray)
+
+
+            const noteArr = await UserLocalStorage.retriveNoteData();
+            const note = noteArr.find(note => note.id === noteId);
+
+            chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+                if (tabs.length > 0) {
+                    var activeTab = tabs[0];
+                    if (activeTab.id) {
+                        chrome.tabs.sendMessage(activeTab.id, { "message": "injectPopUps", "noteData": note });
+                    } else {
+                        console.error("No valid tab ID found.");
+                    }
+                } else {
+                    console.error("No active tab found.");
+                }
+            })
+
+            return true
 
         }
 

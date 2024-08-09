@@ -2,6 +2,17 @@
     background-color: var(--background-color); /* Light gray background for sidebar */
     padding: 1rem;
     color : var(--heading-color); 
+    opacity: 1; /* Make sidebar visible */
+    transform: translateX(0); /* Slide the sidebar into view */
+    transition: transform 0.3s ease, opacity 0.3s ease, width 0.3s ease;
+  }
+
+  .sideBarCloseBtn {
+    opacity: 0;
+    transform: translateX(-100%); 
+    width: 0% !important; /* Reduce width to zero */
+    overflow: hidden;
+    padding: 0;
   }
   .contentContainer {
     padding: 1rem;
@@ -24,12 +35,8 @@
     margin-left: 10px ;
   }
 
-  .list_notes{
-    /* height: 90vh;
-    overflow: auto; */
-  }
 
-  .curser-pointer{
+  .cursor-pointer{
     cursor: pointer !important;
   }
 

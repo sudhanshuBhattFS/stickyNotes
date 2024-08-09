@@ -21,15 +21,17 @@ const sideBarImg = document.querySelector('.open-position')
 
 sideBar.addEventListener('click', (event) => {
     isSideBarVisiable = !isSideBarVisiable
-    console.log(stickyNoteSideBar, 'check')
+
     if (isSideBarVisiable === false) {
-        stickyNoteSideBar.style.display = 'none'
+        // stickyNoteSideBar.style.display = 'none'
+        stickyNoteSideBar.classList.add('sideBarCloseBtn')
         sideBar.classList.remove('sideBarOpen')
         sideBar.classList.add('sideBarClose')
         sideBarImg.style.left = "-10px"
 
     } else {
         stickyNoteSideBar.style.display = 'block'
+        stickyNoteSideBar.classList.remove('sideBarCloseBtn')
         sideBar.classList.add('sideBarOpen')
         sideBar.classList.remove('sideBarClose')
         sideBarImg.style.left = "0px"
@@ -83,49 +85,34 @@ const createCardsForNote = (note) => {
 };
 
 const TextAreaForNotesHtml = (note) => {
-    let innerText;
-    note.content == '' ? innerText = 'Write Something' : innerText = note.content.replace(/\n/g, '<br>');
+    let innerText = note.content === '' ? 'Write Something' : note.content.replace(/\n/g, '<br>');
     const id = note.id;
 
-    if (isViewGrid) {
-        return `
-    <div  id="Cards" class="${id} card-size w-100 mx-2 my-2 ">
+    const cardClass = isViewGrid ? "w-100" : "w-50";
+
+    return `
+    <div id="Cards" class="${id} card-size ${cardClass} mx-2 my-2">
         <div class="w-100 heading text-dark px-3 py-2">
-            <div class="w-100  d-flex justify-content-between">
+            <div class="w-100 d-flex justify-content-between">
                 <div>
                   <span class="px-2">${note.date}</span><span class="px-2">${note.time}</span>
                 </div>
                 <div>
-                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" unique-id='${id}' class="bi editBtn bi-pencil-square" viewBox="0 0 16 16">
-  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
-</svg>
+                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" unique-id='${id}' class="bi  mx-2 editBtn bi-pencil-square" viewBox="0 0 16 16">
+                       <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                       <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                   </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" unique-id='${id}' width="16" height="16" fill="currentColor" class="bi bi-trash deleteNoteBtn" viewBox="0 0 16 16">
+                     <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                     <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                   </svg>
                 </div>
             </div>
         </div>
         <div contenteditable="false" class="textAreaForNotes resize border border-light w-100 bg-transparent text-light p-2">${innerText}</div>
-    </div>
-    `;
-    } else {
-        return `
-         <div  id="Cards" class="${id} card-size w-50 mx-2 my-2 ">
-        <div class="w-100 heading text-dark px-3 py-2">
-            <div class="w-100  d-flex justify-content-between">
-                <div>
-                  <span class="px-2">${note.date}</span><span class="px-2">${note.time}</span>
-                </div>
-                <div>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" unique-id='${id}' class="bi editBtn bi-pencil-square" viewBox="0 0 16 16">
-  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
-</svg>
-                </div>
-            </div>
-        </div>
-        <div contenteditable="false" class="textAreaForNotes resize border border-light w-100 bg-transparent text-light p-2">${innerText}</div>
-    </div>`
-    }
+    </div>`;
 };
+
 
 
 // logic 
@@ -340,7 +327,7 @@ const handleCardData = async () => {
         });
 
 
-        document.addEventListener('click', (event) => {
+        document.addEventListener('click', async (event) => {
             if (event.target.classList.contains('editBtn')) {
                 const targetElement = event.target;
                 const id = targetElement.getAttribute('unique-id');
@@ -365,6 +352,39 @@ const handleCardData = async () => {
                     }
                 }
             }
+
+            if (event.target.classList.contains('deleteNoteBtn')) {
+
+                if (confirm('Are you sure you want to remove this note ')) {
+                    const deleteBtn = event.target;
+
+                    // Ensure you're using the correct attribute name
+                    const id = deleteBtn.getAttribute('unique-id');
+                    console.log(id, 'id'); // Log the id to check its value
+
+                    // Use querySelector to find the card element with the id
+                    const cardToRemove = document.querySelector(`.${CSS.escape(id)}`);
+                    console.log(cardToRemove, 'cardToRemove'); // Log the element found
+
+                    if (cardToRemove) {
+                        cardToRemove.remove();
+
+                        const noteArr = await UserLocalStorage.retriveNoteData()
+                        const filerArr = noteArr.filter(note => note.id !== id)
+                        UserLocalStorage.setStorage(filerArr)
+
+                        chrome.tabs.query({}, function (tabs) {
+                            tabs.forEach(tab => {
+                                chrome.tabs.sendMessage(tab.id, { action: 'removeElementFromDom', id: id });
+                            });
+                        });
+
+                    } else {
+                        console.error(`Element with class ${id} not found.`);
+                    }
+                }
+            }
+
         });
 
     }
