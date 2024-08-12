@@ -141,18 +141,29 @@ chrome.runtime.onMessage.addListener(
         }
 
         if (request.action === 'hide') {
-            const isHidden = request.isHidden
+            const isHidden = request.isHidden;
 
-            //  isHidden logic start
+            // Retrieve the notes array from local storage
+            const noteArr = await UserLocalStorage.retriveNoteData();
+
+            // Logic to hide sticky notes if the URL matches
             chrome.tabs.query({}, async (tabs) => {
                 for (let tab of tabs) {
                     if (tab.url && !tab.url.startsWith('chrome://')) {
-                        chrome.tabs.sendMessage(tab.id, { message: 'hideStickyNotes', isHidden: isHidden });
+                        // Check if any note in the noteArr matches the tab's URL or hostName
+                        const matchFound = noteArr.some(note => {
+                            const noteUrl = new URL(note.url);
+                            return noteUrl.href === tab.url || noteUrl.hostname === new URL(tab.url).hostname;
+                        });
+
+                        if (matchFound) {
+                            chrome.tabs.sendMessage(tab.id, { message: 'hideStickyNotes', isHidden: isHidden });
+                        }
                     }
                 }
             });
-
         }
+
 
         if (request.action === 'updatePin') {
             const isPinEnable = request.isPinEnable
