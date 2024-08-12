@@ -4,12 +4,14 @@ let isHidden = false
 const notesPerPage = 3;
 let currentPage = 1;
 
+let length = 0
+
 
 document.addEventListener('DOMContentLoaded', function () {
 
     const addBtn = document.getElementById('add-note')
     const allListContainer = document.getElementById('allNotesList')
-    const hideAllBtn = document.getElementById('remove-all')
+    const hideAllBtn = document.getElementById('hide-all')
     const removeAllBtn = document.querySelector('.removeAll')
 
     // remove all btn logic
@@ -20,6 +22,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (confirm(`Are you sure you want to remove all the notes in ${hostName}`)) {
             chrome.runtime.sendMessage({ action: 'removeUsingHostName', hostName: hostName });
             chrome.runtime.sendMessage({ action: "removeTab", title: "StickyNotes" });
+            length = 0
+            const element = this.getElementById('notesNumber')
+            element.innerText = `All Notes ${length}`
         }
     })
 
@@ -93,11 +98,9 @@ document.addEventListener('DOMContentLoaded', function () {
         // based of the start and end value get noteToShow 
         const notesToShow = noteArr.slice(startIndex, endIndex);
 
-        // created a new array and iserted the note 
-        console.log(noteArr)
         const filterNote = noteArr.filter(noteObj => { return noteObj.hostName === hostName })
         console.log(filterNote, hostName)
-        const length = filterNote.length
+        length = filterNote.length
 
         const element = this.getElementById('notesNumber')
         element.innerText = `All Notes ${length}`
@@ -327,6 +330,11 @@ document.addEventListener('DOMContentLoaded', function () {
                             });
 
                             chrome.runtime.sendMessage({ action: "removeTab", title: "StickyNotes" });
+                            if (length > 0) {
+                                length = length - 1
+                                const element = this.getElementById('notesNumber')
+                                element.innerText = `All Notes ${length}`
+                            }
 
                         }
                     })
@@ -343,6 +351,12 @@ document.addEventListener('DOMContentLoaded', function () {
     /*                         EVENT LISTNER START                      */
     // allow the user to create multiple text areas
     addBtn.addEventListener('click', () => {
+        length = length + 1
+        const element = this.getElementById('notesNumber')
+        console.log(element)
+        element.innerText = `All Notes ${length}`
+
+
         chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
             var activeTab = tabs[0];
             const noteData = getDateAndTime()
