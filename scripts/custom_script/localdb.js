@@ -7,7 +7,7 @@ class UserLocalStorage {
                 if (result.notes) {  // Corrected 'notes' to 'note'
                     resolve(result.notes);
                 } else {
-                    reject([]);
+                    resolve([]);
                 }
             });
         });
