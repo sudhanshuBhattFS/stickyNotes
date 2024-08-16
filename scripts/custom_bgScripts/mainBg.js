@@ -144,13 +144,11 @@ chrome.runtime.onMessage.addListener(
             const id = request.id
             const finalPosition = request.position
             let allNotes = await UserLocalStorage.retriveNoteData()
-            console.log(allNotes, 'check all notes')
             let noteIndex = allNotes.findIndex(note => note.id == id);
             if (noteIndex !== -1) {
                 // Update the position of the found note
                 allNotes[noteIndex].position = finalPosition;
                 UserLocalStorage.setStorage(allNotes)
-                console.log(allNotes, 'check all notes')
             } else {
                 console.log("din't find anything ")
             }
@@ -206,9 +204,6 @@ chrome.runtime.onMessage.addListener(
                 if (notesArray[noteIndex].content.trim() === '') {
                     // Remove the note from the array
                     notesArray.splice(noteIndex, 1);
-
-                    // Save the updated array back to storage
-                    console.log("saved note", notesArray,)
 
                     await UserLocalStorage.setStorage(notesArray);
 

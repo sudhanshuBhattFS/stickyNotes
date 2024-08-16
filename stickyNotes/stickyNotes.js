@@ -337,10 +337,10 @@ document.addEventListener('DOMContentLoaded', function () {
         // event listner for delete btn 
         const deleteBtn = card.querySelector('.delete-btn');
         deleteBtn.addEventListener('click', async () => {
-            if (confirm("Are you sure you want to Remove this Note")) {
+            if (confirm(getDeleteMessage())) {
                 const noteArr = await UserLocalStorage.retriveNoteData()
                 if (noteArr.length > 0) {
-                    noteArr.forEach((note) => {
+                    noteArr.forEach(async (note) => {
                         const id = note.id
 
                         if (deleteBtn.id == id) {
@@ -367,9 +367,15 @@ document.addEventListener('DOMContentLoaded', function () {
                             length = length - 1
                             updateNoteLength(length)
 
-                            renderNotes()
-                            renderPagination()
-                            checkPagination()
+                            const updateNote = await UserLocalStorage.retriveNoteData()
+                            if (updateNote.length % 2 !== 0) {
+                                changePage(currentPage - 1)
+                                checkPagination()
+                            } else {
+                                renderNotes()
+                                renderPagination()
+                                checkPagination()
+                            }
 
                         }
                     })
