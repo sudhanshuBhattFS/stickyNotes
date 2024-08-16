@@ -140,6 +140,25 @@ chrome.runtime.onMessage.addListener(
             });
         }
 
+        if (request.action === 'storePosition') {
+            const id = request.id
+            const finalPosition = request.position
+            let allNotes = await UserLocalStorage.retriveNoteData()
+            console.log(allNotes, 'check all notes')
+            let noteIndex = allNotes.findIndex(note => note.id == id);
+            if (noteIndex !== -1) {
+                // Update the position of the found note
+                allNotes[noteIndex].position = finalPosition;
+                UserLocalStorage.setStorage(allNotes)
+                console.log(allNotes, 'check all notes')
+            } else {
+                console.log("din't find anything ")
+            }
+
+        }
+
+
+
         // if (request.action === 'hide') {
         //     const isHidden = request.isHidden;
 
