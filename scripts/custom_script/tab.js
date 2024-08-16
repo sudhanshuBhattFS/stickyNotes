@@ -121,6 +121,8 @@ const insertContentInSideBar = (note) => {
     const container = document.querySelector('.list_notes');
     const htmlString = createCardsForNote(note);
 
+    // eventListnerForDeleteBtn()
+
     // Convert HTML string to DOM node
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = htmlString;
@@ -177,12 +179,49 @@ const toggleNoteContainerSelection = () => {
                 insertContentInMain(note);
             });
             eventListerForEditBtn()
+            eventListnerForDeleteBtn()
 
             const isViewGrid = await UserLocalStorage.getIsViewGrid();
             const cards = document.querySelectorAll('#Cards');
             setView(cards);
             UserLocalStorage.setIsViewGrid(isViewGrid);
         });
+    }
+
+
+    const eventListnerForDeleteBtn = () => {
+        document.querySelectorAll('.deleteNoteBtn').forEach((deleteBtn) => {
+            deleteBtn.addEventListener('click', async (event) => {
+                if (confirm('Are you sure you want to remove this note ')) {
+                    const deleteBtn = event.target
+
+                    // Ensure you're using the correct attribute name
+                    const id = deleteBtn.getAttribute('unique-id');
+                    console.log(id, 'id'); // Log the id to check its value
+
+                    // Use querySelector to find the card element with the id
+                    const cardToRemove = document.querySelector(`.${CSS.escape(id)}`);
+                    console.log(cardToRemove, 'cardToRemove'); // Log the element found
+
+                    if (cardToRemove) {
+                        cardToRemove.remove();
+
+                        const noteArr = await UserLocalStorage.retriveNoteData()
+                        const filerArr = noteArr.filter(note => note.id !== id)
+                        UserLocalStorage.setStorage(filerArr)
+
+                        chrome.tabs.query({}, function (tabs) {
+                            tabs.forEach(tab => {
+                                chrome.tabs.sendMessage(tab.id, { action: 'removeElementFromDom', id: id });
+                            });
+                        });
+
+                    } else {
+                        console.error(`Element with class ${id} not found.`);
+                    }
+                }
+            })
+        })
     }
 
     const eventListerForEditBtn = () => {
@@ -260,6 +299,7 @@ const toggleNoteContainerSelection = () => {
                     insertContentInMain(note);
                 });
                 eventListerForEditBtn()
+                eventListnerForDeleteBtn()
             }
         });
     });
@@ -343,7 +383,8 @@ const handleCardData = async () => {
         // creating a logic for the delete btn 
         document.querySelectorAll('.delete-note').forEach(deleteButton => {
             deleteButton.addEventListener('click', (event) => {
-                if (confirm('Are you sure you want to delete this note?')) {
+                const message = getDeleteMessage()
+                if (confirm(message)) {
                     event.stopPropagation();
                     (deleteButton, 'deletebtn remove')
                     deleteButton.closest('.noteContainer').remove();
@@ -368,43 +409,6 @@ const handleCardData = async () => {
                     window.open(url, '_blank');
                 }
             });
-        });
-
-
-        document.addEventListener('click', async (event) => {
-
-            if (event.target.classList.contains('deleteNoteBtn')) {
-
-                if (confirm('Are you sure you want to remove this note ')) {
-                    const deleteBtn = event.target;
-
-                    // Ensure you're using the correct attribute name
-                    const id = deleteBtn.getAttribute('unique-id');
-                    console.log(id, 'id'); // Log the id to check its value
-
-                    // Use querySelector to find the card element with the id
-                    const cardToRemove = document.querySelector(`.${CSS.escape(id)}`);
-                    console.log(cardToRemove, 'cardToRemove'); // Log the element found
-
-                    if (cardToRemove) {
-                        cardToRemove.remove();
-
-                        const noteArr = await UserLocalStorage.retriveNoteData()
-                        const filerArr = noteArr.filter(note => note.id !== id)
-                        UserLocalStorage.setStorage(filerArr)
-
-                        chrome.tabs.query({}, function (tabs) {
-                            tabs.forEach(tab => {
-                                chrome.tabs.sendMessage(tab.id, { action: 'removeElementFromDom', id: id });
-                            });
-                        });
-
-                    } else {
-                        console.error(`Element with class ${id} not found.`);
-                    }
-                }
-            }
-
         });
 
     }

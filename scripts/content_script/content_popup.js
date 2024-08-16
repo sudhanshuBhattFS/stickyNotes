@@ -31,7 +31,7 @@ class SimpleShadowDOM {
         `;
     }
 
-    static createPopup(id, innerContent, hostName, enablePin) {
+    static createPopup(id, innerContent, hostName, enablePin, position) {
 
         const heading = getHeading();
         const container = document.createElement('div');
@@ -46,7 +46,7 @@ class SimpleShadowDOM {
         addStyleSheetlink(shadowRoot);
 
         // draggable
-        makeDraggable(shadowRoot.querySelector('.note-container'), shadowRoot.querySelector('.note-title'));
+        makeDraggable(shadowRoot.querySelector('.note-container'), shadowRoot.querySelector('.note-title'), id, position);
 
         // handling all the events for the note 
         eventListenerForNote(shadowRoot, container);
@@ -123,7 +123,7 @@ const createCardAndUpdate = (note) => {
     const innerHtml = note.content.replace(/\n/g, '<br>'); // Replace line breaks with <br> tags
     const hostName = note.hostName;
     const pinEnable = note.enablePin
-
+    const position = note.position
 
 
     const containers = document.querySelectorAll('.model-notes');
@@ -142,7 +142,7 @@ const createCardAndUpdate = (note) => {
 
     // if the element did not exist 
     if (!elementExists) {
-        SimpleShadowDOM.createPopup(id, innerHtml, hostName, pinEnable);
+        SimpleShadowDOM.createPopup(id, innerHtml, hostName, pinEnable, position);
     }
 };
 

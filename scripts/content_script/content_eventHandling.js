@@ -28,7 +28,7 @@ const eventListenerForNote = (shadowRoot, container,) => {
             const id = response.noteData.id
             if (id) {
                 const title = response.noteData.title
-                SimpleShadowDOM.createPopup(id, 'Write something ...', title);
+                SimpleShadowDOM.createPopup(id, 'Write something ...', title, true);
             }
         });
 

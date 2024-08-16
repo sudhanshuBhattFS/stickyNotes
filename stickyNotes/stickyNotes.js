@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const retriveData = async () => {
 
         const noteArr = await UserLocalStorage.retriveNoteData()
-
+        console.log(noteArr, 'stored data')
         if (noteArr.length > 0) {
 
             noteArr.forEach((element, index) => {
