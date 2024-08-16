@@ -38,7 +38,7 @@ body {
     border-radius: 5px;
     background: transparent;
     border: none;
-    margin-left: 1rem !important ;
+    
   }
 
   .title{
@@ -95,20 +95,27 @@ body {
 .allNoteBtn{
   color: white;
   background: transparent;
-  width: 5rem;
+  width: 2rem;
   height: auto;
   border: none ;
   outline: none ;
-
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* Pagination links */
 .pagination a {
   color: rgb(255, 255, 255);
-  padding: 8px 16px;
+  height: 1.5rem;
+  width: 1.5rem;
+  margin: 0.5rem;
+  border-radius: 99rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-decoration: none;
   transition: background-color .3s;
-  margin: 0 2px;
+ 
 }
 
 /* Style the active/current link */
@@ -160,3 +167,36 @@ body {
   justify-content: space-between;
 }
 
+
+/* drop down css  */
+
+/* Style the dropdown container */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown content (hidden by default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 2rem;
+  top: 3.6rem;
+  background-color: var(--background-color);
+  color: var(--font-color) !important;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 99;
+}
+
+/* Dropdown links */
+.dropdown-content a {
+  color: var(--font-color) ;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Show the dropdown menu on button click */
+.dropdown-content a:hover {background-color: #f1f1f1;
+color: black !important}

@@ -1,7 +1,8 @@
 
+
 let noteArr = []
 let isHidden = false
-const notesPerPage = 3;
+const notesPerPage = 2;
 let currentPage = 1;
 
 let length = 0
@@ -11,20 +12,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const addBtn = document.getElementById('add-note')
     const allListContainer = document.getElementById('allNotesList')
-    const hideAllBtn = document.getElementById('hide-all')
+
     const removeAllBtn = document.querySelector('.removeAll')
 
     // remove all btn logic
     removeAllBtn.addEventListener('click', () => {
-        // remove all note based on hostName 
-        document.getElementById('allNotesList').innerHTML = '';
 
         if (confirm(`Are you sure you want to remove all the notes in ${hostName}`)) {
+            document.getElementById('allNotesList').innerHTML = '';
             chrome.runtime.sendMessage({ action: 'removeUsingHostName', hostName: hostName });
             chrome.runtime.sendMessage({ action: "removeTab", title: "StickyNotes" });
+
             length = 0
-            const element = this.getElementById('notesNumber')
-            element.innerText = `All Notes ${length}`
+            updateNoteLength(length)
         }
     })
 
@@ -46,11 +46,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // get totoal no of page 
     const getTotalPages = async () => {
         const allNotes = await UserLocalStorage.retriveNoteData()
+        const filterNotes = allNotes.filter(noteObj => { return noteObj.hostName === hostName })
         return new Promise((resolve, reject) => {
-            const result = Math.ceil(allNotes.length / notesPerPage);
+            const result = Math.ceil(filterNotes.length / notesPerPage);
             resolve(result)
         })
     }
+
 
     // create pagination  pannel -chat gpt code - read it one time 
     const renderPagination = async () => {
@@ -58,7 +60,6 @@ document.addEventListener('DOMContentLoaded', function () {
         paginationContainer.innerHTML = '';
 
         const totalPages = await getTotalPages();
-
 
         const prevButton = document.createElement('a');
         prevButton.href = '#';
@@ -71,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
             pageButton.href = '#';
             pageButton.innerText = i;
             if (i === currentPage) {
-                pageButton.classList.add('active');
+                pageButton.classList.add('select');
             }
             pageButton.addEventListener('click', () => changePage(i));
             paginationContainer.appendChild(pageButton);
@@ -84,6 +85,38 @@ document.addEventListener('DOMContentLoaded', function () {
         paginationContainer.appendChild(nextButton);
     }
 
+    const updateNoteLength = (noteLength) => {
+
+        if (noteLength == 0) {
+            const element = this.getElementById('notesNumber')
+            element.innerText = `All Notes `
+            removeAllBtn.style.display = 'none'
+        } else {
+            const element = this.getElementById('notesNumber')
+            element.innerText = `All Notes ${noteLength}`
+            removeAllBtn.style.display = 'block'
+        }
+
+    }
+
+    async function checkPagination() {
+        const length = await getSameHostNameLength();
+
+        const paginationContainer = document.querySelector('.pagination');
+
+        if (length <= 2) {
+            paginationContainer.style.display = 'none'
+        } else {
+            paginationContainer.style.display = 'flex'
+        }
+    }
+
+    function getSameHostNameLength() {
+        return UserLocalStorage.retriveNoteData().then(noteArr => {
+            const filterNote = noteArr.filter(noteObj => noteObj.hostName === hostName);
+            return filterNote.length;
+        });
+    }
     // render notes 
     const renderNotes = async () => {
         const allListContainer = document.getElementById('allNotesList');
@@ -93,17 +126,14 @@ document.addEventListener('DOMContentLoaded', function () {
         const startIndex = (currentPage - 1) * notesPerPage;
         let endIndex = startIndex + notesPerPage;
 
+
         noteArr = await UserLocalStorage.retriveNoteData()
-
         // based of the start and end value get noteToShow 
-        const notesToShow = noteArr.slice(startIndex, endIndex);
-
         const filterNote = noteArr.filter(noteObj => { return noteObj.hostName === hostName })
-        console.log(filterNote, hostName)
+        const notesToShow = filterNote.slice(startIndex, endIndex);
         length = filterNote.length
+        updateNoteLength(length)
 
-        const element = this.getElementById('notesNumber')
-        element.innerText = `All Notes ${length}`
 
         notesToShow.forEach(note => {
             if (hostName === note.hostName) {
@@ -139,10 +169,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const retriveData = async () => {
 
-        isHidden = await UserLocalStorage.getIsHidden()
-        isHidden ? hideAllBtn.innerText = 'Show All Notes' : hideAllBtn.innerText = 'Hide All Notes'
-
-
         const noteArr = await UserLocalStorage.retriveNoteData()
 
         if (noteArr.length > 0) {
@@ -166,36 +192,35 @@ document.addEventListener('DOMContentLoaded', function () {
         const removeElementArray = noteArr.filter((note) => note.content.replace(/\s+/g, '') === '')
 
         // send message to bg 
-        removeElementArray.forEach(note => {
-            const id = note.id
-            chrome.tabs.query({}, function (tabs) {
-                tabs.forEach(tab => {
+        // removeElementArray.forEach(note => {
+        //     const id = note.id
+        //     chrome.tabs.query({}, function (tabs) {
+        //         tabs.forEach(tab => {
 
-                    chrome.tabs.sendMessage(tab.id, { action: 'removeElementFromDom', id: id });
+        //             chrome.tabs.sendMessage(tab.id, { action: 'removeElementFromDom', id: id });
 
-                });
-            });
-        })
+        //         });
+        //     });
+        // })
 
-        await UserLocalStorage.setStorage(updatedNoteArr)
+        // await UserLocalStorage.setStorage(updatedNoteArr)
 
 
     })().then(() => {
         retriveData()
         renderNotes();
         renderPagination();
-        sendHideMessage()
-
+        checkPagination()
     });
 
-    const sendHideMessage = () => {
-        try {
-            chrome.runtime.sendMessage({ action: 'hide', isHidden: isHidden });
-        }
-        catch (e) {
-            console.log('error ', e)
-        }
-    }
+    // const sendHideMessage = () => {
+    //     try {
+    //         chrome.runtime.sendMessage({ action: 'hide', isHidden: isHidden });
+    //     }
+    //     catch (e) {
+    //         console.log('error ', e)
+    //     }
+    // }
 
     /*                          END                      */
 
@@ -216,7 +241,7 @@ document.addEventListener('DOMContentLoaded', function () {
             hostName: hostName,
             url: url,
             content: '',
-            enablePin: false
+            enablePin: true
         };
     }
 
@@ -330,11 +355,13 @@ document.addEventListener('DOMContentLoaded', function () {
                             });
 
                             chrome.runtime.sendMessage({ action: "removeTab", title: "StickyNotes" });
-                            if (length > 0) {
-                                length = length - 1
-                                const element = this.getElementById('notesNumber')
-                                element.innerText = `All Notes ${length}`
-                            }
+
+                            length = length - 1
+                            updateNoteLength(length)
+
+                            renderNotes()
+                            renderPagination()
+                            checkPagination()
 
                         }
                     })
@@ -351,11 +378,6 @@ document.addEventListener('DOMContentLoaded', function () {
     /*                         EVENT LISTNER START                      */
     // allow the user to create multiple text areas
     addBtn.addEventListener('click', () => {
-        length = length + 1
-        const element = this.getElementById('notesNumber')
-        console.log(element)
-        element.innerText = `All Notes ${length}`
-
 
         chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
             var activeTab = tabs[0];
@@ -366,31 +388,77 @@ document.addEventListener('DOMContentLoaded', function () {
                     noteArr.push(noteData)
                     chrome.storage.local.set({ notes: noteArr });
                     // inject a add in the extension with the id data 
-                    injectCards(noteData)
+                    length = length + 1
+                    updateNoteLength(length)
+                    renderNotes()
+                    renderPagination()
+                    checkPagination()
                 }
             });
         });
     });
 
     // hide btn -currently not to use 
-    hideAllBtn.addEventListener('click', async () => {
+    // hideAllBtn.addEventListener('click', async () => {
 
-        isHidden = !isHidden
-        UserLocalStorage.setIsHidden(isHidden)
-        if (isHidden === true) {
-            hideAllBtn.innerText = 'Show All Notes'
-        } else {
-            hideAllBtn.innerText = 'Hide All Notes'
-        }
+    //     isHidden = !isHidden
+    //     UserLocalStorage.setIsHidden(isHidden)
+    //     if (isHidden === true) {
+    //         hideAllBtn.innerText = 'Show All Notes'
+    //     } else {
+    //         hideAllBtn.innerText = 'Hide All Notes'
+    //     }
 
-        chrome.runtime.sendMessage({ action: 'hide', isHidden: isHidden });
+    //     chrome.runtime.sendMessage({ action: 'hide', isHidden: isHidden });
+    // });
+
+
+    // document.getElementById('openTabButton').addEventListener('click', () => {
+    //     chrome.runtime.sendMessage({ action: 'createTabAndInject' });
+    //     // UserLocalStorage.deleteNoteData()
+    // });
+
+
+    document.getElementById('openTabButton').addEventListener('click', (e) => {
+        e.stopPropagation();
+        const settingsMenu = document.getElementById('settingsMenu');
+        settingsMenu.style.display = settingsMenu.style.display === 'block' ? 'none' : 'block';
     });
 
-
-    document.getElementById('openTabButton').addEventListener('click', () => {
+    document.getElementById('seeAllNotes').addEventListener('click', () => {
         chrome.runtime.sendMessage({ action: 'createTabAndInject' });
         // UserLocalStorage.deleteNoteData()
     });
+
+    document.getElementById('setLanguage').addEventListener('click', () => {
+
+    });
+    document.getElementById('unPinAll').addEventListener('click', async () => {
+        const button = document.getElementById('unPinAll');
+        const noteArr = await UserLocalStorage.retriveNoteData();
+        const filterNote = noteArr.filter(note => note.hostName === hostName);
+
+        const shouldUnpin = button.getAttribute('state') !== 'false';
+
+        console.log(shouldUnpin, 'pin')
+
+        const updatedFilterNote = filterNote.map(note => {
+            return {
+                ...note,
+                enablePin: shouldUnpin
+            };
+        });
+
+        button.setAttribute('state', !shouldUnpin);
+        button.innerText = shouldUnpin ? 'UnPin All' : 'Pin All';
+
+        await UserLocalStorage.updateNote(updatedFilterNote, shouldUnpin)
+        renderNotes()
+
+    });
+
+
+
     /*                         EVENT LISTNER ENDa                    */
 });
 

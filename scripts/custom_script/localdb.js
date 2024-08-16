@@ -68,5 +68,44 @@ class UserLocalStorage {
     }
 
 
+    // pin 
+    static async updateNote(updateNotes, pin) {
+        try {
+            const allNotes = await this.retriveNoteData(); // Retrieve all notes
+
+            // Map through allNotes to update specific notes based on updateNotes array
+            const updatedNotes = allNotes.map(note => {
+                // Find the matching note in updateNotes by id
+                const matchedNote = updateNotes.find(updatedNote => updatedNote.id === note.id);
+
+                if (matchedNote) {
+                    // Update enablePin value if the note is found in updateNotes
+                    return { ...note, enablePin: matchedNote.enablePin };
+                }
+
+                // Return the note unchanged if it doesn't match any in updateNotes
+                return note;
+            });
+
+            console.log(updatedNotes, 'updated notes')
+            // Save the updated notes back to storage
+            await this.setStorage(updatedNotes);
+
+        } catch (error) {
+            console.error('Error updating notes:', error);
+        }
+    }
+
+
+    static setPin(enableAllPin) {
+
+    }
+
+    static getPin() {
+
+    }
+
+
+
 }
 

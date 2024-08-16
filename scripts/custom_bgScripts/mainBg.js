@@ -10,7 +10,7 @@ const getNoteData = (url) => {
     const randomComponent = Math.random().toString(36).substring(2, 15); // Random string
     const uniqueId = `${timestamp}-${randomComponent}`; // Combine timestamp and random string
     const title = 'Title'
-    const enablePin = false
+    const enablePin = true
 
     return {
         id: uniqueId,
@@ -28,7 +28,7 @@ const getNoteData = (url) => {
 // one way communication between background and content script
 chrome.runtime.onMessage.addListener(
     async function (request, sender, sendResponse) {
-        console.log(request, 'request')
+
         if (request.action == "storeNoteData") {
 
             // get id 
@@ -140,36 +140,37 @@ chrome.runtime.onMessage.addListener(
             });
         }
 
-        if (request.action === 'hide') {
-            const isHidden = request.isHidden;
+        // if (request.action === 'hide') {
+        //     const isHidden = request.isHidden;
 
-            // Retrieve the notes array from local storage
-            const noteArr = await UserLocalStorage.retriveNoteData();
+        //     // Retrieve the notes array from local storage
+        //     const noteArr = await UserLocalStorage.retriveNoteData();
 
-            // Logic to hide sticky notes if the URL matches
-            chrome.tabs.query({}, async (tabs) => {
-                for (let tab of tabs) {
-                    if (tab.url && !tab.url.startsWith('chrome://')) {
-                        // Check if any note in the noteArr matches the tab's URL or hostName
-                        const matchFound = noteArr.some(note => {
-                            const noteUrl = new URL(note.url);
-                            return noteUrl.href === tab.url || noteUrl.hostname === new URL(tab.url).hostname;
-                        });
+        //     // Logic to hide sticky notes if the URL matches
+        //     chrome.tabs.query({}, async (tabs) => {
+        //         for (let tab of tabs) {
+        //             if (tab.url && !tab.url.startsWith('chrome://')) {
+        //                 // Check if any note in the noteArr matches the tab's URL or hostName
+        //                 const matchFound = noteArr.some(note => {
+        //                     const noteUrl = new URL(note.url);
+        //                     return noteUrl.href === tab.url || noteUrl.hostname === new URL(tab.url).hostname;
+        //                 });
 
-                        if (matchFound) {
-                            chrome.tabs.sendMessage(tab.id, { message: 'hideStickyNotes', isHidden: isHidden });
-                        }
-                    }
-                }
-            });
-        }
+        //                 if (matchFound) {
+        //                     chrome.tabs.sendMessage(tab.id, { message: 'hideStickyNotes', isHidden: isHidden });
+        //                 }
+        //             }
+        //         }
+        //     });
+        // }
 
 
         if (request.action === 'updatePin') {
             const isPinEnable = request.isPinEnable
             const noteId = request.id
-            // retrive data 
+            // remove note in case there is no content inside 
             const notesArray = await UserLocalStorage.retriveNoteData()
+
 
             // Filter and update pinEnable
             const updatedNotesArray = notesArray.map(note => {
@@ -178,8 +179,24 @@ chrome.runtime.onMessage.addListener(
                 }
                 return note;
             });
-            // Store updated value
-            UserLocalStorage.setStorage(updatedNotesArray)
+
+            const noteIndex = notesArray.findIndex(note => note.id === noteId);
+
+            if (noteIndex !== -1) {
+                // Check if the note's content is empty
+                if (notesArray[noteIndex].content.trim() === '') {
+                    // Remove the note from the array
+                    notesArray.splice(noteIndex, 1);
+
+                    // Save the updated array back to storage
+                    console.log("saved note", notesArray,)
+
+                    await UserLocalStorage.setStorage(notesArray);
+
+                } else {
+                    UserLocalStorage.setStorage(updatedNotesArray)
+                }
+            }
         }
 
         if (request.action === 'enablePin') {

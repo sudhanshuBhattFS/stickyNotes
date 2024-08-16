@@ -1,8 +1,20 @@
 
+console.log('content script is injected !')
 
-
+let messageSent = false;
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
+
+        try {
+            // Check if the message has already been sent
+            if (!messageSent) {
+                chrome.runtime.sendMessage({ action: 'contentScriptInjected' });
+                messageSent = true; // Set the flag to true after sending the message
+            }
+        } catch (e) {
+            console.log('Sending message failed with error:', e);
+        }
+
 
         if (request.message === "start") {
             const noteData = request.noteData

@@ -1,6 +1,6 @@
 // get note data which has been inserted
 
-let isViewGrid = false
+let isViewGrid = true
 let isSideBarVisiable = true
 const grid = document.getElementsByClassName('grid')
 const containerEle = document.querySelector('.contentContainer');
@@ -85,7 +85,7 @@ const createCardsForNote = (note) => {
 };
 
 const TextAreaForNotesHtml = (note) => {
-    let innerText = note.content === '' ? 'Write Something' : note.content.replace(/\n/g, '<br>');
+    let innerText = note.content === '' ? '' : note.content.replace(/\n/g, '<br>');
     const id = note.id;
 
     const cardClass = isViewGrid ? "w-100" : "w-50";
@@ -98,7 +98,7 @@ const TextAreaForNotesHtml = (note) => {
                   <span class="px-2">${note.date}</span><span class="px-2">${note.time}</span>
                 </div>
                 <div>
-                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" unique-id='${id}' class="bi  mx-2 editBtn bi-pencil-square" viewBox="0 0 16 16">
+                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" unique-id='${id}'  id="editBtn" class="bi  mx-2 editBtn bi-pencil-square" viewBox="0 0 16 16">
                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
                    </svg>
@@ -146,6 +146,8 @@ const insertContentInMain = (note) => {
         container.appendChild(tempDiv.firstChild);
     }
 
+
+
 }
 
 
@@ -174,11 +176,52 @@ const toggleNoteContainerSelection = () => {
             updateArr.forEach(note => {
                 insertContentInMain(note);
             });
+            eventListerForEditBtn()
 
             const isViewGrid = await UserLocalStorage.getIsViewGrid();
             const cards = document.querySelectorAll('#Cards');
             setView(cards);
             UserLocalStorage.setIsViewGrid(isViewGrid);
+        });
+    }
+
+    const eventListerForEditBtn = () => {
+
+        document.querySelectorAll('.editBtn').forEach(editBtn => {
+            editBtn.addEventListener('click', (event) => {
+                console.log('it works ')
+                const targetElement = editBtn
+                const id = editBtn.getAttribute('unique-id')
+                const parentElement = document.getElementsByClassName(id)[0];
+                const textArea = parentElement.querySelector('.textAreaForNotes');
+
+                if (textArea) {
+                    const isEditable = textArea.getAttribute('contenteditable') === 'true';
+                    textArea.setAttribute('contenteditable', !isEditable);
+
+                    if (!isEditable) {
+                        textArea.focus();
+
+                        // Move cursor to the end of the content
+                        const range = document.createRange();
+                        const selection = window.getSelection();
+                        range.selectNodeContents(textArea);
+                        range.collapse(false); // Collapse to end of the content
+                        selection.removeAllRanges();
+                        selection.addRange(range);
+
+                        targetElement.classList.add('select');
+                    } else {
+                        targetElement.classList.remove('select');
+                        const updatedContent = textArea.innerText;
+                        chrome.runtime.sendMessage({
+                            action: 'updateNoteContent',
+                            id: id,
+                            content: updatedContent
+                        });
+                    }
+                }
+            })
         });
     }
 
@@ -216,6 +259,7 @@ const toggleNoteContainerSelection = () => {
                 updateArr.forEach(note => {
                     insertContentInMain(note);
                 });
+                eventListerForEditBtn()
             }
         });
     });
@@ -328,30 +372,6 @@ const handleCardData = async () => {
 
 
         document.addEventListener('click', async (event) => {
-            if (event.target.classList.contains('editBtn')) {
-                const targetElement = event.target;
-                const id = targetElement.getAttribute('unique-id');
-                const parentElement = document.getElementsByClassName(id)[0];
-                const textArea = parentElement.querySelector('.textAreaForNotes');
-
-                if (textArea) {
-                    const isEditable = textArea.getAttribute('contenteditable') === 'true';
-                    textArea.setAttribute('contenteditable', !isEditable);
-
-                    if (!isEditable) {
-                        textArea.focus();
-                        targetElement.classList.add('select')
-                    } else {
-                        targetElement.classList.remove('select')
-                        const updatedContent = textArea.innerText;
-                        chrome.runtime.sendMessage({
-                            action: 'updateNoteContent',
-                            id: id,
-                            content: updatedContent
-                        });
-                    }
-                }
-            }
 
             if (event.target.classList.contains('deleteNoteBtn')) {
 
@@ -402,9 +422,16 @@ const handleCardData = async () => {
         const query = event.target.value;
         filterNotes(query);
     });
+    document.getElementById('refresh').addEventListener('click', () => {
+        location.reload();
+    });
 
 
 };
+
+
+
+
 
 // IIFE
 (() => {
