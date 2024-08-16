@@ -32,7 +32,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     })
 
-    const setLanaguegToEnglish = document.getElementById('setLanguage')
+    // const setLanaguegToEnglish = document.getElementById('setLanguage')
+
 
     setLanaguegToEnglish.innerText = getLanguageMessage()
 
@@ -178,7 +179,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const retriveData = async () => {
 
         const noteArr = await UserLocalStorage.retriveNoteData()
-        console.log(noteArr, 'stored data')
         if (noteArr.length > 0) {
 
             noteArr.forEach((element, index) => {
@@ -451,8 +451,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const filterNote = noteArr.filter(note => note.hostName === hostName);
 
         const shouldUnpin = button.getAttribute('state') !== 'false';
-
-        console.log(shouldUnpin, 'pin')
 
         const updatedFilterNote = filterNote.map(note => {
             return {

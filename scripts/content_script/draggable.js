@@ -19,7 +19,6 @@ const makeDraggable = (element, handle, id, position) => {
     };
 
     const savePosition = (id, position) => {
-        console.log(id, element, position);
         chrome.runtime.sendMessage({ action: "storePosition", id: id, position: position });
     };
 

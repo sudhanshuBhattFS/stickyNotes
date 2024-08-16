@@ -197,11 +197,8 @@ const toggleNoteContainerSelection = () => {
 
                     // Ensure you're using the correct attribute name
                     const id = deleteBtn.getAttribute('unique-id');
-                    console.log(id, 'id'); // Log the id to check its value
-
                     // Use querySelector to find the card element with the id
                     const cardToRemove = document.querySelector(`.${CSS.escape(id)}`);
-                    console.log(cardToRemove, 'cardToRemove'); // Log the element found
 
                     if (cardToRemove) {
                         cardToRemove.remove();
@@ -228,7 +225,6 @@ const toggleNoteContainerSelection = () => {
 
         document.querySelectorAll('.editBtn').forEach(editBtn => {
             editBtn.addEventListener('click', (event) => {
-                console.log('it works ')
                 const targetElement = editBtn
                 const id = editBtn.getAttribute('unique-id')
                 const parentElement = document.getElementsByClassName(id)[0];
