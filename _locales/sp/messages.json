@@ -1,0 +1,18 @@
+{
+  "appName": { "message": "Nota Adhesiva" },
+  "appDescription": {
+    "message": "Una extensión de Chrome para crear y guardar notas adhesivas."
+  },
+  "brandName": { "message": "Notas Adhesivas" },
+  "noOfNotes": { "message": "Todas las Notas" },
+  "deleteMessageAll": {
+    "message": "¿Está seguro de que desea eliminar todas las notas?"
+  },
+  "deleteMessage": {
+    "message": "¿Está seguro de que desea eliminar esta Nota?"
+  },
+  "seeAllNote": { "message": "Todas las Notas" },
+  "pinAll": { "message": "Fijar Todo" },
+  "unPinAll": { "message": "Desfijar Todo" },
+  "setLanguage": { "message": "Idioma : Español" }
+}

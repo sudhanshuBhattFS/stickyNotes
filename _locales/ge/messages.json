@@ -1,0 +1,18 @@
+{
+  "appName": { "message": "Klebe Notiz" },
+  "appDescription": {
+    "message": "Eine Chrome-Erweiterung zum Erstellen und Speichern von Klebe Notizen."
+  },
+  "brandName": { "message": "Klebe Notizen" },
+  "noOfNotes": { "message": "Alle Notizen" },
+  "deleteMessageAll": {
+    "message": "Sind Sie sicher, dass Sie alle Notizen entfernen möchten?"
+  },
+  "deleteMessage": {
+    "message": "Sind Sie sicher, dass Sie diese Notiz entfernen möchten?"
+  },
+  "seeAllNote": { "message": "Alle Notizen" },
+  "pinAll": { "message": "Alle anheften" },
+  "unPinAll": { "message": "Alle losheften" },
+  "setLanguage": { "message": "Sprache : Deutsch" }
+}

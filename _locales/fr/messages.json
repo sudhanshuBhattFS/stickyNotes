@@ -1,0 +1,18 @@
+{
+  "appName": { "message": "Note Collante" },
+  "appDescription": {
+    "message": "Une extension Chrome pour créer et enregistrer des notes collantes."
+  },
+  "brandName": { "message": "Notes Collantes" },
+  "noOfNotes": { "message": "Toutes les Notes" },
+  "deleteMessageAll": {
+    "message": "Êtes-vous sûr de vouloir supprimer toutes les notes ?"
+  },
+  "deleteMessage": {
+    "message": "Êtes-vous sûr de vouloir supprimer cette Note ?"
+  },
+  "seeAllNote": { "message": "Toutes les Notes" },
+  "pinAll": { "message": "Épingler Tous" },
+  "unPinAll": { "message": "Désépingler Tous" },
+  "setLanguage": { "message": "Langue : Français" }
+}

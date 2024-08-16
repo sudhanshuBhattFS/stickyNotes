@@ -33,7 +33,7 @@ class SimpleShadowDOM {
 
     static createPopup(id, innerContent, hostName, enablePin) {
 
-        const heading = `Sticky Note`;
+        const heading = getHeading();
         const container = document.createElement('div');
         container.className = 'model-notes';
         const shadowRoot = container.attachShadow({ mode: 'open' });
