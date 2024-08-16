@@ -1,5 +1,6 @@
 
 const UpdateData = (textareaId, noteContent) => {
+
     chrome.storage.local.get('notes', function (result) {
         if (result.notes) {
             const notes = result.notes
@@ -56,7 +57,7 @@ const eventListenerForNote = (shadowRoot, container,) => {
     })
 
 
-    closeBtn.addEventListener('click', () => {
+    closeBtn.addEventListener('click', async () => {
         container.remove();
 
         // Get the uniqueId attribute from the closeBtn button
