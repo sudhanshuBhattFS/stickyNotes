@@ -12,8 +12,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const addBtn = document.getElementById('add-note')
     const allListContainer = document.getElementById('allNotesList')
-
     const removeAllBtn = document.querySelector('.removeAll')
+    const title = document.querySelector('#title')
+    const seeAllNotes = document.getElementById('seeAllNotes')
+    seeAllNotes.innerText = getViewAllNotes()
+
+    title.innerText = getHeading()
 
     // remove all btn logic
     removeAllBtn.addEventListener('click', () => {
@@ -27,6 +31,10 @@ document.addEventListener('DOMContentLoaded', function () {
             updateNoteLength(length)
         }
     })
+
+    const setLanaguegToEnglish = document.getElementById('setLanguage')
+
+    setLanaguegToEnglish.innerText = getLanguageMessage()
 
 
     let url = ''
@@ -425,14 +433,12 @@ document.addEventListener('DOMContentLoaded', function () {
         settingsMenu.style.display = settingsMenu.style.display === 'block' ? 'none' : 'block';
     });
 
-    document.getElementById('seeAllNotes').addEventListener('click', () => {
+    seeAllNotes.addEventListener('click', () => {
         chrome.runtime.sendMessage({ action: 'createTabAndInject' });
         // UserLocalStorage.deleteNoteData()
     });
 
-    document.getElementById('setLanguage').addEventListener('click', () => {
 
-    });
     document.getElementById('unPinAll').addEventListener('click', async () => {
         const button = document.getElementById('unPinAll');
         const noteArr = await UserLocalStorage.retriveNoteData();
@@ -450,7 +456,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         button.setAttribute('state', !shouldUnpin);
-        button.innerText = shouldUnpin ? 'UnPin All' : 'Pin All';
+        button.innerText = shouldUnpin ? getUnPinMessage() : getPinMessage();
 
         await UserLocalStorage.updateNote(updatedFilterNote, shouldUnpin)
         renderNotes()

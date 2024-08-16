@@ -1,0 +1,12 @@
+{
+  "appName": { "message": "便箋" },
+  "appDescription": { "message": "Chrome 外掛程式，用于創建和儲存便箋。" },
+  "brandName": { "message": "便箋" },
+  "noOfNotes": { "message": "所有便箋" },
+  "deleteMessageAll": { "message": "確定要刪除所有便箋嗎？" },
+  "deleteMessage": { "message": "確定要刪除此便箋嗎？" },
+  "seeAllNote": { "message": "所有便箋" },
+  "pinAll": { "message": "全部固定" },
+  "unPinAll": { "message": "全部取消固定" },
+  "setLanguage": { "message": "語言 : 繁體中文" }
+}

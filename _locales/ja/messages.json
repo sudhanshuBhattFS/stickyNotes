@@ -1,0 +1,10 @@
+{
+  "appName": { "message": "スティッキーノート" },
+  "appDescription": {
+    "message": "Chrome 拡張機能でスティッキーノートを作成して保存します。"
+  },
+  "brandName": { "message": "スティッキーノート" },
+  "noOfNotes": { "message": "すべてのノート" },
+  "deleteMessageAll": { "message": "すべてのノートを削除してよいですか？" },
+  "deleteMessage": { "message": "このノートを削除してよいですか？" }
+}

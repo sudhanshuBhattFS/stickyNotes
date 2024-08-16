@@ -1,0 +1,32 @@
+{
+  "appName": {
+    "message": "Sticky Note"
+  },
+  "appDescription": {
+    "message": "A Chrome extension to create and save sticky notes."
+  },
+  "brandName": {
+    "message": "Sticky Notes"
+  },
+  "noOfNotes": {
+    "message": "All Notes"
+  },
+  "deleteMessageAll": {
+    "message": "Are you sure you want to remove all notes"
+  },
+  "deleteMessage": {
+    "message": "Are you sure you want to remove this Note"
+  },
+  "seeAllNote": {
+    "message": "All Notes"
+  },
+  "pinAll": {
+    "message": "Pin All"
+  },
+  "unPinAll": {
+    "message": "Un Pin All"
+  },
+  "setLanguage": {
+    "message": "Set language : English"
+  }
+}
