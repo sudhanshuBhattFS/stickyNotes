@@ -1,3 +1,4 @@
+let selectedNoteContainer = null;
 // get note data which has been inserted
 
 let isViewGrid = true
@@ -155,7 +156,6 @@ const insertContentInMain = (note) => {
 
 
 const toggleNoteContainerSelection = () => {
-    let selectedNoteContainer = null;
     const noteContainers = document.querySelectorAll('.noteContainer');
 
     if (noteContainers.length > 0) {
@@ -194,6 +194,7 @@ const toggleNoteContainerSelection = () => {
             deleteBtn.addEventListener('click', async (event) => {
                 if (confirm('Are you sure you want to remove this note ')) {
                     const deleteBtn = event.target
+                    console.log('delete button is pressed')
 
                     // Ensure you're using the correct attribute name
                     const id = deleteBtn.getAttribute('unique-id');
@@ -212,6 +213,7 @@ const toggleNoteContainerSelection = () => {
                                 chrome.tabs.sendMessage(tab.id, { action: 'removeElementFromDom', id: id });
                             });
                         });
+                        toggleNoteContainerSelection()
 
                     } else {
                         console.error(`Element with class ${id} not found.`);
@@ -380,7 +382,7 @@ const handleCardData = async () => {
         document.querySelectorAll('.delete-note').forEach(deleteButton => {
             deleteButton.addEventListener('click', (event) => {
                 const message = getDeleteMessage()
-                if (confirm(message)) {
+                if (confirm('this is the delete button ')) {
                     event.stopPropagation();
                     (deleteButton, 'deletebtn remove')
                     deleteButton.closest('.noteContainer').remove();
@@ -391,6 +393,7 @@ const handleCardData = async () => {
                     const contentContainer = document.querySelector('.contentContainer');
                     contentContainer.innerHTML = '';
                     chrome.runtime.sendMessage({ action: "removeUsingHostName", hostName: hostName },);
+                    toggleNoteContainerSelection()
 
                 }
             });

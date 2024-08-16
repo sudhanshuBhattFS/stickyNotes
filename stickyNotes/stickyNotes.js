@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // const setLanaguegToEnglish = document.getElementById('setLanguage')
 
 
-    setLanaguegToEnglish.innerText = getLanguageMessage()
+    // setLanaguegToEnglish.innerText = getLanguageMessage()
 
 
     let url = ''
