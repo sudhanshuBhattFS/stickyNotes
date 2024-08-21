@@ -28,5 +28,23 @@
   },
   "setLanguage": {
     "message": "Set language : English"
+  },
+  "tooltipRemoveAll": {
+    "message": "Delete all notes"
+  },
+  "tooltipOpenTab": {
+    "message": "Settings & preferences"
+  },
+  "tooltipAddNote": {
+    "message": "Add a new note"
+  },
+  "tooltipRefresh": {
+    "message": "Refresh notes"
+  },
+  "tooltipGridView": {
+    "message": "Grid view"
+  },
+  "navigation": {
+    "message": "Click to navigate to the specified website."
   }
 }

@@ -1,17 +1,26 @@
 pre {
     margin:  0px !important;
 }
+
 .note-container {
     background-color: var(--background-color);
     z-index: 9999;
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) scale(0); /* Combine translate and scale */
     color: white;
     border-radius: 5px;
-    width: 30%;
-    height: 40%;
+    width: 5%;
+    height: 30%;
+    min-width: 240px !important;
+    min-height: 278px !important;
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.note-container.show {
+    transform: translate(-50%, -50%) scale(1); /* Maintain centering and scale to normal size */
+    opacity: 1;
 }
 .note-title {
     display: flex;
@@ -60,5 +69,13 @@ pre {
     background-color: var(--heading-color);
     filter: brightness(0.91); 
 }
+
+svg {
+    width: 16;
+    height: 16;
+    fill: black !important; 
+}
+
+
 
 

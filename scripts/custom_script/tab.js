@@ -8,6 +8,7 @@ const containerEle = document.querySelector('.contentContainer');
 
 (async function checkIsView() {
     isViewGrid = await UserLocalStorage.getIsViewGrid()
+    console.log(isViewGrid, 'grid check')
 })()
 
 
@@ -72,7 +73,7 @@ const createCardsForNote = (note) => {
         <div data-url="${note.url}" class="note-header url px-3 py-3 d-flex justify-content-between align-items-center">
             <div  class="cursor-pointer hostName">${note.hostName}</div>
            <div>
-           <svg xmlns="http://www.w3.org/2000/svg" data-url="${note.url}" width="16" height="16" fill="currentColor" class="bi navigation bi-arrow-up-right-square" viewBox="0 0 16 16">
+           <svg xmlns="http://www.w3.org/2000/svg" data-url="${note.url}" width="16" height="16" fill="currentColor" class="bi navigation bi-arrow-up-right-square toolTipNav" viewBox="0 0 16 16">
   <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm5.854 8.803a.5.5 0 1 1-.708-.707L9.243 6H6.475a.5.5 0 1 1 0-1h3.975a.5.5 0 0 1 .5.5v3.975a.5.5 0 1 1-1 0V6.707z"/>
 </svg>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi delete-note bi-trash custom-margin-10" viewBox="0 0 16 16">
@@ -96,13 +97,9 @@ const TextAreaForNotesHtml = (note) => {
         <div class="w-100 heading text-dark px-3 py-2">
             <div class="w-100 d-flex justify-content-between">
                 <div>
-                  <span class="px-2">${note.date}</span><span class="px-2">${note.time}</span>
+                  <span class="px-2">${note.date.replace(/\//g, '-')}</span><span class="px-2">${note.time}</span>
                 </div>
                 <div>
-                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" unique-id='${id}'  id="editBtn" class="bi  mx-2 editBtn bi-pencil-square" viewBox="0 0 16 16">
-                       <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                       <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
-                   </svg>
                     <svg xmlns="http://www.w3.org/2000/svg" unique-id='${id}' width="16" height="16" fill="currentColor" class="bi bi-trash deleteNoteBtn" viewBox="0 0 16 16">
                      <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
                      <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
@@ -110,7 +107,7 @@ const TextAreaForNotesHtml = (note) => {
                 </div>
             </div>
         </div>
-        <div contenteditable="false" class="textAreaForNotes resize border border-light w-100 bg-transparent text-light p-2">${innerText}</div>
+        <div contenteditable="true" uniqueId="${id}" class="textAreaForNotes resize border border-light w-100 bg-transparent text-light p-2">${innerText}</div>
     </div>`;
 };
 
@@ -150,6 +147,20 @@ const insertContentInMain = (note) => {
     }
 
 
+
+    // Tooltip for the 'Delete Note' button
+    tippy('.deleteNoteBtn', {
+        content: getDeleteAllNotesMessage(),
+        placement: 'bottom'
+    });
+    tippy('.toolTipNav', {
+        content: getMessageForNav(),
+        placement: 'bottom'
+    });
+    tippy('.delete-note', {
+        content: getDeleteMessage(),
+        placement: 'bottom'
+    });
 
 }
 
@@ -224,42 +235,46 @@ const toggleNoteContainerSelection = () => {
     }
 
     const eventListerForEditBtn = () => {
+        document.querySelectorAll('.textAreaForNotes').forEach((textArea) => {
+            // Make each textarea content editable
+            textArea.setAttribute('contenteditable', 'true');
 
-        document.querySelectorAll('.editBtn').forEach(editBtn => {
-            editBtn.addEventListener('click', (event) => {
-                const targetElement = editBtn
-                const id = editBtn.getAttribute('unique-id')
-                const parentElement = document.getElementsByClassName(id)[0];
-                const textArea = parentElement.querySelector('.textAreaForNotes');
+            // Add event listener for input
+            const debouncedUpdate = debounce(() => {
+                const updatedContent = textArea.innerText;
+                const id = textArea.getAttribute('uniqueId');
 
-                if (textArea) {
-                    const isEditable = textArea.getAttribute('contenteditable') === 'true';
-                    textArea.setAttribute('contenteditable', !isEditable);
+                // Send the updated content to the background script or storage
+                chrome.runtime.sendMessage({
+                    action: 'updateNoteContent',
+                    id: id,
+                    content: updatedContent
+                });
+            }, 500); // Adjust the delay as needed
 
-                    if (!isEditable) {
-                        textArea.focus();
+            textArea.addEventListener('input', debouncedUpdate);
 
-                        // Move cursor to the end of the content
-                        const range = document.createRange();
-                        const selection = window.getSelection();
-                        range.selectNodeContents(textArea);
-                        range.collapse(false); // Collapse to end of the content
-                        selection.removeAllRanges();
-                        selection.addRange(range);
-
-                        targetElement.classList.add('select');
-                    } else {
-                        targetElement.classList.remove('select');
-                        const updatedContent = textArea.innerText;
-                        chrome.runtime.sendMessage({
-                            action: 'updateNoteContent',
-                            id: id,
-                            content: updatedContent
-                        });
-                    }
-                }
-            })
+            // Focus and move cursor to the end when user clicks on the textarea
+            textArea.addEventListener('focus', () => {
+                const range = document.createRange();
+                const selection = window.getSelection();
+                range.selectNodeContents(textArea);
+                range.collapse(false); // Collapse to end of the content
+                selection.removeAllRanges();
+                selection.addRange(range);
+            });
         });
+
+        // Debounce function to delay the execution of a function
+        function debounce(func, delay) {
+            let timeout;
+            return function (...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), delay);
+            };
+        }
+
+
     }
 
     noteContainers.forEach(noteContainer => {
@@ -433,12 +448,10 @@ const handleCardData = async () => {
 };
 
 
-
-
-
 // IIFE
 (() => {
     // This function creates all the note cards 
     handleCardData();
 })();
+
 

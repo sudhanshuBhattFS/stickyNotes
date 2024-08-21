@@ -6,5 +6,24 @@
   "brandName": { "message": "スティッキーノート" },
   "noOfNotes": { "message": "すべてのノート" },
   "deleteMessageAll": { "message": "すべてのノートを削除してよいですか？" },
-  "deleteMessage": { "message": "このノートを削除してよいですか？" }
+  "deleteMessage": { "message": "このノートを削除してよいですか？" },
+
+  "tooltipRemoveAll": {
+    "message": "すべてのメモを削除"
+  },
+  "tooltipOpenTab": {
+    "message": "設定と設定"
+  },
+  "tooltipAddNote": {
+    "message": "新しいメモを追加"
+  },
+  "tooltipRefresh": {
+    "message": "メモを更新"
+  },
+  "tooltipGridView": {
+    "message": "グリッドビュー"
+  },
+  "navigation": {
+    "message": "指定されたウェブサイトに移動するにはクリックしてください。"
+  }
 }

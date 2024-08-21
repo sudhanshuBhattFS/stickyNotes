@@ -28,7 +28,7 @@ const eventListenerForNote = (shadowRoot, container,) => {
             const id = response.noteData.id
             if (id) {
                 const title = response.noteData.title
-                SimpleShadowDOM.createPopup(id, '', title, true);
+                SimpleShadowDOM.createPopup(response.noteData);
             }
         });
 
@@ -74,7 +74,7 @@ const eventListenerForNote = (shadowRoot, container,) => {
 
     closeBtn.addEventListener('mouseover', () => {
         closeBtn.style.background = '#ff5757';
-        closeBtn.style.color = 'white'
+        closeBtn.style.color = ''
     });
 
     closeBtn.addEventListener('mouseout', () => {
@@ -83,9 +83,42 @@ const eventListenerForNote = (shadowRoot, container,) => {
     });
 
     const textArea = shadowRoot.querySelector('.textarea');
-    textArea.addEventListener('input', () => {
+    preventUnintendedEvents(textArea)
+    // Debounce function to delay execution
+    function debounce(func, delay) {
+        let timeout;
+        return function (...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), delay);
+        };
+    }
+
+    // Event listener with debounce
+    textArea.addEventListener('input', debounce(() => {
         const noteContent = textArea.innerText;
-        const contentElement = UpdateData(textArea.id, noteContent)
+        const contentElement = UpdateData(textArea.id, noteContent);
         chrome.runtime.sendMessage({ action: "removeTab", title: "StickyNotes" });
-    });
+    }, 500)); // Adjust the delay (in milliseconds) as needed
+
+
+    function preventUnintendedEvents(element) {
+        // Prevent event propagation while allowing default behavior
+        element.addEventListener('keydown', function (event) {
+            event.stopPropagation();
+        });
+
+        element.addEventListener('keypress', function (event) {
+            event.stopPropagation();
+        });
+
+        element.addEventListener('keyup', function (event) {
+            event.stopPropagation();
+        });
+
+        // Specially handle focus-related events
+        element.addEventListener('focus', function (event) {
+            event.stopPropagation();
+        }, true);
+    }
+
 }

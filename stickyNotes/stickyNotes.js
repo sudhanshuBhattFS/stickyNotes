@@ -7,7 +7,6 @@ let currentPage = 1;
 
 let length = 0
 
-
 document.addEventListener('DOMContentLoaded', function () {
 
     const addBtn = document.getElementById('add-note')
@@ -98,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (noteLength == 0) {
             const element = this.getElementById('notesNumber')
-            element.innerText = `All Notes `
+            element.innerText = `No Notes Saved`
             removeAllBtn.style.display = 'none'
         } else {
             const element = this.getElementById('notesNumber')
@@ -263,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         const hostName = note.hostName
-        const dateStr = note.date
+        const dateStr = note.date.replace(/\//g, '-');
         const content = note.content
         const url = note.url
         const timeStr = note.time
@@ -396,9 +395,10 @@ document.addEventListener('DOMContentLoaded', function () {
         chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
             var activeTab = tabs[0];
             const noteData = getDateAndTime()
-            chrome.tabs.sendMessage(activeTab.id, { "message": "start", "noteData": noteData }, function (response) {
+            chrome.tabs.sendMessage(activeTab.id, { "message": "start", "noteData": noteData }, async function (response) {
                 if (response && response.status === "success") {
                     // update the data in loaclstorage
+                    noteArr = await UserLocalStorage.retriveNoteData()
                     noteArr.push(noteData)
                     chrome.storage.local.set({ notes: noteArr });
                     // inject a add in the extension with the id data 
