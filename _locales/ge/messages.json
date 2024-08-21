@@ -14,5 +14,23 @@
   "seeAllNote": { "message": "Alle Notizen" },
   "pinAll": { "message": "Alle anheften" },
   "unPinAll": { "message": "Alle losheften" },
-  "setLanguage": { "message": "Sprache : Deutsch" }
+  "setLanguage": { "message": "Sprache : Deutsch" },
+  "tooltipRemoveAll": {
+    "message": "Alle Notizen löschen"
+  },
+  "tooltipOpenTab": {
+    "message": "Einstellungen & Präferenzen"
+  },
+  "tooltipAddNote": {
+    "message": "Neue Notiz hinzufügen"
+  },
+  "tooltipRefresh": {
+    "message": "Notizen aktualisieren"
+  },
+  "tooltipGridView": {
+    "message": "Rasteransicht"
+  },
+  "navigation": {
+    "message": "Klicken Sie, um zur angegebenen Website zu navigieren"
+  }
 }

@@ -32,3 +32,37 @@ function getViewAllNotes() {
     let message = chrome.i18n.getMessage("seeAllNote")
     return message
 }
+
+function getDeleteAllNotesMessage() {
+    let message = chrome.i18n.getMessage("tooltipRemoveAll");
+    return message;
+}
+
+function getSettingsPreferencesMessage() {
+    let message = chrome.i18n.getMessage("tooltipOpenTab");
+    return message;
+}
+
+function getAddNewNoteMessage() {
+    let message = chrome.i18n.getMessage("tooltipAddNote");
+    return message;
+}
+
+function getRefreshNotesMessage() {
+    let message = chrome.i18n.getMessage("tooltipRefresh");
+    return message;
+}
+
+function getGridViewMessage() {
+    let message = chrome.i18n.getMessage("tooltipGridView");
+    return message;
+}
+
+function getViewAllNotesMessage() {
+    let message = chrome.i18n.getMessage("seeAllNote");
+    return message;
+}
+function getMessageForNav() {
+    let message = chrome.i18n.getMessage("navigation");
+    return message;
+}

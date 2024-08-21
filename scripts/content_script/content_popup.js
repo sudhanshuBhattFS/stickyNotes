@@ -31,7 +31,13 @@ class SimpleShadowDOM {
         `;
     }
 
-    static createPopup(id, innerContent, hostName, enablePin, position) {
+    static createPopup(note) {
+        const id = note.id
+        const hostName = note.hostName;
+        const enablePin = note.enablePin
+        const position = note.position
+        const size = { width: note.width, height: note.height }
+        const innerContent = note.content
 
         const heading = getHeading();
         const container = document.createElement('div');
@@ -42,28 +48,39 @@ class SimpleShadowDOM {
 
         document.body.appendChild(container);
 
+        // for tranisition 
+        const noteContainer = shadowRoot.querySelector('.note-container')
+
+        // Trigger the zoom-in transition by adding the 'show' class
+        setTimeout(() => {
+            noteContainer.classList.add('show');
+        }, 50);
+
+
         // stylesheet
         addStyleSheetlink(shadowRoot);
 
-        // draggable
+        // draggable    
         makeDraggable(shadowRoot.querySelector('.note-container'), shadowRoot.querySelector('.note-title'), id, position);
 
         // handling all the events for the note 
         eventListenerForNote(shadowRoot, container);
 
         // resizable
-        makeResizable(shadowRoot.querySelector('.note-container'));
+        makeResizable(shadowRoot.querySelector('.note-container'), size);
     }
 
     static removeElementFromDom(id) {
         const containers = document.querySelectorAll('.model-notes');
-        containers.forEach((container) => {
-            const shadowRoot = container.shadowRoot;
-            const existingElement = shadowRoot.getElementById(id);
-            if (existingElement) {
-                existingElement.parentElement.remove();
-            }
-        });
+        if (containers) {
+            containers.forEach((container) => {
+                const shadowRoot = container.shadowRoot;
+                const existingElement = shadowRoot.getElementById(id);
+                if (existingElement) {
+                    existingElement.parentElement.remove();
+                }
+            });
+        }
     }
 
     static updatePin(id) {
@@ -105,9 +122,32 @@ class SimpleShadowDOM {
     }
 }
 
-const makeResizable = (element) => {
+const makeResizable = (element, size) => {
     element.style.resize = 'both';
     element.style.overflow = 'auto';
+
+    console.log(size, 'size')
+
+    if (size && size.width !== undefined && size.height !== undefined) {
+        element.style.width = `${size.width}px`;
+        element.style.height = `${size.height}px`;
+    }
+
+    element.addEventListener('mouseup', () => {
+        const width = element.offsetWidth;
+        const height = element.offsetHeight;
+        console.log(`Width: ${width}px, Height: ${height}px`);
+        const id = element.getAttribute('uniqueId')
+
+        chrome.runtime.sendMessage({
+            action: 'StoreAndUpdateWidthAndHeight',
+            id: id,    // Replace with the actual note ID
+            width: width,       // Replace with the actual width
+            height: height      // Replace with the actual height
+        })
+    });
+
+
 }
 
 const addStyleSheetlink = (shadowRoot) => {
@@ -121,10 +161,6 @@ const addStyleSheetlink = (shadowRoot) => {
 const createCardAndUpdate = (note) => {
     const id = note.id;
     const innerHtml = note.content.replace(/\n/g, '<br>'); // Replace line breaks with <br> tags
-    const hostName = note.hostName;
-    const pinEnable = note.enablePin
-    const position = note.position
-
 
     const containers = document.querySelectorAll('.model-notes');
     let elementExists = false;
@@ -142,7 +178,7 @@ const createCardAndUpdate = (note) => {
 
     // if the element did not exist 
     if (!elementExists) {
-        SimpleShadowDOM.createPopup(id, innerHtml, hostName, pinEnable, position);
+        SimpleShadowDOM.createPopup(note);
     }
 };
 

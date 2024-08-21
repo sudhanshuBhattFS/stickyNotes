@@ -28,7 +28,7 @@ const getNoteData = (url) => {
 // one way communication between background and content script
 chrome.runtime.onMessage.addListener(
     async function (request, sender, sendResponse) {
-
+        console.log(request, 'request')
         if (request.action == "storeNoteData") {
 
             // get id 
@@ -115,6 +115,8 @@ chrome.runtime.onMessage.addListener(
             // Filter out the note with the matching ID
             const newArray = StoredNotes.filter((note) => note.hostName === hostName);
             const updateArray = StoredNotes.filter((note) => note.hostName !== hostName);
+
+            console.log(updateArray, 'check update array ')
             await UserLocalStorage.setStorage(updateArray)
 
             newArray.forEach((note) => {
@@ -154,32 +156,6 @@ chrome.runtime.onMessage.addListener(
             }
 
         }
-
-
-
-        // if (request.action === 'hide') {
-        //     const isHidden = request.isHidden;
-
-        //     // Retrieve the notes array from local storage
-        //     const noteArr = await UserLocalStorage.retriveNoteData();
-
-        //     // Logic to hide sticky notes if the URL matches
-        //     chrome.tabs.query({}, async (tabs) => {
-        //         for (let tab of tabs) {
-        //             if (tab.url && !tab.url.startsWith('chrome://')) {
-        //                 // Check if any note in the noteArr matches the tab's URL or hostName
-        //                 const matchFound = noteArr.some(note => {
-        //                     const noteUrl = new URL(note.url);
-        //                     return noteUrl.href === tab.url || noteUrl.hostname === new URL(tab.url).hostname;
-        //                 });
-
-        //                 if (matchFound) {
-        //                     chrome.tabs.sendMessage(tab.id, { message: 'hideStickyNotes', isHidden: isHidden });
-        //                 }
-        //             }
-        //         }
-        //     });
-        // }
 
 
         if (request.action === 'updatePin') {
@@ -250,6 +226,25 @@ chrome.runtime.onMessage.addListener(
 
             return true
 
+        }
+
+        if (request.action === 'StoreAndUpdateWidthAndHeight') {
+            const id = request.id;
+            const width = request.width;
+            const height = request.height;
+
+            const allNotes = await UserLocalStorage.retriveNoteData();
+
+            // Find the note by id
+            const noteIndex = allNotes.findIndex(note => note.id === id);
+
+            if (noteIndex !== -1) {
+                // Update the width and height in the note
+                allNotes[noteIndex].width = width;
+                allNotes[noteIndex].height = height;
+
+                await UserLocalStorage.setStorage(allNotes);
+            }
         }
 
         return true

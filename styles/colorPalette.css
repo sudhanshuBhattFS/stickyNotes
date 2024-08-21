@@ -1,6 +1,7 @@
 :root {
     --font-color : #E2E2B6; 
     --background-color: hsl(208, 90%, 8%);
+    --bg-lighter : hsl(208, 90%, 12%);
     --heading-color: #E2E2B6 ; 
     --font-heading: black;
     /* --primary-font: obviously-narrow, sans-serif;
@@ -12,4 +13,23 @@
     background-color: var(--heading-color);
     filter: brightness(0.91); 
     color: black !important;
+}
+
+/* Custom styles for tooltips */
+.custom-tooltip .tippy-box {
+    font-size: 10px !important; /* Adjust font size */
+    padding: 10px !important; /* Adjust padding if needed */
+    background-color: var(--bg-lighter) !important;
+}
+
+
+/* Base style for icons */
+ svg {
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+/* Pressed effect */
+ svg:active {
+    transform: scale(0.9); /* Slightly reduce size */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Add shadow to simulate depth */
 }

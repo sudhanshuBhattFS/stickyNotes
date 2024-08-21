@@ -61,7 +61,7 @@ class UserLocalStorage {
                 if (result.isViewGrid) {
                     resolve(result.isViewGrid)
                 } else {
-                    resolve(false)
+                    resolve(true)
                 }
             })
         })

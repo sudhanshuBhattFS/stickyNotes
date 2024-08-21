@@ -14,5 +14,23 @@
   "seeAllNote": { "message": "Todas las Notas" },
   "pinAll": { "message": "Fijar Todo" },
   "unPinAll": { "message": "Desfijar Todo" },
-  "setLanguage": { "message": "Idioma : Español" }
+  "setLanguage": { "message": "Idioma : Español" },
+  "tooltipRemoveAll": {
+    "message": "Eliminar todas las notas"
+  },
+  "tooltipOpenTab": {
+    "message": "Configuraciones y preferencias"
+  },
+  "tooltipAddNote": {
+    "message": "Agregar una nueva nota"
+  },
+  "tooltipRefresh": {
+    "message": "Actualizar notas"
+  },
+  "tooltipGridView": {
+    "message": "Vista de cuadrícula"
+  },
+  "navigation": {
+    "message": "Haz clic para navegar al sitio web especificado."
+  }
 }

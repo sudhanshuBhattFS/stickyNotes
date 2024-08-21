@@ -8,5 +8,23 @@
   "seeAllNote": { "message": "所有便箋" },
   "pinAll": { "message": "全部固定" },
   "unPinAll": { "message": "全部取消固定" },
-  "setLanguage": { "message": "語言 : 繁體中文" }
+  "setLanguage": { "message": "語言 : 繁體中文" },
+  "tooltipRemoveAll": {
+    "message": "删除所有便签"
+  },
+  "tooltipOpenTab": {
+    "message": "设置和偏好"
+  },
+  "tooltipAddNote": {
+    "message": "添加新便签"
+  },
+  "tooltipRefresh": {
+    "message": "刷新便签"
+  },
+  "tooltipGridView": {
+    "message": "网格视图"
+  },
+  "navigation": {
+    "message": "点击以导航到指定的网站。"
+  }
 }
