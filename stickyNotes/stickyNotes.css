@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
     width: 300px;
     padding: 10px;
-    background: var(--background-color);
+    background: var(--popup-bg);
   }
   
   #notes-container {
@@ -42,11 +42,12 @@ body {
   }
 
   .title{
-    color: white;
+    color: var(--popup-color) ;
   }
 
   #add-note{
-    background-color: var(--heading-color);
+    background-color: var(--popup-heading);
+    color : var(--popup-heading-color)
   }
 
   /* popup.css */
@@ -63,8 +64,8 @@ body {
   display: flex;
     justify-content: space-between;
     align-items: center;
-    background: var(--heading-color);
-    color: var(--font-heading);
+    background: var(--popup-heading);
+    color: var(--popup-heading-color);
     padding: 5px;
 }
 
@@ -72,6 +73,7 @@ body {
   overflow: hidden;
   height: 1.5rem;
   padding: 5px ;
+  border: 1px solid black;
 }
 
 .note-content {
@@ -145,7 +147,7 @@ body {
 
 .selected {
   background-color: var(--heading-color);
-  filter: brightness(0.91); 
+  filter: brightness(0.5); 
   margin-left: 2px ;
 }
 
@@ -181,7 +183,7 @@ body {
   right: 2rem;
   top: 3.6rem;
   background-color: var(--bg-lighter);
-  color: var(--font-color) !important;
+  color: var(--popup-heading-color) !important;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 99;
@@ -198,3 +200,15 @@ body {
 /* Show the dropdown menu on button click */
 .dropdown-content a:hover {background-color: #f1f1f1;
 color: black !important}
+
+
+svg{
+  fill: black;  
+}
+
+#pin svg {
+  fill: white;
+}
+.delete-btn svg {
+  fill: white;
+}

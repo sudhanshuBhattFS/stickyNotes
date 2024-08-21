@@ -1,18 +1,30 @@
 :root {
-    --font-color : #E2E2B6; 
+    /* --font-color : #E2E2B6; 
     --background-color: hsl(208, 90%, 8%);
-    --bg-lighter : hsl(208, 90%, 12%);
     --heading-color: #E2E2B6 ; 
-    --font-heading: black;
+    --font-heading: black; */
+    --bg-lighter : hsl(208, 90%, 12%);
+
+    --popup-bg : #E2E2B6; 
+    --popup-color : hsl(208, 90%, 8%) ; 
+    --popup-heading  :  hsl(208, 90%, 8%) ; 
+    --popup-heading-color : #E2E2B6 ; 
+
     /* --primary-font: obviously-narrow, sans-serif;
     --secondary-font: halyard-display, sans-serif; */
+
+    /* for html page  */
+    --page-bg : #E2E2B6 ;
+    --page-heading :  hsl(208, 90%, 8%); 
+    --page-font: white ; 
+
 
 }
 
 .select {
-    background-color: var(--heading-color);
-    filter: brightness(0.91); 
-    color: black !important;
+    background-color: var(--page-heading);
+    filter: brightness(0.9); 
+    color: white
 }
 
 /* Custom styles for tooltips */

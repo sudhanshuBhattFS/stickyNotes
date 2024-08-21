@@ -3,7 +3,7 @@ pre {
 }
 
 .note-container {
-    background-color: var(--background-color);
+    background-color: var(--popup-bg);
     z-index: 9999;
     position: fixed;
     top: 50%;
@@ -26,8 +26,8 @@ pre {
     display: flex;
     justify-content: space-between;
     align-items: center ;
-    background-color: var(--heading-color);
-    color: black;
+    background-color: var(--popup-heading);
+    color: var(--popup-heading-color);
     padding: 10px;
     cursor: move; /* Ensures it's visually clear that this area is draggable */
 }
@@ -39,7 +39,7 @@ pre {
     overflow: hidden;
 }
 .textarea {
-    color: white;
+    color: black;
     outline: none;
     padding: 10px;
     border: none;
@@ -66,14 +66,15 @@ pre {
 
 
 .selected {
-    background-color: var(--heading-color);
-    filter: brightness(0.91); 
+    background-color: var(--popup-heading-co);
+    filter: brightness(0.4); 
+
 }
 
 svg {
     width: 16;
     height: 16;
-    fill: black !important; 
+    fill: white;
 }
 
 
