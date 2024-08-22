@@ -53,11 +53,13 @@ body {
   /* popup.css */
 .note-card {
   border: 1px solid #ccc;
-  padding: 1px;
+
   margin-bottom: 10px;
   border-radius: 5px;
   background-color: var(--background-color);
   color: var(--font-color);
+  border: 1px solid black;
+  border-radius: 5px ;
 }
 
 .note-header {
@@ -73,7 +75,7 @@ body {
   overflow: hidden;
   height: 1.5rem;
   padding: 5px ;
-  border: 1px solid black;
+
 }
 
 .note-content {
@@ -105,7 +107,7 @@ body {
 
 /* Pagination links */
 .pagination a {
-  color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
   height: 1.5rem;
   width: 1.5rem;
   margin: 0.5rem;
@@ -120,8 +122,7 @@ body {
 
 /* Style the active/current link */
 .pagination a.active {
-  background-color: dodgerblue;
-  color: white;
+  color: rgb(255, 255, 255) !important;
 }
 
 .pagination {
@@ -136,8 +137,8 @@ body {
 
 /* Add a grey background color on mouse-over */
 .pagination a:hover:not(.active) {
-  background-color: #ddd;
-  color: black;
+  background-color: #000000;
+  color: rgb(255, 255, 255);
 }
 
 .cursor-pointer {

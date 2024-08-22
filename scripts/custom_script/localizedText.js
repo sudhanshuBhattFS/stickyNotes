@@ -66,3 +66,25 @@ function getMessageForNav() {
     let message = chrome.i18n.getMessage("navigation");
     return message;
 }
+
+function getDeleteAllDescription() {
+    let message = chrome.i18n.getMessage('deleteAllDescription')
+    return message
+}
+
+function getDeleteDes() {
+    let message = chrome.i18n.getMessage("deleteDescription");
+    return message
+}
+
+function getDeleteAllMsg() {
+    let message = chrome.i18n.getMessage('DeleteAllMsg')
+    return message
+}
+
+function getDeleteMsg() {
+    let message = chrome.i18n.getMessage("DeleteMsg");
+    return message
+}
+
+

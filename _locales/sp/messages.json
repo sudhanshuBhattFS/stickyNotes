@@ -1,25 +1,39 @@
 {
-  "appName": { "message": "Nota Adhesiva" },
-  "appDescription": {
-    "message": "Una extensión de Chrome para crear y guardar notas adhesivas."
+  "appName": {
+    "message": "Stick it - notas web"
   },
-  "brandName": { "message": "Notas Adhesivas" },
-  "noOfNotes": { "message": "Todas las Notas" },
+  "appDescription": {
+    "message": "Esta práctica extensión de Chrome te permite crear y guardar notas adhesivas directamente en los sitios web que visitas"
+  },
+  "brandName": {
+    "message": "Notas adhesivas"
+  },
+  "noOfNotes": {
+    "message": "Todas las notas"
+  },
   "deleteMessageAll": {
-    "message": "¿Está seguro de que desea eliminar todas las notas?"
+    "message": "¿Estás seguro de que quieres eliminar todas las notas?"
   },
   "deleteMessage": {
-    "message": "¿Está seguro de que desea eliminar esta Nota?"
+    "message": "¿Estás seguro de que quieres eliminar la nota?"
   },
-  "seeAllNote": { "message": "Todas las Notas" },
-  "pinAll": { "message": "Fijar Todo" },
-  "unPinAll": { "message": "Desfijar Todo" },
-  "setLanguage": { "message": "Idioma : Español" },
+  "seeAllNote": {
+    "message": "Todas las notas"
+  },
+  "pinAll": {
+    "message": "Fijar todo"
+  },
+  "unPinAll": {
+    "message": "Desfijar todo"
+  },
+  "setLanguage": {
+    "message": "Establecer idioma: Inglés"
+  },
   "tooltipRemoveAll": {
     "message": "Eliminar todas las notas"
   },
   "tooltipOpenTab": {
-    "message": "Configuraciones y preferencias"
+    "message": "Configuración y preferencias"
   },
   "tooltipAddNote": {
     "message": "Agregar una nueva nota"
@@ -28,9 +42,21 @@
     "message": "Actualizar notas"
   },
   "tooltipGridView": {
-    "message": "Vista de cuadrícula"
+    "message": "Vista en cuadrícula"
   },
   "navigation": {
     "message": "Haz clic para navegar al sitio web especificado."
+  },
+  "deleteDescription": {
+    "message": "Haz clic para eliminar esta nota."
+  },
+  "deleteAllDescription": {
+    "message": "Haz clic para eliminar todas las notas y esta tarjeta."
+  },
+  "DeleteMsg": {
+    "message": "¿Estás seguro de que quieres eliminar estas notas?"
+  },
+  "DeleteAllMsg": {
+    "message": "¿Estás seguro de que quieres eliminar todas las notas?"
   }
 }

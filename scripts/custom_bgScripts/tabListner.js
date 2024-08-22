@@ -29,7 +29,7 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
 
 // Listen for tab URL updates (e.g., navigating to a different page in the same tab)
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-    console.log(tab, 'tab')
+
 
     if (changeInfo.status === 'complete') {
         const hostName = new URL(tab.url).hostname;

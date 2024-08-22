@@ -1,29 +1,62 @@
 {
-  "appName": { "message": "スティッキーノート" },
-  "appDescription": {
-    "message": "Chrome 拡張機能でスティッキーノートを作成して保存します。"
+  "appName": {
+    "message": "Stick it - ウェブノート"
   },
-  "brandName": { "message": "スティッキーノート" },
-  "noOfNotes": { "message": "すべてのノート" },
-  "deleteMessageAll": { "message": "すべてのノートを削除してよいですか？" },
-  "deleteMessage": { "message": "このノートを削除してよいですか？" },
-
+  "appDescription": {
+    "message": "この便利なChrome拡張機能を使用すると、訪問したウェブサイトに直接付箋を作成して保存できます"
+  },
+  "brandName": {
+    "message": "付箋"
+  },
+  "noOfNotes": {
+    "message": "すべてのノート"
+  },
+  "deleteMessageAll": {
+    "message": "すべてのノートを削除してもよろしいですか？"
+  },
+  "deleteMessage": {
+    "message": "このノートを削除してもよろしいですか？"
+  },
+  "seeAllNote": {
+    "message": "すべてのノート"
+  },
+  "pinAll": {
+    "message": "すべてピン留め"
+  },
+  "unPinAll": {
+    "message": "すべてのピンを外す"
+  },
+  "setLanguage": {
+    "message": "言語設定：英語"
+  },
   "tooltipRemoveAll": {
-    "message": "すべてのメモを削除"
+    "message": "すべてのノートを削除"
   },
   "tooltipOpenTab": {
     "message": "設定と設定"
   },
   "tooltipAddNote": {
-    "message": "新しいメモを追加"
+    "message": "新しいノートを追加"
   },
   "tooltipRefresh": {
-    "message": "メモを更新"
+    "message": "ノートを更新"
   },
   "tooltipGridView": {
     "message": "グリッドビュー"
   },
   "navigation": {
     "message": "指定されたウェブサイトに移動するにはクリックしてください。"
+  },
+  "deleteDescription": {
+    "message": "このノートを削除するにはクリックしてください。"
+  },
+  "deleteAllDescription": {
+    "message": "すべてのノートとこのカードを削除するにはクリックしてください。"
+  },
+  "DeleteMsg": {
+    "message": "これらのノートを削除してもよろしいですか？"
+  },
+  "DeleteAllMsg": {
+    "message": "すべてのノートを削除してもよろしいですか？"
   }
 }

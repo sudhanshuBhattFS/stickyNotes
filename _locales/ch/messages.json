@@ -1,19 +1,39 @@
 {
-  "appName": { "message": "便箋" },
-  "appDescription": { "message": "Chrome 外掛程式，用于創建和儲存便箋。" },
-  "brandName": { "message": "便箋" },
-  "noOfNotes": { "message": "所有便箋" },
-  "deleteMessageAll": { "message": "確定要刪除所有便箋嗎？" },
-  "deleteMessage": { "message": "確定要刪除此便箋嗎？" },
-  "seeAllNote": { "message": "所有便箋" },
-  "pinAll": { "message": "全部固定" },
-  "unPinAll": { "message": "全部取消固定" },
-  "setLanguage": { "message": "語言 : 繁體中文" },
+  "appName": {
+    "message": "贴纸 - 网络便签"
+  },
+  "appDescription": {
+    "message": "这个方便的Chrome扩展程序允许您直接在访问的网站上创建和保存便签"
+  },
+  "brandName": {
+    "message": "便签"
+  },
+  "noOfNotes": {
+    "message": "所有便签"
+  },
+  "deleteMessageAll": {
+    "message": "您确定要删除所有便签吗？"
+  },
+  "deleteMessage": {
+    "message": "您确定要删除此便签吗？"
+  },
+  "seeAllNote": {
+    "message": "所有便签"
+  },
+  "pinAll": {
+    "message": "固定所有"
+  },
+  "unPinAll": {
+    "message": "取消固定所有"
+  },
+  "setLanguage": {
+    "message": "设置语言：英语"
+  },
   "tooltipRemoveAll": {
     "message": "删除所有便签"
   },
   "tooltipOpenTab": {
-    "message": "设置和偏好"
+    "message": "设置与偏好"
   },
   "tooltipAddNote": {
     "message": "添加新便签"
@@ -26,5 +46,17 @@
   },
   "navigation": {
     "message": "点击以导航到指定的网站。"
+  },
+  "deleteDescription": {
+    "message": "点击以删除此便签。"
+  },
+  "deleteAllDescription": {
+    "message": "点击以删除所有便签和此卡片。"
+  },
+  "DeleteMsg": {
+    "message": "您确定要删除这些便签吗？"
+  },
+  "DeleteAllMsg": {
+    "message": "您确定要删除所有便签吗？"
   }
 }

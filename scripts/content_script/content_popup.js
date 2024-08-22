@@ -64,10 +64,12 @@ class SimpleShadowDOM {
         makeDraggable(shadowRoot.querySelector('.note-container'), shadowRoot.querySelector('.note-title'), id, position);
 
         // handling all the events for the note 
-        eventListenerForNote(shadowRoot, container);
+        eventListenerForNote(shadowRoot, container, noteContainer);
 
         // resizable
         makeResizable(shadowRoot.querySelector('.note-container'), size);
+
+        // Tooltip for the 'Delete Note' button
     }
 
     static removeElementFromDom(id) {

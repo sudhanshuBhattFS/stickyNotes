@@ -1,20 +1,34 @@
 {
-  "appName": { "message": "Klebe Notiz" },
-  "appDescription": {
-    "message": "Eine Chrome-Erweiterung zum Erstellen und Speichern von Klebe Notizen."
+  "appName": {
+    "message": "Stick it - Web-Notizen"
   },
-  "brandName": { "message": "Klebe Notizen" },
-  "noOfNotes": { "message": "Alle Notizen" },
+  "appDescription": {
+    "message": "Diese praktische Chrome-Erweiterung ermöglicht es Ihnen, Haftnotizen direkt auf den von Ihnen besuchten Websites zu erstellen und zu speichern"
+  },
+  "brandName": {
+    "message": "Haftnotizen"
+  },
+  "noOfNotes": {
+    "message": "Alle Notizen"
+  },
   "deleteMessageAll": {
-    "message": "Sind Sie sicher, dass Sie alle Notizen entfernen möchten?"
+    "message": "Sind Sie sicher, dass Sie alle Notizen entfernen möchten"
   },
   "deleteMessage": {
-    "message": "Sind Sie sicher, dass Sie diese Notiz entfernen möchten?"
+    "message": "Sind Sie sicher, dass Sie die Notiz entfernen möchten "
   },
-  "seeAllNote": { "message": "Alle Notizen" },
-  "pinAll": { "message": "Alle anheften" },
-  "unPinAll": { "message": "Alle losheften" },
-  "setLanguage": { "message": "Sprache : Deutsch" },
+  "seeAllNote": {
+    "message": "Alle Notizen"
+  },
+  "pinAll": {
+    "message": "Alle anheften"
+  },
+  "unPinAll": {
+    "message": "Alle lösen"
+  },
+  "setLanguage": {
+    "message": "Sprache festlegen: Englisch"
+  },
   "tooltipRemoveAll": {
     "message": "Alle Notizen löschen"
   },
@@ -22,7 +36,7 @@
     "message": "Einstellungen & Präferenzen"
   },
   "tooltipAddNote": {
-    "message": "Neue Notiz hinzufügen"
+    "message": "Eine neue Notiz hinzufügen"
   },
   "tooltipRefresh": {
     "message": "Notizen aktualisieren"
@@ -31,6 +45,18 @@
     "message": "Rasteransicht"
   },
   "navigation": {
-    "message": "Klicken Sie, um zur angegebenen Website zu navigieren"
+    "message": "Klicken Sie, um zur angegebenen Website zu navigieren."
+  },
+  "deleteDescription": {
+    "message": "Klicken Sie, um diese Notiz zu löschen."
+  },
+  "deleteAllDescription": {
+    "message": "Klicken Sie, um alle Notizen und diese Karte zu entfernen."
+  },
+  "DeleteMsg": {
+    "message": "Sind Sie sicher, dass Sie diese Notizen löschen möchten?"
+  },
+  "DeleteAllMsg": {
+    "message": "Sind Sie sicher, dass Sie alle Notizen löschen möchten?"
   }
 }

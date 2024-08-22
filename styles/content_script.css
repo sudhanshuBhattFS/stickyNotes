@@ -22,6 +22,9 @@ pre {
     transform: translate(-50%, -50%) scale(1); /* Maintain centering and scale to normal size */
     opacity: 1;
 }
+.note-container.close {
+    transform: translate(-50%, -50%) scale(0);
+}
 .note-title {
     display: flex;
     justify-content: space-between;
@@ -75,8 +78,13 @@ svg {
     width: 16;
     height: 16;
     fill: white;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
 
 
-
+/* Pressed effect */
+ svg:active {
+    transform: scale(0.9); /* Slightly reduce size */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Add shadow to simulate depth */
+}
 

@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // remove all btn logic
     removeAllBtn.addEventListener('click', () => {
 
-        if (confirm(`Are you sure you want to remove all the notes in ${hostName}`)) {
+        if (confirm(` ${getDeleteAllMsg()} : ${hostName}`)) {
             document.getElementById('allNotesList').innerHTML = '';
             chrome.runtime.sendMessage({ action: 'removeUsingHostName', hostName: hostName });
             chrome.runtime.sendMessage({ action: "removeTab", title: "StickyNotes" });
@@ -147,6 +147,17 @@ document.addEventListener('DOMContentLoaded', function () {
             if (hostName === note.hostName) {
                 injectCards(note);
             }
+        });
+
+        tippy('.delete-btn', {
+            content: getDeleteDes(),
+            placement: 'bottom',
+            theme: 'clean'
+        });
+        tippy('#pin', {
+            content: getPinMessage(),
+            placement: 'bottom',
+            theme: 'clean'
         });
     }
 
@@ -470,6 +481,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /*                         EVENT LISTNER ENDa                    */
+
+    tippy('.delete-btn', {
+        content: getDeleteMessage(),
+        placement: 'bottom',
+        theme: 'clean'
+    });
+
+    tippy('#pin', {
+        content: getDeleteMessage(),
+        placement: 'bottom',
+        theme: 'clean'
+    });
 });
 
 
