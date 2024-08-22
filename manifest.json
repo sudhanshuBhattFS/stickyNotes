@@ -5,7 +5,7 @@
   "version": "1.0",
   "action": {
     "default_popup": "stickyNotes/stickyNotes.html",
-    "default_icon": "images/hello_extensions.png"
+    "default_icon": "images/icon_16.png"
   },
   "default_locale": "en",
   "permissions": ["activeTab", "storage", "tabs", "scripting"],
@@ -18,10 +18,7 @@
         "scripts/content_script/content_popup.js",
         "scripts/content_script/content_eventHandling.js"
       ],
-      "css": [
-        "styles/bootstrap-lib/css/bootstrap.css",
-        "styles/colorPalette.css"
-      ],
+      "css": ["styles/colorPalette.css"],
       "matches": ["<all_urls>"]
     }
   ],

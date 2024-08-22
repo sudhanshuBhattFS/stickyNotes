@@ -1,9 +1,9 @@
 {
   "appName": {
-    "message": "Sticky Note"
+    "message": "Stick it - web notes"
   },
   "appDescription": {
-    "message": "A Chrome extension to create and save sticky notes."
+    "message": "This handy Chrome extension allows you to create and save sticky notes directly on the websites you visit"
   },
   "brandName": {
     "message": "Sticky Notes"
@@ -15,13 +15,13 @@
     "message": "Are you sure you want to remove all notes"
   },
   "deleteMessage": {
-    "message": "Are you sure you want to remove  Note"
+    "message": "Are you sure you want to remove note "
   },
   "seeAllNote": {
     "message": "All Notes"
   },
   "pinAll": {
-    "message": "Pin All"
+    "message": "Click to Pin note"
   },
   "unPinAll": {
     "message": "Un Pin All"
@@ -46,5 +46,17 @@
   },
   "navigation": {
     "message": "Click to navigate to the specified website."
+  },
+  "deleteDescription": {
+    "message": "Click to delete this note."
+  },
+  "deleteAllDescription": {
+    "message": "Click to remove all notes and this card."
+  },
+  "DeleteMsg": {
+    "message": "Are you sure you want to remove this notes?"
+  },
+  "DeleteAllMsg": {
+    "message": "Are you sure you want to remove all notes?"
   }
 }

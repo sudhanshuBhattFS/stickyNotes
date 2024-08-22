@@ -18,7 +18,7 @@ const UpdateData = (textareaId, noteContent) => {
 
 
 
-const eventListenerForNote = (shadowRoot, container,) => {
+const eventListenerForNote = (shadowRoot, container, noteContainer) => {
     // add btn 
     shadowRoot.querySelector('.add-btn').addEventListener('click', async () => {
         // created a code for id and inner html 
@@ -58,7 +58,14 @@ const eventListenerForNote = (shadowRoot, container,) => {
 
 
     closeBtn.addEventListener('click', async () => {
-        container.remove();
+        // Remove the 'show' class
+        noteContainer.classList.remove('show');
+
+        // Add a slight delay before adding the 'close' class to allow for any potential transition effects
+        setTimeout(() => {
+            noteContainer.classList.add('close');
+            container.remove()
+        }, 100); // Adjust the delay as needed
 
         // Get the uniqueId attribute from the closeBtn button
         const id = closeBtn.getAttribute('uniqueId');
@@ -69,18 +76,18 @@ const eventListenerForNote = (shadowRoot, container,) => {
             isPinEnable: false, // or true, depending on what you want to set
             id: id
         });
+
+        // Optional: Remove the container after the transition has ended
+        container.addEventListener('transitionend', () => {
+            if (container.classList.contains('close')) {
+                container.remove();
+            }
+        }, { once: true });
     });
 
 
-    closeBtn.addEventListener('mouseover', () => {
-        closeBtn.style.background = '#ff5757';
-        closeBtn.style.color = ''
-    });
 
-    closeBtn.addEventListener('mouseout', () => {
-        closeBtn.style.background = '';
-        closeBtn.style.color = 'black'
-    });
+
 
     const textArea = shadowRoot.querySelector('.textarea');
     preventUnintendedEvents(textArea)

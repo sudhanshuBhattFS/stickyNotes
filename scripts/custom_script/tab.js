@@ -1,6 +1,6 @@
 let selectedNoteContainer = null;
 // get note data which has been inserted
-
+let flag = true
 let isViewGrid = true
 let isSideBarVisiable = true
 const grid = document.getElementsByClassName('grid')
@@ -8,7 +8,7 @@ const containerEle = document.querySelector('.contentContainer');
 
 (async function checkIsView() {
     isViewGrid = await UserLocalStorage.getIsViewGrid()
-    console.log(isViewGrid, 'grid check')
+
 })()
 
 
@@ -119,7 +119,7 @@ const insertContentInSideBar = (note) => {
     const container = document.querySelector('.list_notes');
     const htmlString = createCardsForNote(note);
 
-    // eventListnerForDeleteBtn()
+    // eventListenerForDeleteBtn()
 
     // Convert HTML string to DOM node
     const tempDiv = document.createElement('div');
@@ -150,7 +150,7 @@ const insertContentInMain = (note) => {
 
     // Tooltip for the 'Delete Note' button
     tippy('.deleteNoteBtn', {
-        content: getDeleteAllNotesMessage(),
+        content: getDeleteDes(),
         placement: 'bottom'
     });
     tippy('.toolTipNav', {
@@ -158,7 +158,7 @@ const insertContentInMain = (note) => {
         placement: 'bottom'
     });
     tippy('.delete-note', {
-        content: getDeleteMessage(),
+        content: getDeleteAllDescription(),
         placement: 'bottom'
     });
 
@@ -176,110 +176,38 @@ const toggleNoteContainerSelection = () => {
 
         const hostName = selectedNoteContainer.getAttribute('hostName');
 
-        // Get the data from local storage
-        UserLocalStorage.retriveNoteData().then(async (storeArr) => {
-            // Filter based on hostName
-            const updateArr = storeArr.filter(note => note.hostName === hostName);
+        if (flag) {
+            UserLocalStorage.retriveNoteData().then(async (storeArr) => {
+                // Filter based on hostName
+                const updateArr = storeArr.filter(note => note.hostName === hostName);
 
-            // Remove everything from the container
-            const contentContainer = document.querySelector('.contentContainer');
-            contentContainer.innerHTML = '';
+                // Remove everything from the container
+                const contentContainer = document.querySelector('.contentContainer');
+                contentContainer.innerHTML = '';
 
-            // Inject content in main
-            updateArr.forEach(note => {
-                insertContentInMain(note);
-            });
-            eventListerForEditBtn()
-            eventListnerForDeleteBtn()
-
-            const isViewGrid = await UserLocalStorage.getIsViewGrid();
-            const cards = document.querySelectorAll('#Cards');
-            setView(cards);
-            UserLocalStorage.setIsViewGrid(isViewGrid);
-        });
-    }
-
-
-    const eventListnerForDeleteBtn = () => {
-        document.querySelectorAll('.deleteNoteBtn').forEach((deleteBtn) => {
-            deleteBtn.addEventListener('click', async (event) => {
-                if (confirm('Are you sure you want to remove this note ')) {
-                    const deleteBtn = event.target
-                    console.log('delete button is pressed')
-
-                    // Ensure you're using the correct attribute name
-                    const id = deleteBtn.getAttribute('unique-id');
-                    // Use querySelector to find the card element with the id
-                    const cardToRemove = document.querySelector(`.${CSS.escape(id)}`);
-
-                    if (cardToRemove) {
-                        cardToRemove.remove();
-
-                        const noteArr = await UserLocalStorage.retriveNoteData()
-                        const filerArr = noteArr.filter(note => note.id !== id)
-                        UserLocalStorage.setStorage(filerArr)
-
-                        chrome.tabs.query({}, function (tabs) {
-                            tabs.forEach(tab => {
-                                chrome.tabs.sendMessage(tab.id, { action: 'removeElementFromDom', id: id });
-                            });
-                        });
-                        toggleNoteContainerSelection()
-
-                    } else {
-                        console.error(`Element with class ${id} not found.`);
-                    }
-                }
-            })
-        })
-    }
-
-    const eventListerForEditBtn = () => {
-        document.querySelectorAll('.textAreaForNotes').forEach((textArea) => {
-            // Make each textarea content editable
-            textArea.setAttribute('contenteditable', 'true');
-
-            // Add event listener for input
-            const debouncedUpdate = debounce(() => {
-                const updatedContent = textArea.innerText;
-                const id = textArea.getAttribute('uniqueId');
-
-                // Send the updated content to the background script or storage
-                chrome.runtime.sendMessage({
-                    action: 'updateNoteContent',
-                    id: id,
-                    content: updatedContent
+                // Inject content in main
+                updateArr.forEach(note => {
+                    insertContentInMain(note);
                 });
-            }, 500); // Adjust the delay as needed
+                eventListenerForEditBtn()
+                eventListenerForDeleteBtn()
 
-            textArea.addEventListener('input', debouncedUpdate);
-
-            // Focus and move cursor to the end when user clicks on the textarea
-            textArea.addEventListener('focus', () => {
-                const range = document.createRange();
-                const selection = window.getSelection();
-                range.selectNodeContents(textArea);
-                range.collapse(false); // Collapse to end of the content
-                selection.removeAllRanges();
-                selection.addRange(range);
+                const isViewGrid = await UserLocalStorage.getIsViewGrid();
+                const cards = document.querySelectorAll('#Cards');
+                setView(cards);
+                UserLocalStorage.setIsViewGrid(isViewGrid);
             });
-        });
-
-        // Debounce function to delay the execution of a function
-        function debounce(func, delay) {
-            let timeout;
-            return function (...args) {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => func.apply(this, args), delay);
-            };
         }
 
 
     }
 
+
     noteContainers.forEach(noteContainer => {
         noteContainer.addEventListener('click', async () => {
+            console.log('triggered')
             if (selectedNoteContainer === noteContainer) {
+                console.log('if condittion')
                 // Deselect if the same container is clicked again
                 noteContainer.classList.remove('select');
                 selectedNoteContainer = null;
@@ -287,6 +215,7 @@ const toggleNoteContainerSelection = () => {
                 // Clear main content container
                 document.querySelector('.contentContainer').innerHTML = '';
             } else {
+                console.log('else condiion')
                 // If a different container is selected
                 if (selectedNoteContainer) {
                     selectedNoteContainer.classList.remove('select');
@@ -308,16 +237,125 @@ const toggleNoteContainerSelection = () => {
                 contentContainer.innerHTML = '';
 
                 // Inject content in main
-                updateArr.forEach(note => {
-                    insertContentInMain(note);
-                });
-                eventListerForEditBtn()
-                eventListnerForDeleteBtn()
+
+                const searchBox = document.getElementById('searchBox');
+                const flag = searchBox.value.trim() === '';
+
+
+                if (flag === true) {
+                    updateArr.forEach(note => {
+                        insertContentInMain(note);
+                    });
+                } else {
+                    insertFilterNote(searchBox.value)
+                }
+
+                flag == true
             }
+            eventListenerForEditBtn()
+            eventListenerForDeleteBtn()
         });
     });
+
+
+    flag = true
 }
 
+
+const insertFilterNote = async (query) => {
+
+    const notesData = await getNotesDataInSideBar();
+
+    const filteredNotes = notesData.filter(note =>
+        note.hostName.toLowerCase().includes(query.toLowerCase()) ||
+        note.content.toLowerCase().includes(query.toLowerCase())
+    );
+    const hostName = selectedNoteContainer.getAttribute('hostName')
+    filteredNotes.forEach(note => {
+        if (note.hostName == hostName) {
+            insertContentInMain(note)
+        }
+    })
+
+
+}
+
+const eventListenerForDeleteBtn = () => {
+    document.querySelectorAll('.deleteNoteBtn').forEach((deleteBtn) => {
+        // console.log(deleteBtn, 'delete btn ')
+        deleteBtn.addEventListener('click', async (event) => {
+            if (confirm(getDeleteMsg())) {
+                const deleteBtn = event.target
+                // Ensure you're using the correct attribute name
+                const id = deleteBtn.getAttribute('unique-id');
+                // Use querySelector to find the card element with the id
+                const cardToRemove = document.querySelector(`.${CSS.escape(id)}`);
+
+                if (cardToRemove) {
+                    cardToRemove.remove();
+
+                    const noteArr = await UserLocalStorage.retriveNoteData()
+                    const filerArr = noteArr.filter(note => note.id !== id)
+                    UserLocalStorage.setStorage(filerArr)
+
+                    chrome.tabs.query({}, function (tabs) {
+                        tabs.forEach(tab => {
+                            chrome.tabs.sendMessage(tab.id, { action: 'removeElementFromDom', id: id });
+                        });
+                    });
+                    toggleNoteContainerSelection()
+
+                } else {
+                    console.error(`Element with class ${id} not found.`);
+                }
+            }
+        })
+    })
+}
+
+
+const eventListenerForEditBtn = () => {
+    document.querySelectorAll('.textAreaForNotes').forEach((textArea) => {
+        // Make each textarea content editable
+        textArea.setAttribute('contenteditable', 'true');
+
+        // Add event listener for input
+        const debouncedUpdate = debounce(() => {
+            const updatedContent = textArea.innerText;
+            const id = textArea.getAttribute('uniqueId');
+
+            // Send the updated content to the background script or storage
+            chrome.runtime.sendMessage({
+                action: 'updateNoteContent',
+                id: id,
+                content: updatedContent
+            });
+        }, 500); // Adjust the delay as needed
+
+        textArea.addEventListener('input', debouncedUpdate);
+
+        // Focus and move cursor to the end when user clicks on the textarea
+        textArea.addEventListener('focus', () => {
+            const range = document.createRange();
+            const selection = window.getSelection();
+            range.selectNodeContents(textArea);
+            range.collapse(false); // Collapse to end of the content
+            selection.removeAllRanges();
+            selection.addRange(range);
+        });
+    });
+
+    // Debounce function to delay the execution of a function
+    function debounce(func, delay) {
+        let timeout;
+        return function (...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), delay);
+        };
+    }
+
+
+}
 
 
 
@@ -348,16 +386,63 @@ const filterNotes = async (query) => {
         }
     });
 
+    const hostName = selectedNoteContainer.getAttribute('hostName')
+
     noteArr.forEach(note => {
         insertContentInSideBar(note);
     });
 
     filteredNotes.forEach(note => {
-        insertContentInMain(note);
+
+        if (hostName == note.hostName) {
+            insertContentInMain(note);
+        }
     });
 
+    flag = false
+    eventListenerForNavigation()
+    eventListenerForEditBtn()
+    eventListenerForDeleteBtn()
+    eventListenerForDeleteAllHostNote()
     toggleNoteContainerSelection();
 };
+
+const eventListenerForDeleteAllHostNote = () => {
+    console.log('event for delete button')
+    document.querySelectorAll('.delete-note').forEach(deleteButton => {
+        console.log(deleteButton, 'delte button ')
+        deleteButton.addEventListener('click', (event) => {
+            const message = getDeleteMessage()
+            if (confirm(getDeleteAllMsg())) {
+                event.stopPropagation();
+                (deleteButton, 'deletebtn remove')
+                deleteButton.closest('.noteContainer').remove();
+                const hostName = deleteButton.closest('.noteContainer').getAttribute('hostName')
+                const id = deleteButton.closest('.noteContainer').id
+
+                // remove logic for main container 
+                const contentContainer = document.querySelector('.contentContainer');
+                contentContainer.innerHTML = '';
+                chrome.runtime.sendMessage({ action: "removeUsingHostName", hostName: hostName },);
+                toggleNoteContainerSelection()
+
+            }
+        });
+    });
+}
+const eventListenerForNavigation = () => {
+    // event lister for visit web pages 
+    document.querySelectorAll('.navigation').forEach(hostElement => {
+        hostElement.addEventListener('click', (event) => {
+            console.log(event, 'event')
+            event.stopPropagation();
+            const url = event.target.getAttribute('data-url');
+            if (url) {
+                window.open(url, '_blank');
+            }
+        });
+    });
+}
 
 const handleCardData = async () => {
     // Get all the note data 
@@ -393,41 +478,14 @@ const handleCardData = async () => {
             }
         });
 
-        // creating a logic for the delete btn 
-        document.querySelectorAll('.delete-note').forEach(deleteButton => {
-            deleteButton.addEventListener('click', (event) => {
-                const message = getDeleteMessage()
-                if (confirm('this is the delete button ')) {
-                    event.stopPropagation();
-                    (deleteButton, 'deletebtn remove')
-                    deleteButton.closest('.noteContainer').remove();
-                    const hostName = deleteButton.closest('.noteContainer').getAttribute('hostName')
-                    const id = deleteButton.closest('.noteContainer').id
-
-                    // remove logic for main container 
-                    const contentContainer = document.querySelector('.contentContainer');
-                    contentContainer.innerHTML = '';
-                    chrome.runtime.sendMessage({ action: "removeUsingHostName", hostName: hostName },);
-                    toggleNoteContainerSelection()
-
-                }
-            });
-        });
-
-        // event lister for visit web pages 
-        document.querySelectorAll('.navigation').forEach(hostElement => {
-            hostElement.addEventListener('click', (event) => {
-                event.stopPropagation();
-                const url = event.target.getAttribute('data-url');
-                if (url) {
-                    window.open(url, '_blank');
-                }
-            });
-        });
-
+        //
     }
 
     // event handling 
+    eventListenerForNavigation()
+    eventListenerForEditBtn()
+    eventListenerForDeleteBtn()
+    eventListenerForDeleteAllHostNote()
 
     grid[0].addEventListener('click', (event) => {
         isViewGrid = !isViewGrid;

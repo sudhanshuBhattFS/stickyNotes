@@ -1,20 +1,34 @@
 {
-  "appName": { "message": "Note Collante" },
-  "appDescription": {
-    "message": "Une extension Chrome pour créer et enregistrer des notes collantes."
+  "appName": {
+    "message": "Stick it - notes web"
   },
-  "brandName": { "message": "Notes Collantes" },
-  "noOfNotes": { "message": "Toutes les Notes" },
+  "appDescription": {
+    "message": "Cette extension Chrome pratique vous permet de créer et de sauvegarder des notes directement sur les sites web que vous visitez"
+  },
+  "brandName": {
+    "message": "Notes autocollantes"
+  },
+  "noOfNotes": {
+    "message": "Toutes les notes"
+  },
   "deleteMessageAll": {
-    "message": "Êtes-vous sûr de vouloir supprimer toutes les notes ?"
+    "message": "Êtes-vous sûr de vouloir supprimer toutes les notes"
   },
   "deleteMessage": {
-    "message": "Êtes-vous sûr de vouloir supprimer cette Note ?"
+    "message": "Êtes-vous sûr de vouloir supprimer la note "
   },
-  "seeAllNote": { "message": "Toutes les Notes" },
-  "pinAll": { "message": "Épingler Tous" },
-  "unPinAll": { "message": "Désépingler Tous" },
-  "setLanguage": { "message": "Langue : Français" },
+  "seeAllNote": {
+    "message": "Toutes les notes"
+  },
+  "pinAll": {
+    "message": "Épingler tout"
+  },
+  "unPinAll": {
+    "message": "Désépingler tout"
+  },
+  "setLanguage": {
+    "message": "Définir la langue : Anglais"
+  },
   "tooltipRemoveAll": {
     "message": "Supprimer toutes les notes"
   },
@@ -31,6 +45,18 @@
     "message": "Vue en grille"
   },
   "navigation": {
-    "message": "Click to navigate to the specified website."
+    "message": "Cliquez pour naviguer vers le site web spécifié."
+  },
+  "deleteDescription": {
+    "message": "Cliquez pour supprimer cette note."
+  },
+  "deleteAllDescription": {
+    "message": "Cliquez pour supprimer toutes les notes et cette carte."
+  },
+  "DeleteMsg": {
+    "message": "Êtes-vous sûr de vouloir supprimer ces notes ?"
+  },
+  "DeleteAllMsg": {
+    "message": "Êtes-vous sûr de vouloir supprimer toutes les notes ?"
   }
 }
