@@ -1,5 +1,5 @@
 
-console.log('content script is injected !')
+
 
 let messageSent = false;
 chrome.runtime.onMessage.addListener(

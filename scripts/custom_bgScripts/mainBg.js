@@ -28,7 +28,7 @@ const getNoteData = (url) => {
 // one way communication between background and content script
 chrome.runtime.onMessage.addListener(
     async function (request, sender, sendResponse) {
-        console.log(request, 'request')
+      
         if (request.action == "storeNoteData") {
 
             // get id 
@@ -116,7 +116,7 @@ chrome.runtime.onMessage.addListener(
             const newArray = StoredNotes.filter((note) => note.hostName === hostName);
             const updateArray = StoredNotes.filter((note) => note.hostName !== hostName);
 
-            console.log(updateArray, 'check update array ')
+        
             await UserLocalStorage.setStorage(updateArray)
 
             newArray.forEach((note) => {

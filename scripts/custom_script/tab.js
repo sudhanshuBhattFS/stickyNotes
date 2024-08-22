@@ -205,9 +205,9 @@ const toggleNoteContainerSelection = () => {
 
     noteContainers.forEach(noteContainer => {
         noteContainer.addEventListener('click', async () => {
-            console.log('triggered')
+       
             if (selectedNoteContainer === noteContainer) {
-                console.log('if condittion')
+             
                 // Deselect if the same container is clicked again
                 noteContainer.classList.remove('select');
                 selectedNoteContainer = null;
@@ -215,7 +215,7 @@ const toggleNoteContainerSelection = () => {
                 // Clear main content container
                 document.querySelector('.contentContainer').innerHTML = '';
             } else {
-                console.log('else condiion')
+               
                 // If a different container is selected
                 if (selectedNoteContainer) {
                     selectedNoteContainer.classList.remove('select');
@@ -282,7 +282,7 @@ const insertFilterNote = async (query) => {
 
 const eventListenerForDeleteBtn = () => {
     document.querySelectorAll('.deleteNoteBtn').forEach((deleteBtn) => {
-        // console.log(deleteBtn, 'delete btn ')
+   
         deleteBtn.addEventListener('click', async (event) => {
             if (confirm(getDeleteMsg())) {
                 const deleteBtn = event.target
@@ -408,9 +408,9 @@ const filterNotes = async (query) => {
 };
 
 const eventListenerForDeleteAllHostNote = () => {
-    console.log('event for delete button')
+
     document.querySelectorAll('.delete-note').forEach(deleteButton => {
-        console.log(deleteButton, 'delte button ')
+   
         deleteButton.addEventListener('click', (event) => {
             const message = getDeleteMessage()
             if (confirm(getDeleteAllMsg())) {
@@ -434,7 +434,7 @@ const eventListenerForNavigation = () => {
     // event lister for visit web pages 
     document.querySelectorAll('.navigation').forEach(hostElement => {
         hostElement.addEventListener('click', (event) => {
-            console.log(event, 'event')
+        
             event.stopPropagation();
             const url = event.target.getAttribute('data-url');
             if (url) {

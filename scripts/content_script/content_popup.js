@@ -128,7 +128,7 @@ const makeResizable = (element, size) => {
     element.style.resize = 'both';
     element.style.overflow = 'auto';
 
-    console.log(size, 'size')
+
 
     if (size && size.width !== undefined && size.height !== undefined) {
         element.style.width = `${size.width}px`;
@@ -138,7 +138,7 @@ const makeResizable = (element, size) => {
     element.addEventListener('mouseup', () => {
         const width = element.offsetWidth;
         const height = element.offsetHeight;
-        console.log(`Width: ${width}px, Height: ${height}px`);
+
         const id = element.getAttribute('uniqueId')
 
         chrome.runtime.sendMessage({

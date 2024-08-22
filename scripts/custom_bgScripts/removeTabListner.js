@@ -24,6 +24,5 @@ chrome.tabs.onRemoved.addListener(async (tabId, removeInfo) => {
     // Update the local storage with the filtered notes array
     await UserLocalStorage.setStorage(updatedNotes);
 
-    console.log(`Notes updated after closing tab with URL: ${closedTabUrl}. Remaining notes: ${updatedNotes.length}`);
 });
 
