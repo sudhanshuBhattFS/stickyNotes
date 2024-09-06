@@ -1,9 +1,9 @@
 {
   "appName": {
-    "message": "Stick it - notas web"
+    "message": "Stick it - web notes"
   },
   "appDescription": {
-    "message": "Esta práctica extensión de Chrome te permite crear y guardar notas adhesivas directamente en los sitios web que visitas"
+    "message": "This handy Chrome extension allows you to create and save sticky notes directly on the websites you visit"
   },
   "brandName": {
     "message": "Notas adhesivas"

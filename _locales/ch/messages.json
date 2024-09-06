@@ -1,9 +1,9 @@
 {
   "appName": {
-    "message": "贴纸 - 网络便签"
+    "message": "Stick it - web notes"
   },
   "appDescription": {
-    "message": "这个方便的Chrome扩展程序允许您直接在访问的网站上创建和保存便签"
+    "message": "This handy Chrome extension allows you to create and save sticky notes directly on the websites you visit"
   },
   "brandName": {
     "message": "便签"

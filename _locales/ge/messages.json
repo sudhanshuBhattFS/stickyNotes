@@ -1,9 +1,9 @@
 {
   "appName": {
-    "message": "Stick it - Web-Notizen"
+    "message": "Stick it - web notes"
   },
   "appDescription": {
-    "message": "Diese praktische Chrome-Erweiterung ermöglicht es Ihnen, Haftnotizen direkt auf den von Ihnen besuchten Websites zu erstellen und zu speichern"
+    "message": "This handy Chrome extension allows you to create and save sticky notes directly on the websites you visit"
   },
   "brandName": {
     "message": "Haftnotizen"

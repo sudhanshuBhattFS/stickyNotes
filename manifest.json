@@ -5,10 +5,16 @@
   "version": "1.0",
   "action": {
     "default_popup": "stickyNotes/stickyNotes.html",
-    "default_icon": "images/icon_16.png"
+    "default_icon": "assets/icons/icon_16.png"
+  },
+  "icons": {
+    "16": "assets/icons/icon_16.png",
+    "24": "assets/icons/icon_24.png",
+    "64": "assets/icons/icon_64.png",
+    "128": "assets/icons/icon_128.png"
   },
   "default_locale": "en",
-  "permissions": ["activeTab", "storage", "tabs", "scripting"],
+  "permissions": ["activeTab", "storage", "tabs"],
   "content_scripts": [
     {
       "js": [

@@ -1,9 +1,9 @@
 {
   "appName": {
-    "message": "Stick it - ウェブノート"
+    "message": "Stick it - web notes"
   },
   "appDescription": {
-    "message": "この便利なChrome拡張機能を使用すると、訪問したウェブサイトに直接付箋を作成して保存できます"
+    "message": "This handy Chrome extension allows you to create and save sticky notes directly on the websites you visit"
   },
   "brandName": {
     "message": "付箋"
