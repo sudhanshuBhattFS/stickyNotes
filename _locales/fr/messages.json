@@ -21,7 +21,7 @@
     "message": "Toutes les notes"
   },
   "pinAll": {
-    "message": "Épingler tout"
+    "message": "épingler/désépingler (popup ou tout autre endroit)"
   },
   "unPinAll": {
     "message": "Désépingler tout"
@@ -47,9 +47,11 @@
   "navigation": {
     "message": "Cliquez pour naviguer vers le site web spécifié."
   },
+
   "deleteDescription": {
-    "message": "Cliquez pour supprimer cette note."
+    "message": "supprimer (popup ou tout autre endroit)"
   },
+
   "deleteAllDescription": {
     "message": "Cliquez pour supprimer toutes les notes et cette carte."
   },

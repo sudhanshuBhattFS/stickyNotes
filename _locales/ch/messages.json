@@ -21,7 +21,7 @@
     "message": "所有便签"
   },
   "pinAll": {
-    "message": "固定所有"
+    "message": "固定/取消固定（弹出窗口或其他任何地方）"
   },
   "unPinAll": {
     "message": "取消固定所有"
@@ -48,7 +48,7 @@
     "message": "点击以导航到指定的网站。"
   },
   "deleteDescription": {
-    "message": "点击以删除此便签。"
+    "message": "删除（弹出窗口或其他任何地方）"
   },
   "deleteAllDescription": {
     "message": "点击以删除所有便签和此卡片。"

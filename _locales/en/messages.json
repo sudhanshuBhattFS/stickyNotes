@@ -21,7 +21,7 @@
     "message": "All Notes"
   },
   "pinAll": {
-    "message": "Click to Pin note"
+    "message": "pin/unpin (popup or any other place)"
   },
   "unPinAll": {
     "message": "Un Pin All"
@@ -48,7 +48,7 @@
     "message": "Click to navigate to the specified website."
   },
   "deleteDescription": {
-    "message": "Click to delete this note."
+    "message": "delete  (popup or any other place)"
   },
   "deleteAllDescription": {
     "message": "Click to remove all notes and this card."
@@ -58,5 +58,8 @@
   },
   "DeleteAllMsg": {
     "message": "Are you sure you want to remove all notes?"
+  },
+  "DisplayPin": {
+    "message": "Pin"
   }
 }

@@ -13,7 +13,7 @@ pre {
     border-radius: 5px;
     width: 5%;
     height: 30%;
-    min-width: 240px !important;
+    min-width: 242px !important;
     min-height: 278px !important;
     transition: transform 0.3s ease-out, opacity 0.3s ease-out;
 }

@@ -20,8 +20,11 @@
   "seeAllNote": {
     "message": "Alle Notizen"
   },
+  "deleteDescription": {
+    "message": "löschen (Popup oder an einem anderen Ort)"
+  },
   "pinAll": {
-    "message": "Alle anheften"
+    "message": "anheften/abheften (Popup oder an einem anderen Ort)"
   },
   "unPinAll": {
     "message": "Alle lösen"
@@ -46,9 +49,6 @@
   },
   "navigation": {
     "message": "Klicken Sie, um zur angegebenen Website zu navigieren."
-  },
-  "deleteDescription": {
-    "message": "Klicken Sie, um diese Notiz zu löschen."
   },
   "deleteAllDescription": {
     "message": "Klicken Sie, um alle Notizen und diese Karte zu entfernen."

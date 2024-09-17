@@ -20,8 +20,11 @@
   "seeAllNote": {
     "message": "すべてのノート"
   },
+  "deleteDescription": {
+    "message": "削除（ポップアップまたは他の場所）"
+  },
   "pinAll": {
-    "message": "すべてピン留め"
+    "message": "ピン留め/ピン留め解除（ポップアップまたは他の場所）"
   },
   "unPinAll": {
     "message": "すべてのピンを外す"
@@ -47,9 +50,7 @@
   "navigation": {
     "message": "指定されたウェブサイトに移動するにはクリックしてください。"
   },
-  "deleteDescription": {
-    "message": "このノートを削除するにはクリックしてください。"
-  },
+
   "deleteAllDescription": {
     "message": "すべてのノートとこのカードを削除するにはクリックしてください。"
   },
