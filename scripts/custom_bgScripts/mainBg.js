@@ -81,7 +81,7 @@ chrome.runtime.onMessage.addListener(
             const id = request.id
             const updateContent = request.content
 
-            if (id && updateContent) {
+            if (id) {
                 const noteArr = await UserLocalStorage.retriveNoteData();
                 const updatedNoteArr = noteArr.map((note) => {
                     if (note.id == id) {
