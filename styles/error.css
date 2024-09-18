@@ -1,0 +1,7 @@
+.btn{
+    width: 100%;
+    padding: 5px ;
+    background-color: var(--popup-heading );
+    color: white;
+
+}
