@@ -56,6 +56,11 @@
     word-wrap: break-word; /* Ensures long words break into the next line */
 }
 
+.list_notes{
+  height: 80vh;
+  overflow: auto;
+}
+
 .textAreaForNotes {
   white-space: pre-wrap; /* Preserve white spaces and line breaks */
   word-wrap: break-word; /* Ensure long words break into the next line */
