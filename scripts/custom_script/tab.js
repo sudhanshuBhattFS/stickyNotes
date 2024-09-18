@@ -205,9 +205,9 @@ const toggleNoteContainerSelection = () => {
 
     noteContainers.forEach(noteContainer => {
         noteContainer.addEventListener('click', async () => {
-       
+
             if (selectedNoteContainer === noteContainer) {
-             
+
                 // Deselect if the same container is clicked again
                 noteContainer.classList.remove('select');
                 selectedNoteContainer = null;
@@ -215,7 +215,7 @@ const toggleNoteContainerSelection = () => {
                 // Clear main content container
                 document.querySelector('.contentContainer').innerHTML = '';
             } else {
-               
+
                 // If a different container is selected
                 if (selectedNoteContainer) {
                     selectedNoteContainer.classList.remove('select');
@@ -282,7 +282,7 @@ const insertFilterNote = async (query) => {
 
 const eventListenerForDeleteBtn = () => {
     document.querySelectorAll('.deleteNoteBtn').forEach((deleteBtn) => {
-   
+
         deleteBtn.addEventListener('click', async (event) => {
             if (confirm(getDeleteMsg())) {
                 const deleteBtn = event.target
@@ -345,20 +345,64 @@ const eventListenerForEditBtn = () => {
         });
     });
 
-    // Debounce function to delay the execution of a function
-    function debounce(func, delay) {
-        let timeout;
-        return function (...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), delay);
-        };
-    }
+
 
 
 }
 
+// Debounce function to delay the execution of a function
+function debounce(func, delay) {
+    let timeout;
+    return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), delay);
+    };
+}
 
 
+
+// New function to search and highlight text
+const searchAndHighlight = (note, query) => {
+    const container = document.querySelector('.contentContainer');
+
+    // Clear the container before inserting the filtered note
+    container.innerHTML = '';
+
+    // Get the HTML content of the note
+    let htmlStr = TextAreaForNotesHtml(note);
+
+    // Convert HTML string to DOM nodes and insert into the container
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlStr
+
+
+    if (query) {
+        const regex = new RegExp(`(${query})`, 'gi');
+        const textArea = tempDiv.querySelector('.textAreaForNotes');
+        console.log(textArea, 'check')
+        textArea.innerHTML = textArea.innerHTML.replace(regex, '<mark>$1</mark>');
+    }
+
+    while (tempDiv.firstChild) {
+        container.appendChild(tempDiv.firstChild);
+    }
+
+    // Initialize tooltips for buttons
+    tippy('.deleteNoteBtn', {
+        content: getDeleteDes(),
+        placement: 'bottom'
+    });
+    tippy('.toolTipNav', {
+        content: getMessageForNav(),
+        placement: 'bottom'
+    });
+    tippy('.delete-note', {
+        content: getDeleteAllDescription(),
+        placement: 'bottom'
+    });
+};
+
+// Modify filterNotes to use searchAndHighlight for filtered notes
 const filterNotes = async (query) => {
     const notesData = await getNotesDataInSideBar();
 
@@ -386,31 +430,31 @@ const filterNotes = async (query) => {
         }
     });
 
-    const hostName = selectedNoteContainer.getAttribute('hostName')
+    const hostName = selectedNoteContainer.getAttribute('hostName');
 
     noteArr.forEach(note => {
-        insertContentInSideBar(note);
+        insertContentInSideBar(note);  // Inserting into the sidebar as usual
     });
 
     filteredNotes.forEach(note => {
-
-        if (hostName == note.hostName) {
-            insertContentInMain(note);
+        if (hostName === note.hostName) {
+            searchAndHighlight(note, query);  // Use searchAndHighlight for main container
         }
     });
 
-    flag = false
-    eventListenerForNavigation()
-    eventListenerForEditBtn()
-    eventListenerForDeleteBtn()
-    eventListenerForDeleteAllHostNote()
+    flag = false;
+    eventListenerForNavigation();
+    eventListenerForEditBtn();
+    eventListenerForDeleteBtn();
+    eventListenerForDeleteAllHostNote();
     toggleNoteContainerSelection();
 };
+
 
 const eventListenerForDeleteAllHostNote = () => {
 
     document.querySelectorAll('.delete-note').forEach(deleteButton => {
-   
+
         deleteButton.addEventListener('click', (event) => {
             const message = getDeleteMessage()
             if (confirm(getDeleteAllMsg())) {
@@ -434,7 +478,7 @@ const eventListenerForNavigation = () => {
     // event lister for visit web pages 
     document.querySelectorAll('.navigation').forEach(hostElement => {
         hostElement.addEventListener('click', (event) => {
-        
+
             event.stopPropagation();
             const url = event.target.getAttribute('data-url');
             if (url) {
@@ -494,14 +538,17 @@ const handleCardData = async () => {
         UserLocalStorage.setIsViewGrid(isViewGrid)
     });
 
+    // search functionality ----
     document.getElementById('searchBox').addEventListener('input', (event) => {
         const query = event.target.value;
         filterNotes(query);
     });
-    document.getElementById('refresh').addEventListener('click', () => {
-        location.reload();
-    });
 
+    // Apply the debounce function to delay the search
+    document.getElementById('searchBox').addEventListener('input', debounce((event) => {
+        const query = event.target.value;
+        filterNotes(query);
+    }, 300));
 
 };
 
