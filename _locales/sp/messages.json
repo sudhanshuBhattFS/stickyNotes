@@ -20,8 +20,9 @@
   "seeAllNote": {
     "message": "Todas las notas"
   },
+
   "pinAll": {
-    "message": "Fijar todo"
+    "message": "fijar/desfijar (ventana emergente u otro lugar)"
   },
   "unPinAll": {
     "message": "Desfijar todo"
@@ -48,7 +49,7 @@
     "message": "Haz clic para navegar al sitio web especificado."
   },
   "deleteDescription": {
-    "message": "Haz clic para eliminar esta nota."
+    "message": "eliminar (ventana emergente u otro lugar)"
   },
   "deleteAllDescription": {
     "message": "Haz clic para eliminar todas las notas y esta tarjeta."

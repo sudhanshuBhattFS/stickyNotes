@@ -38,7 +38,8 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
         // Retrieve the stored notes
         const noteArr = await UserLocalStorage.retriveNoteData();
         const errorURLs = [
-            'chrome://newtab/', // Add more URLs here if needed
+            'chrome://newtab/',
+            'chrome://extensions/'
         ];
 
         // Check if the URL matches any in the errorURLs list
@@ -47,7 +48,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
             return; // Exit function to prevent further actions
         }
 
-        if (tab && tab.title.includes('StickyNotes')) {
+        if (tab && tab.title.includes('Stick it - web notes')) {
             chrome.action.setPopup({ tabId: tabId, popup: '../../stickyNote_html_page/error.html' });
 
         }

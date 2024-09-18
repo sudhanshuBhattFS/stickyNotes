@@ -38,10 +38,12 @@
 /* Base style for icons */
  svg {
     transition: transform 0.1s ease, box-shadow 0.1s ease;
+    outline: none;
 }
 
 /* Pressed effect */
  svg:active {
     transform: scale(0.9); /* Slightly reduce size */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Add shadow to simulate depth */
+    outline: none;
 }

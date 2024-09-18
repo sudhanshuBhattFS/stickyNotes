@@ -28,7 +28,7 @@ const getNoteData = (url) => {
 // one way communication between background and content script
 chrome.runtime.onMessage.addListener(
     async function (request, sender, sendResponse) {
-      
+
         if (request.action == "storeNoteData") {
 
             // get id 
@@ -116,7 +116,7 @@ chrome.runtime.onMessage.addListener(
             const newArray = StoredNotes.filter((note) => note.hostName === hostName);
             const updateArray = StoredNotes.filter((note) => note.hostName !== hostName);
 
-        
+
             await UserLocalStorage.setStorage(updateArray)
 
             newArray.forEach((note) => {
@@ -151,8 +151,6 @@ chrome.runtime.onMessage.addListener(
                 // Update the position of the found note
                 allNotes[noteIndex].position = finalPosition;
                 UserLocalStorage.setStorage(allNotes)
-            } else {
-                console.log("din't find anything ")
             }
 
         }

@@ -55,6 +55,9 @@
   word-wrap: break-word; /* Ensure long words break into the next line */
   overflow: hidden; /* Prevent scroll bars */
   color : black !important; 
+  max-height: 15rem;
+  overflow: auto;
+  outline : none ;
 }
 
 .marginL-auto{
@@ -67,7 +70,7 @@
   padding: 16px;
   box-sizing: border-box;
   justify-items: center;
-  height: fit-content;
+  overflow: auto;
 }
 .card-size{
   height: fit-content !important;

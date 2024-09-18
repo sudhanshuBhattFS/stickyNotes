@@ -282,7 +282,6 @@ document.addEventListener('DOMContentLoaded', function () {
         card.innerHTML = `
         <div>
                 <div class="note-header ">
-                    <span class="url cursor-pointer " data-url="${url}">${hostName}</span>
                     <span> ${dateStr}</span>
                     <span  class=' cursor-pointer'>
                     <div class="icons">
@@ -306,15 +305,6 @@ document.addEventListener('DOMContentLoaded', function () {
             `;
 
         allListContainer.prepend(card);
-
-
-        // Add event listener to url span
-        const urlSpan = card.querySelector('.url');
-        urlSpan.addEventListener('click', (event) => {
-            chrome.tabs.create({ url: urlSpan.dataset.url }, (tab) => {
-
-            });
-        });
 
         const pinBtn = document.querySelector('#pin'); // Ensure the selector matches an existing element
 
@@ -444,10 +434,22 @@ document.addEventListener('DOMContentLoaded', function () {
     // });
 
 
-    document.getElementById('openTabButton').addEventListener('click', (e) => {
+    document.getElementById('openTabButton').addEventListener('click', async (e) => {
+        console.log('triggered!')
         e.stopPropagation();
         const settingsMenu = document.getElementById('settingsMenu');
         settingsMenu.style.display = settingsMenu.style.display === 'block' ? 'none' : 'block';
+
+        const noteArr = await UserLocalStorage.retriveNoteData();
+        const displayUnpin = noteArr.some(note => note.enablePin === true);
+
+        const unpinBtn = document.getElementById('unPinAll');
+        unpinBtn.innerText = displayUnpin ? getUnPinMessage() : DisplayPin();
+
+        if (!displayUnpin) {
+            console.log(unpinBtn.getAttribute('state'), 'check')
+            unpinBtn.setAttribute('state', true);
+        }
     });
 
     seeAllNotes.addEventListener('click', () => {
@@ -457,12 +459,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     document.getElementById('unPinAll').addEventListener('click', async () => {
+        console.log('triggered !')
         const button = document.getElementById('unPinAll');
         const noteArr = await UserLocalStorage.retriveNoteData();
         const filterNote = noteArr.filter(note => note.hostName === hostName);
 
+        // if state is not false then it is true 
         const shouldUnpin = button.getAttribute('state') !== 'false';
 
+        console.log(shouldUnpin, 'check')
+
+        // it create a new updated filter with all true value 
         const updatedFilterNote = filterNote.map(note => {
             return {
                 ...note,
@@ -470,8 +477,13 @@ document.addEventListener('DOMContentLoaded', function () {
             };
         });
 
+
+        // we update the attribute 
         button.setAttribute('state', !shouldUnpin);
-        button.innerText = shouldUnpin ? getUnPinMessage() : getPinMessage();
+        // change the inner text 
+        button.innerText = shouldUnpin ? getUnPinMessage() : DisplayPin();
+
+        console.log(button.innerHTML, 'check inner text')
 
         await UserLocalStorage.updateNote(updatedFilterNote, shouldUnpin)
         renderNotes()

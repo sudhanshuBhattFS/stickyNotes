@@ -19,6 +19,10 @@ function getPinMessage() {
     let message = chrome.i18n.getMessage("pinAll");
     return message
 }
+function DisplayPin() {
+    let message = chrome.i18n.getMessage("DisplayPin");
+    return message
+}
 function getUnPinMessage() {
     let message = chrome.i18n.getMessage("unPinAll");
     return message
