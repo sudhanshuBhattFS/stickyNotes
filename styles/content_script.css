@@ -18,6 +18,7 @@ pre {
     transition: transform 0.3s ease-out, opacity 0.3s ease-out;
 }
 
+
 .note-container.show {
     transform: translate(-50%, -50%) scale(1); /* Maintain centering and scale to normal size */
     opacity: 1;
@@ -67,6 +68,9 @@ pre {
     border: none ;
 }
 
+.heading{
+    font-size: 14px !important;
+}
 
 .selected {
     background-color: var(--popup-heading-co);

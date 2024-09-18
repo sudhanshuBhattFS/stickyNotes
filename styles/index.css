@@ -28,6 +28,12 @@
 
   }
 
+  mark {
+    background-color: yellow;
+    color: black;
+}
+
+
   .bg-custom{
     background-color: var(--page-bg);
   }
