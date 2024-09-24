@@ -46,6 +46,10 @@ class SimpleShadowDOM {
     <button class="btn color-btn color-pink" data-color="pink" ></button>
     </div>
     <div id="${id}" class='textarea' contenteditable="true">${content}</div>
+        <div class="resize-handle top"></div>
+    <div class="resize-handle right"></div>
+    <div class="resize-handle bottom"></div>
+    <div class="resize-handle left"></div>
     </div>
 </div>
 
@@ -144,32 +148,78 @@ class SimpleShadowDOM {
 }
 
 const makeResizable = (element, size) => {
-    element.style.resize = 'both';
-    element.style.overflow = 'auto';
-
-
-
     if (size && size.width !== undefined && size.height !== undefined) {
         element.style.width = `${size.width}px`;
         element.style.height = `${size.height}px`;
     }
 
-    element.addEventListener('mouseup', () => {
+    const handles = {
+        top: element.querySelector('.resize-handle.top'),
+        right: element.querySelector('.resize-handle.right'),
+        bottom: element.querySelector('.resize-handle.bottom'),
+        left: element.querySelector('.resize-handle.left'),
+    };
+
+    let startX, startY, startWidth, startHeight, startLeft, startTop, direction;
+
+    const resize = (e) => {
+        if (direction === 'right') {
+            element.style.width = `${startWidth + (e.clientX - startX)}px`;
+        } else if (direction === 'bottom') {
+            element.style.height = `${startHeight + (e.clientY - startY)}px`;
+        } else if (direction === 'left') {
+            const newWidth = startWidth - (e.clientX - startX);
+            if (newWidth > 0) {
+                element.style.width = `${newWidth}px`;
+                element.style.left = `${startLeft + (e.clientX - startX)}px`;
+            }
+        } else if (direction === 'top') {
+            const newHeight = startHeight - (e.clientY - startY);
+            if (newHeight > 0) {
+                element.style.height = `${newHeight}px`;
+                element.style.top = `${startTop + (e.clientY - startY)}px`;
+            }
+        }
+    };
+
+    const stopResize = () => {
+        document.removeEventListener('mousemove', resize);
+        document.removeEventListener('mouseup', stopResize);
+
         const width = element.offsetWidth;
         const height = element.offsetHeight;
+        const id = element.getAttribute('uniqueId');
 
-        const id = element.getAttribute('uniqueId')
-
+        // Send size updates to background or storage
         chrome.runtime.sendMessage({
             action: 'StoreAndUpdateWidthAndHeight',
-            id: id,    // Replace with the actual note ID
-            width: width,       // Replace with the actual width
-            height: height      // Replace with the actual height
-        })
-    });
+            id: id,
+            width: width,
+            height: height,
+        });
+    };
+
+    const startResize = (e, resizeDirection) => {
+        startX = e.clientX;
+        startY = e.clientY;
+        startWidth = element.offsetWidth;
+        startHeight = element.offsetHeight;
+        startLeft = element.offsetLeft;  // Capture initial left position
+        startTop = element.offsetTop;    // Capture initial top position
+        direction = resizeDirection;
+
+        document.addEventListener('mousemove', resize);
+        document.addEventListener('mouseup', stopResize);
+    };
+
+    handles.right.addEventListener('mousedown', (e) => startResize(e, 'right'));
+    handles.bottom.addEventListener('mousedown', (e) => startResize(e, 'bottom'));
+    handles.left.addEventListener('mousedown', (e) => startResize(e, 'left'));
+    handles.top.addEventListener('mousedown', (e) => startResize(e, 'top'));
+};
 
 
-}
+
 
 const addStyleSheetlink = (shadowRoot) => {
     // stylesheet 
