@@ -114,9 +114,11 @@ class SimpleShadowDOM {
 
                 if (pinBtn.classList.contains('selected')) {
                     pinBtn.classList.remove('selected');
+                    pinBtn.classList.add('disable');
                     enablePin = false;
                 } else {
                     pinBtn.classList.add('selected');
+                    pinBtn.classList.remove('disable');
                 }
 
 
