@@ -71,7 +71,7 @@ const createCardsForNote = (note) => {
     return `
     <div id="${note.id}"  hostName="${note.hostName}" class="d-flex flex-column border border-light noteContainer">
         <div data-url="${note.url}" class="note-header url px-3 py-3 d-flex justify-content-between align-items-center">
-            <div  class="cursor-pointer hostName">${note.hostName}</div>
+            <div id="hostName"  class="cursor-pointer hostName">${note.hostName}</div>
            <div>
            <svg xmlns="http://www.w3.org/2000/svg" data-url="${note.url}" width="16" height="16" fill="currentColor" class="bi navigation bi-arrow-up-right-square toolTipNav" viewBox="0 0 16 16">
   <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm5.854 8.803a.5.5 0 1 1-.708-.707L9.243 6H6.475a.5.5 0 1 1 0-1h3.975a.5.5 0 0 1 .5.5v3.975a.5.5 0 1 1-1 0V6.707z"/>
@@ -115,7 +115,8 @@ const TextAreaForNotesHtml = (note) => {
 
 
 // logic 
-const insertContentInSideBar = (note) => {
+const insertContentInSideBar = (note, query) => {
+    console.log(query, 'check query')
 
     const container = document.querySelector('.list_notes');
     const htmlString = createCardsForNote(note);
@@ -125,6 +126,12 @@ const insertContentInSideBar = (note) => {
     // Convert HTML string to DOM node
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = htmlString;
+
+    if (query) {
+        const regex = new RegExp(`(${query})`, 'gi');
+        const hostName = tempDiv.querySelector('#hostName');
+        hostName.innerHTML = hostName.innerHTML.replace(regex, '<mark>$1</mark>');
+    }
 
     // Append each child of tempDiv to the container
     while (tempDiv.firstChild) {
@@ -422,7 +429,7 @@ const filterNotes = async (query) => {
     const hostName = selectedNoteContainer.getAttribute('hostName');
 
     noteArr.forEach(note => {
-        insertContentInSideBar(note);  // Inserting into the sidebar as usual
+        insertContentInSideBar(note, query);  // Inserting into the sidebar as usual
     });
 
     console.log(filteredNotes, 'check filteredNote')

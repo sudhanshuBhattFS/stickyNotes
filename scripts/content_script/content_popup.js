@@ -6,7 +6,7 @@ class SimpleShadowDOM {
         const content = note.content
         const id = note.id
 
-        const pinClass = note.enablePin ? 'selected' : '';
+        const pinClass = note.enablePin ? 'selected' : 'disable';
         const colorClass = note.color ? `color-${note.color}` : '';
         console.log(colorClass, 'check color class ')
 
@@ -38,12 +38,12 @@ class SimpleShadowDOM {
         </div>
     </div>
   <div class="color-palette">
-    <button class="btn color-btn btn-outline-danger" data-color="red" style="background-color: red;"></button>
-    <button class="btn color-btn btn-outline-warning" data-color="yellow" style="background-color:  #9d9d10;"></button>
-    <button class="btn color-btn btn-outline-success" data-color="default" style="background-color: hsl(208, 90%, 8%);"></button>
-    <button class="btn color-btn btn-outline-secondary" data-color="grey" style="background-color: grey;"></button>
-    <button class="btn color-btn btn-outline-primary" data-color="purple" style="background-color: purple;"></button>
-    <button class="btn color-btn btn-outline-pink" data-color="pink" style="background-color: #d57485;"></button>
+    <button class="btn color-btn  color-red" data-color="red"></button>
+    <button class="btn color-btn color-yellow " data-color="yellow" ></button>
+    <button class="btn color-btn color-default" data-color="default" ></button>
+    <button class="btn color-btn color-grey " data-color="grey" "></button>
+    <button class="btn color-btn  color-purple" data-color="purple" ></button>
+    <button class="btn color-btn color-pink" data-color="pink" ></button>
     </div>
     <div id="${id}" class='textarea' contenteditable="true">${content}</div>
     </div>

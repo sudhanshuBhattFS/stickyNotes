@@ -21,7 +21,7 @@
     "message": "All Notes"
   },
   "pinAll": {
-    "message": "pin/unpin (popup or any other place)"
+    "message": "pin/unpin"
   },
   "unPinAll": {
     "message": "Un Pin All"
