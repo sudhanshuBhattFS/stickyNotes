@@ -91,10 +91,11 @@ const TextAreaForNotesHtml = (note) => {
     const id = note.id;
 
     const cardClass = isViewGrid ? "w-100" : "w-50";
+    const colorClass = note.color ? `color-${note.color}` : '';
 
     return `
     <div id="Cards" class="${id} card-size ${cardClass} mx-2 my-2">
-        <div class="w-100 heading text-dark px-3 py-2">
+        <div class="w-100 heading text-dark px-3 py-2 ${colorClass}">
             <div class="w-100 d-flex justify-content-between">
                 <div>
                   <span class="px-2">${note.date.replace(/\//g, '-')}</span><span class="px-2">${note.time}</span>

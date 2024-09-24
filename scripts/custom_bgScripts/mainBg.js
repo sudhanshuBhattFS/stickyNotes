@@ -81,7 +81,7 @@ chrome.runtime.onMessage.addListener(
             const id = request.id
             const updateContent = request.content
 
-            if (id && updateContent) {
+            if (id) {
                 const noteArr = await UserLocalStorage.retriveNoteData();
                 const updatedNoteArr = noteArr.map((note) => {
                     if (note.id == id) {
@@ -245,6 +245,20 @@ chrome.runtime.onMessage.addListener(
             }
         }
 
+        if (request.action === 'addSelectedColor') {
+            const { selectedColor, uniqueId } = request;
+            let noteData = await UserLocalStorage.retriveNoteData();
+
+            noteData = noteData.map(note => {
+                if (note.id === uniqueId) {
+                    return { ...note, color: selectedColor };
+                }
+                return note;
+            });
+
+            await UserLocalStorage.setStorage(noteData);
+            console.log(noteData);
+        }
         return true
 
     }

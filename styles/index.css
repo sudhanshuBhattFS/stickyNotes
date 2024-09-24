@@ -123,3 +123,25 @@ button{
   
 }
 
+
+.color-red {
+  background-color: var(--color-red) !important;
+}
+.color-yellow {
+  background-color: var(--color-yellow) !important;
+}
+.color-green {
+  background-color: var(--color-green) !important;
+}
+.color-grey {
+  background-color: var(--color-grey) !important;
+}
+.color-purple {
+  background-color: var(--color-purple) !important;
+}
+.color-pink {
+  background-color: var(--color-pink) !important;
+}
+.color-default {
+  background-color: var(--color-default) !important;
+}
