@@ -39,22 +39,40 @@ const eventListenerForNote = (shadowRoot, container, noteContainer) => {
     const closeBtn = shadowRoot.querySelector('.close-btn');
     const pin = shadowRoot.querySelector('.pin');
     const title = shadowRoot.querySelector('.title')
+    const options = shadowRoot.querySelector('#options')
 
 
-    pin.addEventListener('click', (event) => {
+    // event listner for option button 
+    options.addEventListener('click', function (event) {
+        const colorMenu = shadowRoot.querySelector('.color-palette')
+        colorMenu.style.display = colorMenu.style.display === 'flex' ? 'none' : 'flex';
 
-        // event target
-        let enablePin = true
-
-        if (pin.classList.contains('selected')) {
-            pin.classList.remove('selected');
-            enablePin = false
-        } else {
-            pin.classList.add('selected');
+        if (colorMenu.style.display === 'flex') {
+            eventListenerForColorBtns(colorMenu)
         }
-        const id = pin.getAttribute('pinId')
-        chrome.runtime.sendMessage({ action: "enablePin", isPinEnable: enablePin, id: id });
-    })
+    });
+
+
+    // event listner for the color buttons 
+
+
+
+    if (pin) {
+        pin.addEventListener('click', (event) => {
+
+            // event target
+            let enablePin = true
+
+            if (pin.classList.contains('selected')) {
+                pin.classList.remove('selected');
+                enablePin = false
+            } else {
+                pin.classList.add('selected');
+            }
+            const id = pin.getAttribute('pinId')
+            chrome.runtime.sendMessage({ action: "enablePin", isPinEnable: enablePin, id: id });
+        })
+    }
 
 
     closeBtn.addEventListener('click', async () => {
@@ -126,6 +144,27 @@ const eventListenerForNote = (shadowRoot, container, noteContainer) => {
         element.addEventListener('focus', function (event) {
             event.stopPropagation();
         }, true);
+    }
+
+    function eventListenerForColorBtns(ele) {
+        ele.addEventListener('click', function (event) {
+            if (event.target.classList.contains('color-btn')) {
+                const selectedColor = event.target.getAttribute('data-color');
+                const noteHeader = event.target.closest('.note-container').querySelector('.note-title');
+
+                noteHeader.classList.remove('color-red', 'color-yellow', 'color-default', 'color-grey', 'color-purple', 'color-pink');
+                noteHeader.classList.add(`color-${selectedColor}`);
+
+                const buttons = document.querySelectorAll('.color-btn');
+                buttons.forEach(btn => btn.classList.remove('color-selected'));
+
+                event.target.classList.add('color-selected');
+                const uniqueId = event.target.closest('.note-container').getAttribute('uniqueid')
+                console.log(`Selected color is: ${selectedColor} , and uniue id : ${uniqueId}`);
+
+                chrome.runtime.sendMessage({ action: "addSelectedColor", selectedColor: selectedColor, uniqueId: uniqueId });
+            }
+        })
     }
 
 }

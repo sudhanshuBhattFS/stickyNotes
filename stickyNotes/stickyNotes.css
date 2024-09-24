@@ -213,3 +213,27 @@ svg{
 .delete-btn svg {
   fill: white;
 }
+
+
+
+.color-red {
+  background-color: var(--color-red);
+}
+.color-yellow {
+  background-color: var(--color-yellow);
+}
+.color-green {
+  background-color: var(--color-green);
+}
+.color-grey {
+  background-color: var(--color-grey);
+}
+.color-purple {
+  background-color: var(--color-purple);
+}
+.color-pink {
+  background-color: var(--color-pink);
+}
+.color-default {
+  background-color: var(--color-default);
+}

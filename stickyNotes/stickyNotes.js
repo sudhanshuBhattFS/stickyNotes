@@ -267,7 +267,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const injectCards = (note) => {
         const card = document.createElement('div');
         card.className = 'note-card';
-        const enablePin = note.enable
 
         const pinClass = note.enablePin ? 'selected' : ''
 
@@ -276,12 +275,13 @@ document.addEventListener('DOMContentLoaded', function () {
         const dateStr = note.date.replace(/\//g, '-');
         const content = note.content
         const url = note.url
-        const timeStr = note.time
         const id = note.id
+
+        const colorClass = note.color ? `color-${note.color}` : '';
 
         card.innerHTML = `
         <div>
-                <div class="note-header ">
+                <div class="note-header ${colorClass}">
                     <span> ${dateStr}</span>
                     <span  class=' cursor-pointer'>
                     <div class="icons">

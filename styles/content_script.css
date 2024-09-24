@@ -19,6 +19,36 @@ pre {
 }
 
 
+
+
+.options{
+    background-color: transparent;
+    border: none ;
+}
+
+
+.color-palette{
+    display: none;
+    right: 0px;
+    position: absolute;
+    align-items: center;
+    background-color: var(--popup-heading);
+    color: var(--popup-heading-color);
+    cursor: move;
+}
+
+.color-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease; /* Smooth hover effect */
+}
+
+.color-btn:hover {
+    transform: scale(1.1); /* Enlarge the button on hover */
+}
+
 .note-container.show {
     transform: translate(-50%, -50%) scale(1); /* Maintain centering and scale to normal size */
     opacity: 1;
@@ -33,7 +63,7 @@ pre {
     background-color: var(--popup-heading);
     color: var(--popup-heading-color);
     padding: 10px;
-    cursor: move; /* Ensures it's visually clear that this area is draggable */
+    cursor: move; 
 }
 .add-btn {
     background: transparent;
@@ -91,4 +121,27 @@ svg {
     transform: scale(0.9); /* Slightly reduce size */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Add shadow to simulate depth */
 }
+
+.color-red {
+    background-color: var(--color-red);
+  }
+  .color-yellow {
+    background-color: var(--color-yellow);
+  }
+  .color-green {
+    background-color: var(--color-green);
+  }
+  .color-grey {
+    background-color: var(--color-grey);
+  }
+  .color-purple {
+    background-color: var(--color-purple);
+  }
+  .color-pink {
+    background-color: var(--color-pink);
+  }
+  .color-default {
+    background-color: var(--color-default);
+  }
+
 
