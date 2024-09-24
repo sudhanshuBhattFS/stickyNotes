@@ -22,7 +22,7 @@
   },
 
   "pinAll": {
-    "message": "fijar/desfijar (ventana emergente u otro lugar)"
+    "message": "fijar/desfijar "
   },
   "unPinAll": {
     "message": "Desfijar todo"

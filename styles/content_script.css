@@ -29,7 +29,7 @@ pre {
 
 .color-palette{
     display: none;
-    right: 0px;
+    right: 1px;
     position: absolute;
     align-items: center;
     background-color: var(--popup-heading);
@@ -103,10 +103,15 @@ pre {
 }
 
 .selected {
-    background-color: var(--popup-heading-co);
-    filter: brightness(0.4); 
+    background-color: transparent;
+  }
 
-}
+  
+  .disable {
+    background-color: var(--heading-color);
+    filter: brightness(0.5); 
+    margin-left: 2px ;
+  }
 
 svg {
     width: 16;

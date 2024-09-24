@@ -65,9 +65,11 @@ const eventListenerForNote = (shadowRoot, container, noteContainer) => {
 
             if (pin.classList.contains('selected')) {
                 pin.classList.remove('selected');
+                pin.classList.add('disable');
                 enablePin = false
             } else {
                 pin.classList.add('selected');
+                pin.classList.remove('disable');
             }
             const id = pin.getAttribute('pinId')
             chrome.runtime.sendMessage({ action: "enablePin", isPinEnable: enablePin, id: id });
