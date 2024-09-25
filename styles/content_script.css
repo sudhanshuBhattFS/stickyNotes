@@ -18,6 +18,43 @@ pre {
     transition: transform 0.3s ease-out, opacity 0.3s ease-out;
 }
 
+.resize-handle {
+    position: absolute;
+    background: transparent;
+    z-index: 1;
+}
+
+.resize-handle.top {
+    cursor: ns-resize;
+    top: -5px; /* Adjust as needed */
+    left: 0;
+    right: 0;
+    height: 10px;
+}
+
+.resize-handle.right {
+    cursor: ew-resize;
+    top: 0;
+    right: -5px; /* Adjust as needed */
+    width: 10px;
+    height: 100%;
+}
+
+.resize-handle.bottom {
+    cursor: ns-resize;
+    bottom: -5px; /* Adjust as needed */
+    left: 0;
+    right: 0;
+    height: 10px;
+}
+
+.resize-handle.left {
+    cursor: ew-resize;
+    top: 0;
+    left: -5px; /* Adjust as needed */
+    width: 10px;
+    height: 100%;
+}
 
 
 
@@ -82,7 +119,7 @@ pre {
     white-space: pre-wrap;
     word-wrap: break-word;
     overflow: hidden;
-    height: 75%;
+    height: 85%;
 
 }
 .close-btn{
