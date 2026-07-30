@@ -31,14 +31,16 @@ body {
 
 .unsupported-icon {
   align-items: center;
-  background: var(--sn-warning-soft);
-  border: 1px solid var(--sn-warning-border);
-  border-radius: var(--sn-radius-md);
-  color: var(--sn-warning);
   display: flex;
   height: 40px;
   justify-content: center;
   width: 40px;
+}
+
+.unsupported-icon img {
+  display: block;
+  height: 34px;
+  width: 34px;
 }
 
 .unsupported-copy {

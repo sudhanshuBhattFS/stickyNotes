@@ -7,7 +7,13 @@ class SimpleShadowDOM {
         // color class and gets the scope-global hook instead.
         const colorClass = (!isGlobal && note.color) ? `color-${note.color}` : '';
         const scopeClass = isGlobal ? 'scope-global' : '';
-        const headingLabel = isGlobal ? 'Global note' : 'Stick it';
+        // The global note keeps its fixed identity label. A normal note's header
+        // is an editable name; it is populated with textContent in createPopup
+        // (so the title is never injected as HTML), and shows a placeholder via
+        // CSS while empty.
+        const headingHtml = isGlobal
+            ? '<span class="heading">Global note</span>'
+            : `<span class="heading heading-name" contenteditable="plaintext-only" data-note-id="${id}" role="textbox" aria-label="Note name" title="Rename note" spellcheck="false"></span>`;
         // Hover hints (native tooltips) explaining each control.
         const pinTitle = isGlobal
             ? 'Pin — show on every site. Unpin to hide it.'
@@ -29,7 +35,7 @@ class SimpleShadowDOM {
                     </svg>
                 </button>
                 ${globeBadge}
-                <span class="heading">${headingLabel}</span>
+                ${headingHtml}
                 <div class="dropdown">
                     <button id="options" class="note-action options" type="button" aria-label="Note color" title="Change note color">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
@@ -83,6 +89,12 @@ class SimpleShadowDOM {
         const textArea = shadowRoot.getElementById(id);
         if (textArea) {
             textArea.textContent = note.content || '';
+        }
+        // Name text is set here (not in the template string) so it is never
+        // treated as HTML.
+        const headingName = shadowRoot.querySelector('.heading-name');
+        if (headingName) {
+            headingName.textContent = note.title || '';
         }
 
         document.body.appendChild(container);
@@ -261,6 +273,17 @@ const createCardAndUpdate = (note) => {
             const isBeingEdited = shadowRoot.activeElement === existingElement;
             if (!isBeingEdited && existingElement.textContent !== nextContent) {
                 existingElement.textContent = nextContent;
+            }
+
+            // Keep the header name in sync with a rename echoed from another
+            // tab, but never overwrite the name being actively edited here.
+            const headingName = shadowRoot.querySelector('.heading-name');
+            if (headingName && note.scope !== 'global') {
+                const nextTitle = note.title || '';
+                const isEditingName = shadowRoot.activeElement === headingName;
+                if (!isEditingName && headingName.textContent !== nextTitle) {
+                    headingName.textContent = nextTitle;
+                }
             }
 
             // Keep the on-page pin button in sync with the stored pin state so

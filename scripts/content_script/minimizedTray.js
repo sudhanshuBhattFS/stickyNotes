@@ -154,6 +154,21 @@ const MinimizedTray = (() => {
         return firstLine.length > 26 ? `${firstLine.slice(0, 26)}…` : firstLine;
     };
 
+    // A pill shows the note's name when it has one (capped, so a long name does
+    // not stretch the pill), otherwise a short preview of its content. The single
+    // global note uses its fixed identity label.
+    const MAX_NAME_LENGTH = 24;
+    const pillLabel = (note) => {
+        if (note.scope === 'global') {
+            return 'Global note';
+        }
+        const name = String(note.title || '').trim().split('\n')[0];
+        if (name) {
+            return name.length > MAX_NAME_LENGTH ? `${name.slice(0, MAX_NAME_LENGTH)}…` : name;
+        }
+        return previewText(note.content);
+    };
+
     // A stroked globe marker for the global note's pill.
     const createGlobe = () => {
         const svgNs = 'http://www.w3.org/2000/svg';
@@ -185,18 +200,18 @@ const MinimizedTray = (() => {
         if (listEl.querySelector(`[data-note-id="${note.id}"]`)) return;
 
         const isGlobal = note.scope === 'global';
+        const text = pillLabel(note);
 
         const pill = document.createElement('button');
         pill.type = 'button';
         pill.className = isGlobal ? 'pill pill--global' : 'pill';
         pill.setAttribute('data-note-id', note.id);
-        pill.setAttribute('aria-label', isGlobal
-            ? `Restore global note: ${previewText(note.content)}`
-            : `Restore note: ${previewText(note.content)}`);
+        pill.setAttribute('aria-label', isGlobal ? 'Restore the global note' : `Restore note: ${text}`);
+        pill.setAttribute('title', text);
 
         const label = document.createElement('span');
         label.className = 'label';
-        label.textContent = previewText(note.content);
+        label.textContent = text;
 
         if (isGlobal) {
             // The global note carries a globe marker instead of a color dot.

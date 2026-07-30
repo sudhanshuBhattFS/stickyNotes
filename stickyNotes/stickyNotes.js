@@ -7,6 +7,14 @@ let currentPage = 1;
 
 let length = 0
 
+function debounce(func, delay) {
+    let timeout;
+    return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), delay);
+    };
+}
+
 document.addEventListener('DOMContentLoaded', function () {
 
     const addBtn = document.getElementById('add-note')
@@ -383,17 +391,53 @@ document.addEventListener('DOMContentLoaded', function () {
         const header = document.createElement('div');
         header.className = isGlobal ? 'note-header note-header--global' : `note-header ${colorClass}`;
 
-        const dateLabel = document.createElement('span');
-        dateLabel.className = 'note-header-label';
+        let label;
         if (isGlobal) {
-            // A globe badge and "Global note" label make the card identifiable
-            // in the popup list the same way it is on the page.
+            // A globe badge and fixed "Global note" label — the global note is
+            // identifiable the same way as on the page and is not renamed.
+            label = document.createElement('span');
+            label.className = 'note-header-label';
             const badge = createGlobeBadge();
             const globalText = document.createElement('span');
             globalText.textContent = 'Global note';
-            dateLabel.append(badge, globalText);
+            label.append(badge, globalText);
         } else {
-            dateLabel.textContent = dateStr;
+            // Editable note name (bold) with the date beneath it.
+            label = document.createElement('div');
+            label.className = 'note-card-titlewrap';
+
+            const nameEl = document.createElement('div');
+            nameEl.className = 'note-card-name';
+            nameEl.contentEditable = 'plaintext-only';
+            nameEl.dataset.noteId = id;
+            nameEl.setAttribute('role', 'textbox');
+            nameEl.setAttribute('aria-label', 'Note name');
+            nameEl.setAttribute('spellcheck', 'false');
+            nameEl.setAttribute('title', 'Rename note');
+            nameEl.textContent = UserLocalStorage.getNoteTitle(note);
+
+            const commitName = () => {
+                chrome.runtime.sendMessage({
+                    action: MESSAGE.UPDATE_NOTE_TITLE,
+                    id: nameEl.dataset.noteId,
+                    title: nameEl.textContent
+                });
+            };
+            nameEl.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    nameEl.blur();
+                }
+            });
+            nameEl.addEventListener('input', debounce(commitName, 400));
+            // Save immediately on blur too, since the popup can close quickly.
+            nameEl.addEventListener('blur', commitName);
+
+            const dateEl = document.createElement('span');
+            dateEl.className = 'note-card-date';
+            dateEl.textContent = dateStr;
+
+            label.append(nameEl, dateEl);
         }
 
         const actionShell = document.createElement('span');
@@ -419,12 +463,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
         icons.append(deleteBtn, pinBtn);
         actionShell.appendChild(icons);
-        header.append(dateLabel, actionShell);
+        header.append(label, actionShell);
 
         const contentContainer = document.createElement('div');
         contentContainer.contentEditable = 'false';
         contentContainer.className = 'note-content-container';
-        contentContainer.textContent = note.content || '';
+        // This card body is a read-only preview. Bound it in JS (collapse
+        // whitespace + hard character cap) instead of relying only on the CSS
+        // line-clamp, which is unreliable on `-webkit-box` in recent Chrome and
+        // was letting long notes overflow into a wall of text.
+        const previewText = String(note.content || '').replace(/\s+/g, ' ').trim();
+        const MAX_PREVIEW = 90;
+        contentContainer.textContent = previewText.length > MAX_PREVIEW
+            ? `${previewText.slice(0, MAX_PREVIEW).trimEnd()}…`
+            : previewText;
 
         wrapper.append(header, contentContainer);
         card.appendChild(wrapper);

@@ -37,6 +37,10 @@ Do this on a clean profile / fresh load, in a normal **https** tab.
       hides again.
 
 ### Injected note (on the page)
+- [ ] **Rename:** the header shows an editable name with a "Name this note…"
+      placeholder; typing a name persists it, and it shows in the popup card and
+      All Notes card (as "Untitled note" until named). Clicking the name to edit
+      does **not** drag the note. The global note keeps its "Global note" label.
 - [ ] An empty note shows helpful placeholder text; an empty **global** note
       shows its own text explaining it is one shared note shown on every site.
 - [ ] Hovering each toolbar button shows a tooltip explaining it.

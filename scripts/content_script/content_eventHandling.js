@@ -8,7 +8,6 @@ const eventListenerForNote = (shadowRoot, container, noteContainer) => {
         chrome.runtime.sendMessage({ action: MESSAGE.STORE_NOTE_DATA, url: url }, (response) => {
             const id = response.noteData.id
             if (id) {
-                const title = response.noteData.title
                 SimpleShadowDOM.createPopup(response.noteData);
             }
         });
@@ -19,7 +18,6 @@ const eventListenerForNote = (shadowRoot, container, noteContainer) => {
     // close btn
     const closeBtn = shadowRoot.querySelector('.close-btn');
     const pin = shadowRoot.querySelector('.pin');
-    const title = shadowRoot.querySelector('.title')
     const options = shadowRoot.querySelector('#options')
 
 
@@ -99,14 +97,17 @@ const eventListenerForNote = (shadowRoot, container, noteContainer) => {
             const noteId = textAreaEl.id;
             const colorClass = Array.from(noteTitleEl.classList).find((cls) => cls.startsWith('color-'));
             // The global note keeps its identity while minimized, so pass its
-            // scope through to the tray pill.
+            // scope through to the tray pill. The pill shows the note's name when
+            // it has one (the global note has no editable name).
             const isGlobal = noteContainer.classList.contains('scope-global');
+            const headingNameEl = shadowRoot.querySelector('.heading-name');
 
             MinimizedTray.minimize({
                 id: noteId,
                 content: textAreaEl.textContent,
                 color: colorClass ? colorClass.replace('color-', '') : '',
-                scope: isGlobal ? 'global' : undefined
+                scope: isGlobal ? 'global' : undefined,
+                title: headingNameEl ? headingNameEl.textContent : ''
             });
             chrome.runtime.sendMessage({ action: MESSAGE.UPDATE_MINIMIZED, id: noteId, minimized: true });
         });
@@ -133,6 +134,28 @@ const eventListenerForNote = (shadowRoot, container, noteContainer) => {
         });
         chrome.runtime.sendMessage({ action: MESSAGE.REMOVE_TAB, title: "StickyNotes" });
     }, 500)); // Adjust the delay (in milliseconds) as needed
+
+    // Rename: the editable header name (present on non-global notes). Persist the
+    // debounced change, keep it single-line, and stop key events from leaking to
+    // the host page.
+    const headingName = shadowRoot.querySelector('.heading-name');
+    if (headingName) {
+        preventUnintendedEvents(headingName);
+        headingName.addEventListener('keydown', (event) => {
+            // Enter commits the name rather than adding a line break.
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                headingName.blur();
+            }
+        });
+        headingName.addEventListener('input', debounce(() => {
+            chrome.runtime.sendMessage({
+                action: MESSAGE.UPDATE_NOTE_TITLE,
+                id: headingName.getAttribute('data-note-id'),
+                title: headingName.textContent
+            });
+        }, 400));
+    }
 
 
     function preventUnintendedEvents(element) {

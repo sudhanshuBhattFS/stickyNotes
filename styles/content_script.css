@@ -114,6 +114,31 @@ pre {
     white-space: nowrap;
 }
 
+/* Editable note name: click to rename, with a subtle hover/focus affordance and
+   a muted italic placeholder while unnamed. */
+.heading-name {
+    border-radius: 5px;
+    cursor: text;
+    padding: 3px 6px;
+    transition: background-color 120ms ease;
+}
+
+.heading-name:hover {
+    background: rgba(255, 255, 255, 0.14);
+}
+
+.heading-name:focus {
+    background: rgba(255, 255, 255, 0.18);
+    outline: none;
+}
+
+.heading-name:empty::before {
+    content: "Name this note…";
+    font-style: italic;
+    font-weight: 500;
+    opacity: 0.6;
+}
+
 .dropdown {
     align-items: center;
     display: flex;

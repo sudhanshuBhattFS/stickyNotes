@@ -299,9 +299,20 @@ svg {
   color: var(--sn-text);
 }
 
-.delete-note,
-.deleteNoteBtn {
+.delete-note {
   color: var(--sn-danger);
+}
+
+/* The note-card header delete adopts the header's own text color (like the
+   popup card), so it integrates with each colored/dark header instead of being
+   a clashing red icon. */
+#Cards .heading .deleteNoteBtn {
+  color: inherit;
+}
+
+#Cards .heading .deleteNoteBtn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: inherit;
 }
 
 .navigation *,
@@ -461,14 +472,45 @@ svg {
   color: var(--sn-global-title-text) !important;
 }
 
-.card--global .heading .deleteNoteBtn {
-  color: var(--sn-global-title-text) !important;
+.main-note-name {
+  color: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.main-note-name--editable {
+  border-radius: 5px;
+  cursor: text;
+  padding: 1px 6px;
+  transition: background-color 120ms ease;
+}
+
+.main-note-name--editable:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.main-note-name--editable:focus {
+  background: rgba(255, 255, 255, 0.22);
+  outline: none;
+}
+
+.main-note-name--editable:empty::before {
+  content: "Untitled note";
+  font-style: italic;
+  font-weight: 500;
+  opacity: 0.7;
 }
 
 .note-card-meta {
   align-items: center;
   display: flex;
   gap: 10px;
+  white-space: nowrap;
   font-size: 13px;
   font-weight: 600;
   letter-spacing: -0.01em;
@@ -481,13 +523,22 @@ svg {
   color: var(--sn-text) !important;
   font-size: 14px;
   line-height: 1.5;
-  max-height: 260px;
+  /* Bound the editable body to a scrollable region so a long note does not grow
+     into a wall of text. (A firm max-height is reliable; CSS line-clamp on
+     `-webkit-box` is not, in recent Chrome.) */
+  max-height: 200px;
   min-height: 64px;
   outline: none;
   overflow: auto;
+  overflow-wrap: anywhere;
   padding: 12px 14px !important;
   white-space: pre-wrap;
   word-wrap: break-word;
+}
+
+/* A little more room while editing. */
+.textAreaForNotes:focus {
+  max-height: 320px;
 }
 
 /* Higher specificity than the generic .resize utility — drop the native

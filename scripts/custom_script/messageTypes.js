@@ -23,6 +23,7 @@ const MESSAGE = Object.freeze({
     CREATE_TAB_AND_INJECT: 'createTabAndInject',
     FILTER_LOCAL_STORAGE: 'filterLocalStorage',
     UPDATE_NOTE_CONTENT: 'updateNoteContent',
+    UPDATE_NOTE_TITLE: 'updateNoteTitle',
     REMOVE_USING_HOST_NAME: 'removeUsingHostName',
     REMOVE_TAB: 'removeTab',
     STORE_POSITION: 'storePosition',

@@ -1,6 +1,14 @@
 let selectedNoteContainer = null;
 // get note data which has been inserted
 let flag = true
+
+function debounceTitle(func, delay) {
+    let timeout;
+    return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), delay);
+    };
+}
 let isViewGrid = true
 let isSideBarVisible = true
 const grid = document.getElementsByClassName('grid')
@@ -107,7 +115,9 @@ const renderMainNotesForHost = (notes, hostName, query = '') => {
     let hasRenderedNotes = false;
 
     notes.forEach((note) => {
-        if (note.hostName === hostName) {
+        // The global note has its creation host's hostName, but it belongs to
+        // its own "Global note" group — never a host's note list.
+        if (note.hostName === hostName && !UserLocalStorage.isGlobalNote(note)) {
             hasRenderedNotes = true;
             if (query.trim() !== '') {
                 searchAndHighlight(note, query);
@@ -172,21 +182,14 @@ const setView = (cards) => {
     }
 }
 const SVG_NS = 'http://www.w3.org/2000/svg';
+// Bootstrap "bi-trash" (filled), matching the popup note-card delete so every
+// delete button across the extension uses the same glyph. Rendered filled at a
+// 16-viewBox via TRASH_ICON_ATTRS.
 const TRASH_ICON_PATHS = [
-    {
-        d: 'M9 11v6M15 11v6M4 7h16M10 4h4a1 1 0 0 1 1 1v2H9V5a1 1 0 0 1 1-1Z',
-        stroke: 'currentColor',
-        'stroke-width': '2',
-        'stroke-linecap': 'round',
-        'stroke-linejoin': 'round'
-    },
-    {
-        d: 'm6 7 1 13h10l1-13',
-        stroke: 'currentColor',
-        'stroke-width': '2',
-        'stroke-linejoin': 'round'
-    }
+    { d: 'M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z' },
+    { d: 'M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z' }
 ];
+const TRASH_ICON_ATTRS = { fill: 'currentColor', viewBox: '0 0 16 16' };
 
 const NAVIGATION_ICON_PATHS = [
     {
@@ -247,7 +250,7 @@ const createSvgIcon = ({ className, paths, attributes = {} }) => {
 // Build a real, keyboard-operable icon button. The interactive class (used by
 // the click handlers and tooltips) lives on the button; the SVG inside is
 // decorative and hidden from assistive tech.
-const createIconButton = ({ className, label, paths, attributes = {}, iconClassName = 'bi' }) => {
+const createIconButton = ({ className, label, paths, attributes = {}, iconClassName = 'bi', iconAttributes = {} }) => {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = className;
@@ -257,7 +260,7 @@ const createIconButton = ({ className, label, paths, attributes = {}, iconClassN
         button.setAttribute(name, value);
     });
 
-    const icon = createSvgIcon({ className: iconClassName, paths });
+    const icon = createSvgIcon({ className: iconClassName, paths, attributes: iconAttributes });
     icon.setAttribute('aria-hidden', 'true');
     button.appendChild(icon);
 
@@ -327,7 +330,8 @@ const createCardsForNote = (note, query) => {
         className: 'delete-note custom-margin-10',
         label: 'Delete all notes for this site',
         paths: TRASH_ICON_PATHS,
-        iconClassName: 'bi bi-trash'
+        iconClassName: 'bi bi-trash',
+        iconAttributes: TRASH_ICON_ATTRS
     });
 
     actions.append(navigationIcon, deleteIcon);
@@ -339,21 +343,49 @@ const createCardsForNote = (note, query) => {
 
 const createMainNoteCard = (note, query) => {
     const id = note.id;
+    const isGlobal = UserLocalStorage.isGlobalNote(note);
     const cardClass = isViewGrid ? 'w-100' : 'w-50';
-    const colorClass = note.color ? `color-${note.color}` : '';
+    const colorClass = (!isGlobal && note.color) ? `color-${note.color}` : '';
 
     const card = createElement('div', `${id} card-size ${cardClass} mx-2 my-2`);
     card.id = 'Cards';
 
     const heading = createElement('div', `w-100 heading text-dark px-3 py-2 ${colorClass}`);
-    const headingRow = createElement('div', 'w-100 d-flex justify-content-between');
-    const meta = createElement('div', 'note-card-meta');
 
-    const date = createElement('span', 'px-2');
-    date.textContent = note.date.replace(/\//g, '-');
-    const time = createElement('span', 'px-2');
-    time.textContent = note.time;
-    meta.append(date, time);
+    // Name row: the editable note name (or the fixed "Global note" label) plus
+    // the delete action.
+    const nameRow = createElement('div', 'w-100 d-flex justify-content-between align-items-center');
+
+    let nameEl;
+    if (isGlobal) {
+        nameEl = createElement('div', 'main-note-name');
+        nameEl.textContent = 'Global note';
+    } else {
+        nameEl = createElement('div', 'main-note-name main-note-name--editable');
+        nameEl.setAttribute('contenteditable', 'plaintext-only');
+        nameEl.dataset.noteId = id;
+        nameEl.setAttribute('role', 'textbox');
+        nameEl.setAttribute('aria-label', 'Note name');
+        nameEl.setAttribute('spellcheck', 'false');
+        nameEl.setAttribute('title', 'Rename note');
+        nameEl.textContent = UserLocalStorage.getNoteTitle(note);
+
+        const commitName = () => {
+            chrome.runtime.sendMessage({
+                action: MESSAGE.UPDATE_NOTE_TITLE,
+                id: nameEl.dataset.noteId,
+                title: nameEl.textContent
+            });
+        };
+        nameEl.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                nameEl.blur();
+            }
+        });
+        nameEl.addEventListener('input', debounceTitle(commitName, 400));
+        nameEl.addEventListener('blur', commitName);
+    }
 
     const actionContainer = document.createElement('div');
     const deleteIcon = createIconButton({
@@ -361,12 +393,27 @@ const createMainNoteCard = (note, query) => {
         label: 'Delete note',
         paths: TRASH_ICON_PATHS,
         attributes: { 'unique-id': id },
-        iconClassName: 'bi bi-trash'
+        iconClassName: 'bi bi-trash',
+        iconAttributes: TRASH_ICON_ATTRS
     });
     actionContainer.appendChild(deleteIcon);
 
-    headingRow.append(meta, actionContainer);
-    heading.appendChild(headingRow);
+    nameRow.append(nameEl, actionContainer);
+
+    // Meta row: date and time.
+    const meta = createElement('div', 'note-card-meta');
+    const date = createElement('span', 'px-2');
+    date.textContent = note.date.replace(/\//g, '-');
+    const time = createElement('span', 'px-2');
+    time.textContent = note.time;
+    meta.append(date, time);
+
+    // The `.heading` is a flex row (shared with the app header), so stack the
+    // name row and the meta row inside a single column child instead of letting
+    // them become side-by-side flex siblings (which squished the date).
+    const headingStack = createElement('div', 'w-100 d-flex flex-column');
+    headingStack.append(nameRow, meta);
+    heading.appendChild(headingStack);
 
     const noteBody = createElement('div', 'textAreaForNotes resize border border-light w-100 bg-transparent text-light p-2');
     noteBody.setAttribute('contenteditable', 'true');

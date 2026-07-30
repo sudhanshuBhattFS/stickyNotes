@@ -85,7 +85,7 @@ A note object is created with these core fields:
 
 Additional fields are added later by user interactions:
 
-- `title`: created by background note creation, currently defaulted to `"Title"`.
+- `title`: the note's user-facing **name**, editable inline on the on-page note header, the popup card, and the All Notes card (persisted via the `updateNoteTitle` background message; echoed to the note's other open instances, broadcast for the global note). New notes start with an empty name and show a placeholder ("Name this note…" on the page, "Untitled note" in lists) until named. The global note keeps its fixed "Global note" label and is not renamed. A one-time v5 migration clears the legacy auto-default value `"Title"`.
 - `position`: saved after dragging a note.
 - `width` and `height`: saved after resizing a note.
 - `color`: saved after choosing a note color.
@@ -204,7 +204,7 @@ The main classes and functions are:
 - `makeResizable(element, size)`: applies saved dimensions and stores new dimensions after resizing.
 - `makeDraggable(element, handle, id, position)` (defined in `scripts/content_script/draggable.js`): applies saved position and stores new position after dragging.
 
-The injected note UI is a themed Shadow DOM card with a header toolbar, add/color/pin/minimize/close controls (each with a `title` hover tooltip explaining it), color palette, editable body, an empty-state placeholder (a distinct one on the global note explaining that it is a single shared note shown on every site while pinned), resize handles, persisted position, and persisted size.
+The injected note UI is a themed Shadow DOM card with a header toolbar containing an editable note **name** (a contenteditable heading; the global note keeps a fixed "Global note" label) plus add/color/pin/minimize/close controls (each with a `title` hover tooltip explaining it), color palette, editable body, an empty-state placeholder (a distinct one on the global note explaining that it is a single shared note shown on every site while pinned), resize handles, persisted position, and persisted size. Clicking the name to edit it does not start a drag.
 
 `scripts/content_script/minimizedTray.js` provides `MinimizedTray`, a shared Shadow DOM strip anchored to the bottom-right of the viewport. Minimizing a note (`minimize-btn`) hides its floating window and adds one compact pill (color dot plus a short content preview) to the tray; clicking a pill restores the note to its place. The tray is created lazily and removed when the last note is restored, and `createPopup` renders a note that loads with `minimized: true` straight into the tray. Minimized state is persisted through the background `updateMinimized` message.
 

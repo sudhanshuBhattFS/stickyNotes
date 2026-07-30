@@ -315,6 +315,50 @@ svg {
   gap: var(--sn-space-2);
 }
 
+/* Editable name (bold) stacked over the date in the note card header. */
+.note-card-titlewrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.note-card-name {
+  border-radius: 4px;
+  color: inherit;
+  cursor: text;
+  font-size: 13px;
+  font-weight: 700;
+  max-width: 100%;
+  overflow: hidden;
+  padding: 1px 4px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.note-card-name:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.note-card-name:focus {
+  background: rgba(255, 255, 255, 0.2);
+  outline: none;
+}
+
+.note-card-name:empty::before {
+  content: "Untitled note";
+  font-style: italic;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+.note-card-date {
+  font-size: 11px;
+  font-weight: 500;
+  opacity: 0.8;
+  padding: 0 4px;
+}
+
 .note-header-globe {
   flex: 0 0 auto;
 }
@@ -324,7 +368,6 @@ svg {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-  line-clamp: 2;
   font-size: 13px;
   line-height: 1.4;
   overflow: hidden;

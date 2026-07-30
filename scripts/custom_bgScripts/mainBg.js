@@ -160,6 +160,46 @@ chrome.runtime.onMessage.addListener(
 
         }
 
+        if (request.action === MESSAGE.UPDATE_NOTE_TITLE) {
+            const id = request.id;
+            // The name may be empty (cleared), so only the type is required.
+            // Cap the length defensively before it touches storage.
+            const updateTitle = typeof request.title === 'string' ? request.title.slice(0, 200) : null;
+
+            if (isNonEmptyString(id) && updateTitle !== null) {
+                const noteArr = await UserLocalStorage.retrieveNoteData();
+                const updatedNoteArr = noteArr.map((note) => {
+                    if (note.id == id) {
+                        return { ...note, title: updateTitle };
+                    }
+                    return note;
+                });
+
+                const noteToFind = updatedNoteArr.find(note => note.id === id);
+                if (!noteToFind) {
+                    return true;
+                }
+
+                await UserLocalStorage.setStorage(updatedNoteArr);
+
+                // Reflect the rename on the note's other open instances, skipping
+                // the tab that made the edit. The global note is broadcast
+                // everywhere; a normal note only reaches tabs on its own URL.
+                const senderTabId = sender && sender.tab ? sender.tab.id : null;
+                if (UserLocalStorage.isGlobalNote(noteToFind)) {
+                    broadcastToAllTabs({ action: MESSAGE.UPDATE_CONTENT_IN_CARD, note: noteToFind }, senderTabId);
+                } else {
+                    chrome.tabs.query({}, function (tabs) {
+                        tabs.forEach(tab => {
+                            if (tab.url === noteToFind.url && tab.id !== senderTabId) {
+                                sendMessageToTab(tab.id, { action: MESSAGE.UPDATE_CONTENT_IN_CARD, note: noteToFind });
+                            }
+                        });
+                    });
+                }
+            }
+        }
+
         if (request.action == MESSAGE.REMOVE_USING_HOST_NAME) {
             const hostName = request.hostName
 

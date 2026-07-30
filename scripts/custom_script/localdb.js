@@ -60,8 +60,10 @@ class UserLocalStorage {
     // v4: `enablePin` now means "shown" (pinned = visible, unpinned = hidden)
     // rather than "site-wide". Every stored note used to be visible on its own
     // page, so the migration pins them all to preserve that visibility.
+    // v5: `title` becomes a user-facing note name. The migration clears the
+    // legacy auto-default value 'Title' so old notes show as unnamed.
     static get NOTE_SCHEMA_VERSION() {
-        return 4;
+        return 5;
     }
 
     static get GLOBAL_SCOPE() {
@@ -78,19 +80,33 @@ class UserLocalStorage {
             if (!note) {
                 return note;
             }
-            if (note.schemaVersion === 4) {
+            if (note.schemaVersion === 5) {
                 return note;
             }
             changed = true;
 
+            const upgraded = { ...note };
+
             // Backfill an explicit scope for pre-v3 notes. Global notes are only
             // created explicitly, so migration never yields one.
-            const scope = note.scope || 'page';
+            upgraded.scope = note.scope || 'page';
 
-            // v4: `enablePin` now means "shown". Every previously stored note was
+            // v4: `enablePin` now means "shown". Every note stored before v4 was
             // visible on its own page (visibility used to be pin-independent), so
-            // pin them all to keep them visible under the new model.
-            return { ...note, enablePin: true, scope, schemaVersion: 4 };
+            // pin them all to keep them visible. Notes already at v4+ keep their
+            // pin state (the user may have since unpinned/hidden them).
+            if (!(note.schemaVersion >= 4)) {
+                upgraded.enablePin = true;
+            }
+
+            // v5: `title` is a user-facing note name. Clear the legacy auto
+            // default 'Title' (and any missing value) so old notes show unnamed.
+            if (upgraded.title === 'Title' || typeof upgraded.title !== 'string') {
+                upgraded.title = '';
+            }
+
+            upgraded.schemaVersion = 5;
+            return upgraded;
         });
 
         if (changed) {
@@ -119,7 +135,8 @@ class UserLocalStorage {
             hostName: hostName,
             url: url,
             content: '',
-            title: 'Title',
+            // User-facing note name; empty until the user names the note.
+            title: '',
             // "Pinned" means "shown". A freshly added note is visible, so it is
             // created pinned; closing/unpinning it hides it.
             enablePin: true,
@@ -140,6 +157,12 @@ class UserLocalStorage {
 
     static isGlobalNote(note) {
         return Boolean(note) && note.scope === this.GLOBAL_SCOPE;
+    }
+
+    // The note's user-facing name (trimmed), or '' when it has none. Surfaces
+    // show a placeholder ("Untitled note" / "Name this note…") when this is empty.
+    static getNoteTitle(note) {
+        return note && typeof note.title === 'string' ? note.title.trim() : '';
     }
 
     // Single source of truth for "should this note render on this page?", shared

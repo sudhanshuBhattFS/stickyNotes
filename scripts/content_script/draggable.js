@@ -33,6 +33,10 @@ const makeDraggable = (element, handle, id, position) => {
         // Don't hijack clicks on the note's controls (add / options / pin / close).
         if (e.target.closest('button')) return;
 
+        // Don't start a drag when the user is clicking into the editable name
+        // (or any editable field) in the drag handle — let them place the caret.
+        if (e.target.closest('[contenteditable]')) return;
+
         isDragging = true;
         startX = element.offsetLeft;
         startY = element.offsetTop;
