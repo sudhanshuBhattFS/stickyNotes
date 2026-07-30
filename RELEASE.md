@@ -27,6 +27,10 @@ Do this on a clean profile / fresh load, in a normal **https** tab.
       light and dark, and "Open the All Notes page" works.
 - [ ] On a version update, the welcome page opens scrolled to **What's new**
       (the section shows the current `v` and renders in light and dark).
+- [ ] **Upgrade preserves notes:** install the currently-published build, create
+      a few notes (including a pinned one), then load this build over it. All
+      notes are still present with their content; previously-visible notes still
+      show on their page. (Migration is additive — it never deletes notes.)
 
 ### Popup
 - [ ] On a site with no notes: popup shows the "No notes on this site yet" empty
