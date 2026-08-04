@@ -24,6 +24,28 @@ const broadcastToAllTabs = (message, exceptTabId) => {
     });
 };
 
+// A normal note is domain-scoped (shown on every page of its host), so its edits
+// and removals must reach every tab on that host — not just the exact URL it was
+// created on. Matches tabs by hostname; unparseable tab URLs are skipped.
+const broadcastToHostTabs = (message, hostName, exceptTabId) => {
+    chrome.tabs.query({}, (tabs) => {
+        tabs.forEach((tab) => {
+            if (tab.id === exceptTabId || !tab.url) {
+                return;
+            }
+            let tabHost = '';
+            try {
+                tabHost = new URL(tab.url).hostname;
+            } catch (error) {
+                return;
+            }
+            if (tabHost === hostName) {
+                sendMessageToTab(tab.id, message);
+            }
+        });
+    });
+};
+
 // The global note's pin state (shown/hidden) applies to every tab, so pinning it
 // injects it everywhere and unpinning removes it everywhere. Tabs with no content
 // script (restricted/loading pages) are handled by sendMessageToTab.
@@ -32,6 +54,16 @@ const broadcastGlobalVisibility = (note) => {
         broadcastToAllTabs({ message: MESSAGE.INJECT_POPUPS, noteData: note });
     } else {
         broadcastToAllTabs({ action: MESSAGE.REMOVE_ELEMENT_FROM_DOM, id: note.id });
+    }
+};
+
+// A domain-scoped note's pin state applies to every page of its host, so pinning
+// shows it on all of that host's open tabs and unpinning hides it on all of them.
+const broadcastHostVisibility = (note) => {
+    if (note.enablePin) {
+        broadcastToHostTabs({ message: MESSAGE.INJECT_POPUPS, noteData: note }, note.hostName);
+    } else {
+        broadcastToHostTabs({ action: MESSAGE.REMOVE_ELEMENT_FROM_DOM, id: note.id }, note.hostName);
     }
 };
 
@@ -100,13 +132,9 @@ chrome.runtime.onMessage.addListener(
             if (UserLocalStorage.isGlobalNote(noteToFind)) {
                 broadcastToAllTabs({ action: MESSAGE.REMOVE_ELEMENT_FROM_DOM, id: noteToFind.id });
             } else {
-                chrome.tabs.query({}, function (tabs) {
-                    tabs.forEach(tab => {
-                        if (tab.url === noteToFind.url) {
-                            sendMessageToTab(tab.id, { action: MESSAGE.REMOVE_ELEMENT_FROM_DOM, id: noteToFind.id });
-                        }
-                    });
-                });
+                // Domain-scoped: the note can be on any page of its host, so pull
+                // it from every tab on that host.
+                broadcastToHostTabs({ action: MESSAGE.REMOVE_ELEMENT_FROM_DOM, id: noteToFind.id }, noteToFind.hostName);
             }
 
             // Send a response back if needed
@@ -147,13 +175,9 @@ chrome.runtime.onMessage.addListener(
                 if (UserLocalStorage.isGlobalNote(noteToFind)) {
                     broadcastToAllTabs({ action: MESSAGE.UPDATE_CONTENT_IN_CARD, note: noteToFind }, senderTabId);
                 } else {
-                    chrome.tabs.query({}, function (tabs) {
-                        tabs.forEach(tab => {
-                            if (tab.url === noteToFind.url && tab.id !== senderTabId) {
-                                sendMessageToTab(tab.id, { action: MESSAGE.UPDATE_CONTENT_IN_CARD, note: noteToFind });
-                            }
-                        });
-                    });
+                    // Domain-scoped: reflect the change on the note's other open
+                    // instances across the same host.
+                    broadcastToHostTabs({ action: MESSAGE.UPDATE_CONTENT_IN_CARD, note: noteToFind }, noteToFind.hostName, senderTabId);
                 }
             }
 
@@ -189,13 +213,9 @@ chrome.runtime.onMessage.addListener(
                 if (UserLocalStorage.isGlobalNote(noteToFind)) {
                     broadcastToAllTabs({ action: MESSAGE.UPDATE_CONTENT_IN_CARD, note: noteToFind }, senderTabId);
                 } else {
-                    chrome.tabs.query({}, function (tabs) {
-                        tabs.forEach(tab => {
-                            if (tab.url === noteToFind.url && tab.id !== senderTabId) {
-                                sendMessageToTab(tab.id, { action: MESSAGE.UPDATE_CONTENT_IN_CARD, note: noteToFind });
-                            }
-                        });
-                    });
+                    // Domain-scoped: reflect the change on the note's other open
+                    // instances across the same host.
+                    broadcastToHostTabs({ action: MESSAGE.UPDATE_CONTENT_IN_CARD, note: noteToFind }, noteToFind.hostName, senderTabId);
                 }
             }
         }
@@ -218,14 +238,25 @@ chrome.runtime.onMessage.addListener(
 
             await UserLocalStorage.setStorage(updateArray)
 
-            // Query tabs once and match every removed note against each tab,
-            // instead of scanning all tabs separately for every note.
+            // Every removed note belongs to this host and (domain-scoped) can be
+            // showing on any of its pages, so pull all removed note ids from
+            // every tab on this host.
             chrome.tabs.query({}, function (tabs) {
                 tabs.forEach(tab => {
+                    if (!tab.url) {
+                        return;
+                    }
+                    let tabHost = '';
+                    try {
+                        tabHost = new URL(tab.url).hostname;
+                    } catch (error) {
+                        return;
+                    }
+                    if (tabHost !== hostName) {
+                        return;
+                    }
                     newArray.forEach(note => {
-                        if (tab.url === note.url) {
-                            sendMessageToTab(tab.id, { action: MESSAGE.REMOVE_ELEMENT_FROM_DOM, id: note.id });
-                        }
+                        sendMessageToTab(tab.id, { action: MESSAGE.REMOVE_ELEMENT_FROM_DOM, id: note.id });
                     });
                 });
             });
@@ -304,6 +335,8 @@ chrome.runtime.onMessage.addListener(
             // Remove empty notes on close instead of keeping empty drafts.
             if (UserLocalStorage.isEmptyNote(noteToUpdate)) {
                 await UserLocalStorage.removeNoteById(noteId);
+                // Domain-scoped: pull the deleted empty note from its other host tabs.
+                broadcastToHostTabs({ action: MESSAGE.REMOVE_ELEMENT_FROM_DOM, id: noteId }, noteToUpdate.hostName);
                 return true;
             }
 
@@ -316,6 +349,10 @@ chrome.runtime.onMessage.addListener(
             });
 
             await UserLocalStorage.setStorage(updatedNotesArray)
+
+            // Closing hides the note (unpin); reflect that across its other
+            // same-host tabs so it does not linger on other domain pages.
+            broadcastHostVisibility(updatedNotesArray.find(note => note.id === noteId));
         }
 
         if (request.action === MESSAGE.ENABLE_PIN) {
@@ -348,33 +385,9 @@ chrome.runtime.onMessage.addListener(
                 // Pinning/unpinning the global note shows/hides it on every tab.
                 broadcastGlobalVisibility(note);
             } else if (note) {
-                chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
-                    if (tabs.length === 0 || !tabs[0] || !tabs[0].id) {
-                        console.error("No active tab found for pin update.");
-                        return;
-                    }
-
-                    const activeTab = tabs[0];
-
-                    // Decide whether the note should be visible on the active
-                    // tab under the new pin state, using the shared rule (exact
-                    // page always, site-wide only when pinned, global always).
-                    let shouldShow = false;
-                    try {
-                        const activeUrl = new URL(activeTab.url);
-                        shouldShow = UserLocalStorage.shouldShowNoteOnPage(note, activeUrl.href, activeUrl.hostname);
-                    } catch (error) {
-                        console.warn('Unable to parse active tab URL for pin update.', error);
-                    }
-
-                    if (shouldShow) {
-                        sendMessageToTab(activeTab.id, { "message": MESSAGE.INJECT_POPUPS, "noteData": note });
-                    } else {
-                        // Unpinned while viewing a different page of the host:
-                        // remove the now site-specific note from this page.
-                        sendMessageToTab(activeTab.id, { action: MESSAGE.REMOVE_ELEMENT_FROM_DOM, id: note.id });
-                    }
-                })
+                // A normal note is domain-scoped, so pinning shows it on every
+                // open page of its host and unpinning hides it on all of them.
+                broadcastHostVisibility(note);
             }
 
             return true

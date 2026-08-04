@@ -97,12 +97,12 @@ visibility funnels through `UserLocalStorage.shouldShowNoteOnPage`:
 ```js
 if (!note.enablePin) return false;    // unpinned = hidden (all note types)
 if (isGlobalNote(note)) return true;  // pinned global = every site
-return note.url === href;             // pinned normal = its own page
+return note.hostName === hostName;    // pinned normal = every page of its host
 ```
 
 So an **unpinned** note (global or not) is hidden everywhere, a **pinned** global
-note shows on every supported site, and a **pinned** normal note shows on its own
-page. New global notes are created **pinned**; the popup **Global Note** button
+note shows on every supported site, and a **pinned** normal note shows on every
+page of its host (domain-scoped). New global notes are created **pinned**; the popup **Global Note** button
 pins it through the background `enablePin` message. Because the global note's
 shown/hidden state applies everywhere, pin/unpin/close **broadcast to every tab**
 (`broadcastGlobalVisibility`): pinning injects it on all tabs, unpinning removes

@@ -57,6 +57,8 @@ The following broad UI work has been completed and should not be treated as pend
 
 - Added **note names**: every note can be named/renamed inline — on the on-page note header, the popup card, and the All Notes card. The (previously unused) `title` field is now the user-facing name, persisted through a new `updateNoteTitle` background message and echoed to the note's other open instances (broadcast for the global note). New notes start unnamed and show a muted italic placeholder ("Name this note…" on the page, "Untitled note" in lists); a one-time v5 migration clears the legacy `"Title"` auto-default. The single global note keeps its fixed "Global note" label and is not renameable. Clicking the on-page name to edit it no longer starts a drag.
 
+- **Made notes domain-scoped (schema v6).** A pinned note now shows on **every page of its host** (a note made on `abc.com/main` shows on `abc.com/sub` too), matching `note.hostName === hostName` instead of the exact URL. This fixes the confusing prior behavior where the popup listed a note across the whole domain but it only actually injected on the exact URL it was created on. Edits, renames, deletes, and pin/unpin now propagate across the note's open same-host tabs (`broadcastToHostTabs` / `broadcastHostVisibility`); the global note still spans every site. A one-time migration backfills `hostName` from the stored url when missing and (for pre-v4 notes) marks them shown, so existing notes become visible across their site with no data loss.
+
 ## High Priority Bugs
 
 No high-priority bugs are currently tracked.

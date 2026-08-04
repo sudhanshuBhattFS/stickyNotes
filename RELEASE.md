@@ -56,6 +56,10 @@ Do this on a clean profile / fresh load, in a normal **https** tab.
       popup card) → it disappears from the page but stays in the popup list;
       pin it again → it reappears. Reloading shows only pinned notes.
 - [ ] Opening the popup does **not** bring back a note you closed/unpinned.
+- [ ] **Domain-scoped:** add a note on one page (e.g. `site.com/a`), then open
+      another page of the **same site** (`site.com/b`) → the note appears there
+      too. A **different site** does not show it. Editing/deleting it on one page
+      reflects on the other same-site tab.
 - [ ] Minimize collapses the note into the docked tray pill (bottom-right);
       clicking the pill restores it to its place.
 - [ ] Clicking the title-bar buttons does not start a drag.

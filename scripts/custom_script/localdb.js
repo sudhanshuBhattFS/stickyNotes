@@ -62,8 +62,11 @@ class UserLocalStorage {
     // page, so the migration pins them all to preserve that visibility.
     // v5: `title` becomes a user-facing note name. The migration clears the
     // legacy auto-default value 'Title' so old notes show as unnamed.
+    // v6: notes are DOMAIN-scoped — a pinned note shows on every page of its
+    // host. Visibility now matches on `hostName`, so the migration ensures a
+    // valid hostName exists (backfilled from the stored url when missing).
     static get NOTE_SCHEMA_VERSION() {
-        return 5;
+        return 6;
     }
 
     static get GLOBAL_SCOPE() {
@@ -80,7 +83,7 @@ class UserLocalStorage {
             if (!note) {
                 return note;
             }
-            if (note.schemaVersion === 5) {
+            if (note.schemaVersion === 6) {
                 return note;
             }
             changed = true;
@@ -93,8 +96,9 @@ class UserLocalStorage {
 
             // v4: `enablePin` now means "shown". Every note stored before v4 was
             // visible on its own page (visibility used to be pin-independent), so
-            // pin them all to keep them visible. Notes already at v4+ keep their
-            // pin state (the user may have since unpinned/hidden them).
+            // pin them all to keep them visible — and, under the v6 domain model,
+            // to make them show across their whole site. Notes already at v4+
+            // keep their pin state (the user may have since unpinned/hidden them).
             if (!(note.schemaVersion >= 4)) {
                 upgraded.enablePin = true;
             }
@@ -105,7 +109,17 @@ class UserLocalStorage {
                 upgraded.title = '';
             }
 
-            upgraded.schemaVersion = 5;
+            // v6: visibility matches on hostName, so every note needs a valid one.
+            // Backfill from the stored url when it is missing or malformed.
+            if (!upgraded.hostName || typeof upgraded.hostName !== 'string') {
+                try {
+                    upgraded.hostName = new URL(upgraded.url).hostname;
+                } catch (error) {
+                    upgraded.hostName = '';
+                }
+            }
+
+            upgraded.schemaVersion = 6;
             return upgraded;
         });
 
@@ -170,8 +184,9 @@ class UserLocalStorage {
     //
     // Pin model: "pinned" means "shown". An unpinned note is hidden everywhere
     // (it is still saved and reachable from the popup / All Notes list, and can
-    // be shown again by pinning it). A pinned normal note shows on its own page;
-    // a pinned global note shows on every site.
+    // be shown again by pinning it). A pinned normal note is DOMAIN-scoped — it
+    // shows on any page under its host (e.g. a note made on abc.com/main shows on
+    // abc.com/sub too). A pinned global note shows on every site.
     static shouldShowNoteOnPage(note, href, hostName) {
         if (!note || !note.enablePin) {
             return false;
@@ -179,7 +194,7 @@ class UserLocalStorage {
         if (this.isGlobalNote(note)) {
             return true;
         }
-        return note.url === href;
+        return note.hostName === hostName;
     }
 
     // The single global note, or null. Also the guard the creation path uses to

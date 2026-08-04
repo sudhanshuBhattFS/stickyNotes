@@ -530,21 +530,16 @@ document.addEventListener('DOMContentLoaded', function () {
                             // Send a message to the background script to remove the tab
                             chrome.runtime.sendMessage({ action: MESSAGE.REMOVE_TAB, title: "StickyNotes" });
 
-                            // remove the element from the dom. The global note
-                            // lives on every tab, so its removal must reach all of
-                            // them; a normal note only needs to leave the active tab.
-                            if (isGlobal) {
-                                chrome.tabs.query({}, function (tabs) {
-                                    tabs.forEach((tab) => {
-                                        sendMessageToTab(tab.id, { "action": MESSAGE.REMOVE_ELEMENT_FROM_DOM, "id": id });
-                                    });
+                            // Remove the element from the DOM everywhere it might
+                            // be showing. A domain note can be on several tabs of
+                            // its host and the global note on every tab, so
+                            // broadcast the removal to all tabs (removing by id is
+                            // a no-op on tabs that do not have the note).
+                            chrome.tabs.query({}, function (tabs) {
+                                tabs.forEach((tab) => {
+                                    sendMessageToTab(tab.id, { "action": MESSAGE.REMOVE_ELEMENT_FROM_DOM, "id": id });
                                 });
-                            } else {
-                                chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
-                                    var activeTab = tabs[0];
-                                    sendMessageToTab(activeTab.id, { "action": MESSAGE.REMOVE_ELEMENT_FROM_DOM, "id": id });
-                                });
-                            }
+                            });
 
                             const updateNote = await UserLocalStorage.retrieveNoteData()
                             // Deleting the last note on a page leaves currentPage
