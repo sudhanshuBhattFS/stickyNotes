@@ -6,7 +6,14 @@ chrome.runtime.onInstalled.addListener(function (details) {
         // available immediately, without the user having to refresh.
         chrome.tabs.query({}, function (tabs) {
             tabs.forEach(function (tab) {
-                chrome.tabs.reload(tab.id);
+                if (typeof tab.id !== 'number') {
+                    return;
+                }
+                // A tab can close (or be discarded/restricted) between the query
+                // and this reload, which rejects with "No tab with id …". That is
+                // harmless here, so swallow it instead of leaking an uncaught
+                // promise rejection into the extension's error log.
+                chrome.tabs.reload(tab.id).catch(() => { });
             });
         });
     }

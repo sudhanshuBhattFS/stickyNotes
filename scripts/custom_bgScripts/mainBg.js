@@ -270,8 +270,10 @@ chrome.runtime.onMessage.addListener(
 
             chrome.tabs.query({}, (tabs) => {
                 tabs.forEach((tab) => {
-                    if (tab.url === allNotesUrl) {
-                        chrome.tabs.remove(tab.id);
+                    if (tab.url === allNotesUrl && typeof tab.id === 'number') {
+                        // The tab may already be gone between the query and this
+                        // call ("No tab with id …"); ignore that benign rejection.
+                        chrome.tabs.remove(tab.id).catch(() => { });
                     }
                 });
             });
